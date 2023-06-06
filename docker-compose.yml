@@ -1,0 +1,18 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo
+    container_name: mondb
+    ports:
+      - 27017:27017
+
+
+  postgres:
+    image: postgres
+    container_name: mypostgres
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    ports:
+      - 5432:5432
