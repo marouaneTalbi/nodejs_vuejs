@@ -1,3 +1,6 @@
+const Sequelize = require('sequelize');
+const User = require('../models/userModel');
+
 module.exports = {
     development: {
         host: 'localhost',
@@ -9,38 +12,16 @@ module.exports = {
     },
   };
 
+    // async function e() {
+    //   const user = await User.findAll()
+    //   return user;
+    // }
 
-//   module.exports = {
-//     development: {
-//       database: 'your_database',
-//       username: 'your_username',
-//       password: 'your_password',
-//       host: 'localhost',
-//       port: 27017,
-//       dialect: 'mongodb'
-//     },
-//     production: {
-//       // Configurations pour l'environnement de production
-//     }
-//   };
+    // e().then(user => {
+    //     console.log(user);
+    // })
+    // .catch(error => {
+    //     console.error(error);
+    // });
 
-// const { Pool } = require('pg');
 
-// const pool = new Pool({
-//     host: 'localhost',
-//     port: 5432,
-//     database: 'mydatabase',
-//     user: 'myuser',
-//     password: 'mypassword'
-// });
-
-// pool.connect((err, client, done) => {
-//     if (err) {
-//         console.error('Erreur de connexion à la base de données :', err);
-//     } else {
-//         console.log('Connecté à la base de données PostgreSQL');
-//         done();
-//     }
-// });
-
-// module.exports = pool;
