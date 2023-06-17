@@ -39,6 +39,10 @@ const User = sequelize.define('_user', {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: true
   },
+  token: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   points: {
     type: DataTypes.INTEGER,
     allowNull: true

@@ -1,6 +1,10 @@
 const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+const mailSender = require('../SMTP/mailsender');
+
 
 // Méthode pour récupérer tous les utilisateurs
 exports.getAllUsers = async (req, res) => {
@@ -105,7 +109,15 @@ exports.login = async (req, res) => {
         return res.status(409).json({ message: 'L\'utilisateur existe déjà' });
       }
       const hashedPassword = await bcrypt.hash(password, 10);
-      const newUser = await User.create({ mail, password: hashedPassword, pseudo: pseudo });
+      const buffer = crypto.randomBytes(32).toString('hex');
+
+      
+
+      const newUser = await User.create({ mail, password: hashedPassword, pseudo: pseudo, token:buffer });
+
+      console.log(newUser.token, newUser.mail)
+      mailSender.sendValidationEmail(newUser.mail, newUser.token);
+
       const token = jwt.sign({ id: newUser.id }, 'secretKey');
       res.json({ token });
     } catch (error) {
