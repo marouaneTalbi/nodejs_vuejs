@@ -1,4 +1,3 @@
-
 const express = require('express');
 const app = express();
 const route = require('./routes/userRoute');
@@ -15,7 +14,6 @@ app.use('/', route);
 app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
-
 
 helmet.contentSecurityPolicy({
   connectSrc: ["'self'", 'http://localhost:5173/'],
