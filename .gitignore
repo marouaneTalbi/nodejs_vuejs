@@ -1,6 +1,6 @@
 node_modules/
 dist/
-
+package.json
 .env
 .env.*
 .DS_Store
