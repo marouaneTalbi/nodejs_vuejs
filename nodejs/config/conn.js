@@ -1,6 +1,9 @@
 const Sequelize = require('sequelize');
 const User = require('../models/userModel');
 
+
+
+
 module.exports = {
     development: {
         host: 'localhost',

@@ -1,4 +1,3 @@
-
 const express = require('express');
 const app = express();
 const route = require('./routes/userRoute');
@@ -15,7 +14,38 @@ app.use('/', route);
 app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
+app.get('/register', (req, res) => {
+    res.send(`
+    <h1>Inscription</h1>
+    <form action="/register" method="POST">
+      <label for="pseudo">Pseudo:</label>
+      <input type="text" id="pseudo" name="pseudo" required><br><br>
+    
+      <label for="mail">Email:</label>
+      <input type="email" id="mail" name="mail" required><br><br>
+    
+      <label for="password">Mot de passe:</label>
+      <input type="password" id="password" name="password" required><br><br>
+    
+      <input type="submit" value="S'inscrire">
+    </form>
+  `);
+});
 
+app.get('/login', (req, res) => {
+    res.send(`
+    <h1>Inscription</h1>
+    <form action="/login" method="POST">
+      <label for="mail">Email:</label>
+      <input type="email" id="mail" name="mail" required><br><br>
+    
+      <label for="password">Mot de passe:</label>
+      <input type="password" id="password" name="password" required><br><br>
+    
+      <input type="submit" value="Se connecter">
+    </form>
+  `);
+});
 
 helmet.contentSecurityPolicy({
   connectSrc: ["'self'", 'http://localhost:5173/'],

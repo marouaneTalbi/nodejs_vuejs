@@ -8,7 +8,7 @@ const sequelize = new Sequelize({
   password: 'mypassword'
 });
 
-const User = sequelize.define('_user', {
+const User = sequelize.define('user', {
   id: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -52,7 +52,7 @@ const User = sequelize.define('_user', {
     }
   }
 }, {
-  tableName: '_user',
+  tableName: 'user',
   timestamps: false
 });
 

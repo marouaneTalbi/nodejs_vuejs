@@ -99,16 +99,13 @@ exports.login = async (req, res) => {
 
   exports.register = async (req, res) => {
     try {
-      const { mail, password, pseudo } = req.body;
-      const existingUser = await User.findOne({ where: { mail } });
-      if (existingUser) {
-        return res.status(409).json({ message: 'L\'utilisateur existe déjà' });
-      }
+      const { pseudo, mail, password } = req.body;
       const hashedPassword = await bcrypt.hash(password, 10);
-      const newUser = await User.create({ mail, password: hashedPassword, pseudo: pseudo });
-      const token = jwt.sign({ id: newUser.id }, 'secretKey');
-      res.json({ token });
+      const newUser = await User.create({ pseudo, mail, password: hashedPassword });
+
+      res.status(201).json({ message: 'Utilisateur enregistré avec succès', user: newUser });
     } catch (error) {
-      res.status(500).json({ message: `Une erreur s'est produite lors de l'inscription : ${error.message}` });
+      console.error('Erreur lors de l\'inscription :', error);
+      res.status(500).json({ message: 'Une erreur s\'est produite lors de l\'inscription' });
     }
   };
