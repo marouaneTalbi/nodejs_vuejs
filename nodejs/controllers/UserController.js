@@ -109,8 +109,7 @@ exports.login = async (req, res) => {
       const newUser = await User.create({ mail, password: hashedPassword, pseudo: pseudo, token:buffer });
 
       console.log(newUser.token, newUser.mail)
-      mailSender.sendValidationEmail(newUser.mail, newUser.token);
-
+      await mailSender.sendConfirmationEmail(newUser.mail, newUser.token);
       const token = jwt.sign({ id: newUser.id }, 'secretKey');
       res.json({ token });
 
@@ -119,3 +118,27 @@ exports.login = async (req, res) => {
       res.status(500).json({ message: 'Une erreur s\'est produite lors de l\'inscription' });
     }
   };
+
+exports.findByToken = async (confirmationToken) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        token: confirmationToken
+      }
+    });
+
+    if (!user) {
+      throw new Error('Invalid token');
+    }
+
+    user.isConfirmed = 1;
+    await user.save();
+
+    return user;
+  } catch (error) {
+    console.error('An error occurred while searching for the user by token:', error);
+    throw error;
+  }
+};
+
+
