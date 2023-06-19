@@ -43,8 +43,8 @@ const User = sequelize.define('_user', {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  isConfirmed: {
-    type: DataTypes.INTEGER,
+  isconfirmed: {
+    type: DataTypes.BOOLEAN,
     allowNull: true
   },
   points: {
