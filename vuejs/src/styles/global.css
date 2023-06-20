@@ -1,0 +1,10 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, rgb(64, 43, 93) 0%, rgba(62,40,90,255) 18%, rgba(27, 27, 27, 1) 25%, rgba(27, 27, 27, 1) 80%, rgb(64, 43, 93) 86%, rgba(62,40,90,255) 100%);
+}
+
+.bg-img-container{
+    background-size: cover;
+    background-repeat: no-repeat;
+}

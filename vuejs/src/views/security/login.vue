@@ -17,6 +17,12 @@
       Don't have an account? <router-link to="/register">Register</router-link>
     </div>
   </div>
+  <div class="des-container bg-img-container">
+  </div>
+  <div class="crayon-container bg-img-container">
+  </div>
+  <div class="dollars-container bg-img-container">
+  </div>
 </template>
 
 <script>
@@ -56,12 +62,27 @@ export default {
 
 <style scoped>
 .login-form {
-  max-width: 300px;
   margin: 0 auto;
-  border: 1px solid rgb(190, 183, 183);
   padding: 30px;
-  border-radius: 40px;
-  transition: transform 0.3s;
+  background: rgba(255, 255, 255, 0.16);
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 45%;
+}
+
+.login-form > form{
+  width: 50%;
+  margin: auto;
+}
+
+.login-form > h2{
+  font-style: normal;
+  font-weight: 800;
+  font-size: 40px;
+  line-height: 87px;
+  color: white;
 }
 
 .form-group {
@@ -71,6 +92,7 @@ export default {
 label {
   display: block;
   margin-bottom: 5px;
+  color: #BEBEBF;
 }
 
 input[type="email"],
@@ -83,11 +105,11 @@ input[type="password"] {
 
 button {
   padding: 8px 16px;
-  background-color: #4CAF50;
   color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  background-color: #6E57D0;
 }
 
 .error-message {
@@ -127,10 +149,11 @@ button {
 .register-link {
   margin-top: 20px;
   text-align: center;
+  color: #BEBEBF;
 }
 
 .register-link a {
-  color: #4CAF50;
+  color: #6E57D0;
   text-decoration: underline;
   cursor: pointer;
 }

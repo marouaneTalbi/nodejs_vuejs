@@ -1,0 +1,102 @@
+.register-form {
+    margin: 0 auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.16);
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 45%;
+}
+
+.register-form > form{
+    width: 50%;
+    margin: auto;
+}
+
+.register-form > h2{
+    font-style: normal;
+    font-weight: 800;
+    font-size: 40px;
+    line-height: 87px;
+    color: white;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #BEBEBF;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: transparent;
+}
+
+button {
+    padding: 8px 16px;
+    background-color: #6E57D0;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+}
+
+.login-link {
+    margin-top: 20px;
+    text-align: center;
+    color: #BEBEBF;
+}
+
+.login-link a {
+    color: #6E57D0;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.des-container{
+    background-image: url("./images/des_card.png");
+    width: 140px;
+    height: 140px;
+    position: absolute;
+    top: 30%;
+    right: 30%;
+}
+
+.dollars-container{
+    background-image: url("./images/dollard_card.png");
+    width: 110px;
+    height: 110px;
+    position: absolute;
+    top: 40%;
+    right: 20.5%;
+}
+
+.crayon-container{
+    background-image: url("./images/crayon_card.png");
+    width: 110px;
+    height: 110px;
+    position: absolute;
+    top: 57%;
+    right: 38%;
+}
+
+input[type="text"]:focus {
+    background-color: transparent;
+}

@@ -16,11 +16,18 @@
         </div>
         <button type="submit">Register</button>
       </form>
+
       <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
       <div class="login-link">
         Already have an account? <router-link to="/login">Login</router-link>
       </div>
     </div>
+    <div class="des-container bg-img-container">
+    </div>
+  <div class="crayon-container bg-img-container">
+  </div>
+  <div class="dollars-container bg-img-container">
+  </div>
   </template>
   
   <script>
@@ -37,7 +44,9 @@
     },
     methods: {
       async register() {
+        console.log("first");
         try {
+          console.log("try");
           const response = await axios.post('http://localhost:3000/register', {
             mail: this.email,
             password: this.password,
@@ -48,64 +57,16 @@
           this.$router.push('/login');
           console.log(response);
         } catch (error) {
+          console.log("catch");
           console.error(error);
           this.errorMessage = error.response.data.message;
         }
       }
     }
   };
+
+  import './../../styles/global.css';
+  import './../../styles/register.css';
+
   </script>
-  
-  <style scoped>
-  .register-form {
-    max-width: 300px;
-    margin: 0 auto;
-    border: 1px solid rgb(190, 183, 183);
-    padding: 30px;
-    border-radius: 40px;
-  }
-  
-  .form-group {
-    margin-bottom: 20px;
-  }
-  
-  label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  input[type="email"],
-  input[type="password"],
-  input[type="text"] {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  button {
-    padding: 8px 16px;
-    background-color: #4CAF50;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .error-message {
-    color: red;
-    margin-top: 10px;
-  }
-  
-  .login-link {
-    margin-top: 20px;
-    text-align: center;
-  }
-  
-  .login-link a {
-    color: #4CAF50;
-    text-decoration: underline;
-    cursor: pointer;
-  }
-  </style>
   
