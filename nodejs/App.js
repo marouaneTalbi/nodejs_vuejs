@@ -6,6 +6,12 @@ const User = require("./controllers/UserController")
 const sequelize = require('./config/conn');
 const helmet = require('helmet');
 const cors = require('cors');
+
+// MONGODB CONNECTION //
+const mongodb = require('./db/mongo');
+mongodb.initClientDbConnection();
+// MONGODB CONNECTION //
+
 app.use(cors());
 app.use(helmet());
 
