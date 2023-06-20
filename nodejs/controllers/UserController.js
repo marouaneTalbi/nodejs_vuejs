@@ -131,7 +131,7 @@ exports.findByToken = async (confirmationToken) => {
       throw new Error('Invalid token');
     }
 
-    user.isConfirmed = 1;
+    user.isconfirmed = 1;
     await user.save();
 
     return user;
