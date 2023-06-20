@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const clientOptions = {
-    useNewUrlParser   : true,
-    dbName            : 'memoryGame'
+    useNewUrlParser : true,
+    dbName : 'memoryGame'
 };
 
 exports.initClientDbConnection = async () => {
