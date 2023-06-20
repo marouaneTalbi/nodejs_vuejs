@@ -76,7 +76,7 @@ button {
     height: 140px;
     position: absolute;
     top: 30%;
-    right: 30%;
+    right: 25%;
 }
 
 .dollars-container{
@@ -85,7 +85,7 @@ button {
     height: 110px;
     position: absolute;
     top: 40%;
-    right: 20.5%;
+    right: 15.5%;
 }
 
 .crayon-container{
@@ -94,7 +94,7 @@ button {
     height: 110px;
     position: absolute;
     top: 57%;
-    right: 38%;
+    right: 33%;
 }
 
 input[type="text"]:focus {
