@@ -23,4 +23,5 @@ jobs:
       - name: Exécuter les tests
         run: |
           cd nodejs
+          npm install
           npm test
