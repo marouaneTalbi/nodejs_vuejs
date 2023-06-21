@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import GameModeView from '../views/GameModeView.vue'
 import Login from '../views/security/login.vue'
 import Registre from '../views/security/register.vue'
 import Dashboard from '../views/Dashboard.vue'
@@ -28,6 +29,11 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView
+    },
+    {
+      path: '/gamemode',
+      name: 'gamemode',
+      component: GameModeView
     },
     {
       path: '/dashboard/admin',
