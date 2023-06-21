@@ -40,3 +40,4 @@ describe('getUsers', () => {
         expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Une erreur s\'est produite lors de la récupération des utilisateurs' });
     });
 });
+
