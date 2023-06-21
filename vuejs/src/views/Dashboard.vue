@@ -1,14 +1,17 @@
 <template>
-  <div class="">
-    Dashboard
-  </div>
+  <section class="dashboard">
+    <Navbar />
+  </section>
 </template>
 
 <script>
-import axios from 'axios';
 import { fetchAllData } from '../api/api';
+import Navbar from '../components/NavBar.vue';
 
 export default {
+  components: {
+    Navbar,
+  },
   data() {
     return {
       users: []

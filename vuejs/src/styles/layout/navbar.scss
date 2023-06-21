@@ -1,0 +1,53 @@
+.navbar {
+    width: 300px;
+    height: 100vh;
+    padding: 30px;
+    background-color: transparent;
+
+    & h1 {
+        font-weight: 800;
+        font-size: 36px;
+        color: white;
+    }
+
+    & ul {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+        margin-top: 20px;
+        margin-left: 0;
+        padding: 0;
+
+        & .active {
+
+            & a {
+                color: white
+            };
+
+            & svg {
+                color: white;
+            }
+        }
+        
+        & li {
+            list-style-type: none;
+            
+            & a {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                
+                & a {
+                    margin-top: 3px;
+                }
+            }
+
+            & svg {
+                color: hsla(160, 100%, 37%, 1);
+                width: 30px;
+                height: 30px;
+            }
+        }
+    }
+}
+
