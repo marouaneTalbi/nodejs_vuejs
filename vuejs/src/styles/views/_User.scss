@@ -1,0 +1,53 @@
+.user {
+    width: 100vw;
+    height: 100vh;
+    background-color: #1B1B1B;
+    display: flex;
+    flex-direction: row;
+
+    & .container {
+        padding: 60px 60px 60px 0px;
+        flex-grow: 1;
+
+        & h3 {
+            color: #A0AEC0;
+
+            & span {
+                color: white;
+            }
+        }
+
+        & .user-profile {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+
+            & .infos {
+                display: flex;
+                flex-direction: row;
+                gap: 30px;
+                align-items: center;
+
+                & .img {
+                    width: 200px;
+                    height: 200px;
+                    border-radius: 50px;
+                    background-color: cyan;
+                }
+
+                & .text {
+                    & .pseudo {
+                        font-size: 33px;
+                        font-weight: 700;
+                        color: #fefefe;
+                    }
+                    & .mail {
+                        font-size: 20px;
+                        font-weight: 300;
+                        color: #A0AEC0;
+                    }
+                }
+            }
+        }
+    }
+}

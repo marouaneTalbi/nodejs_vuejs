@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const serverURI = 'http://localhost:3000';
 
-export function fetchAllData(route) {
+export function fetchData(route) {
     return axios.get((serverURI + route));
 }
 
