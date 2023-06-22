@@ -1,0 +1,104 @@
+.dashboard {
+    width: 100vw;
+    height: 100vh;
+    background-color: #1B1B1B;
+    display: flex;
+    flex-direction: row;
+    
+    & .container {
+        padding: 60px 60px 60px 0px;
+        flex-grow: 1;
+
+        & h3 {
+            color: #A0AEC0;
+
+            & span {
+                color: white;
+            }
+        }
+
+        & .user-list {
+            margin-top: 40px;
+            height: 40%;
+        
+            & h5 {
+                font-weight: 700;
+                font-size: 20px;
+                color: white;
+            }
+
+            & .date {
+                color: #FEFEFF;
+                text-align: center;
+            }
+
+            & .action {
+                color: #718096;
+                text-align: right;
+            }
+            
+            & table {
+                width: 100%;
+                border-collapse: collapse;
+
+                & .header {
+                    & th {
+                        padding: 20px 0;
+                    }
+                }
+                
+                tr.user-row td {
+                    border-top: 0.95px solid rgba(226, 232, 240, 0.6);
+                    padding: 10px 0;
+                    margin: 0;
+                    position: relative;
+                    
+                    & .info {
+                        height: max-content;
+                    }
+                    & .img {
+                        width: 40px;
+                        height: 40px;
+                        background-color: red;
+                        border-radius: 8px;
+                    }
+                    
+                    & .pseudo {
+                        position: absolute;
+                        left: 50px;
+                        top: 10px;
+                        font-weight: 600;
+                        font-size: 13.3px;
+                        line-height: 140%;
+                        color: #FEFEFF;
+                    }
+
+                    
+                    
+                    & .mail {
+                        position: absolute;
+                        left: 50px;
+                        top: 30px;
+                        font-weight: 400;
+                        font-size: 13.3px;
+                        line-height: 140%;
+                        color: #718096;
+                    }
+                }
+
+                & th {
+                    font-weight: 600;
+                    font-size: 12px;
+                    color: #A0AEC0;
+                    &:first-child {
+                        text-align: left;
+                    }
+
+                    &:last-child {
+                        text-align: right;
+                    }
+                }
+            }
+        }   
+    }
+}

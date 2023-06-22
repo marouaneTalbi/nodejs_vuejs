@@ -1,0 +1,10 @@
+@import './layout/navbar.scss';
+@import './views/Dashboard';
+@import './views/Billing';
+@import './views/Stats';
+@import './views/Profile';
+@import './utils/fonts.scss';
+
+* {
+    font-family: 'Inter';
+}
