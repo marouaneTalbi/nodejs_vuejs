@@ -1,12 +1,12 @@
 .dashboard {
     width: 100vw;
     height: 100vh;
-    background-color: #1B1B1B;
+    background-color: #17181F;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     
     & .container {
-        padding: 60px 60px 60px 0px;
+        padding: 60px;
         flex-grow: 1;
 
         & h3 {
@@ -25,6 +25,10 @@
                 font-weight: 700;
                 font-size: 20px;
                 color: white;
+            }
+
+            & .status {
+                color: #FEFEFF;
             }
 
             & .date {
@@ -59,7 +63,7 @@
                     & .img {
                         width: 40px;
                         height: 40px;
-                        background-color: red;
+                        background-color: hsla(160, 100%, 37%, 1);
                         border-radius: 8px;
                     }
                     
@@ -73,8 +77,6 @@
                         color: #FEFEFF;
                     }
 
-                    
-                    
                     & .mail {
                         position: absolute;
                         left: 50px;

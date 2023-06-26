@@ -110,7 +110,6 @@ exports.login = async (req, res) => {
       const buffer = crypto.randomBytes(32).toString('hex');
       try {
         const newUserPostgres = await User.create({ mail, password: hashedPassword, pseudo: pseudo, token:buffer });      
-        const newUserMongo = await UserMongo.create({ pseudo, mail, password });
         await mailSender.sendConfirmationEmail(newUserPostgres.mail, newUserPostgres.token);
         const token = jwt.sign({ id: newUserPostgres.id }, 'secretKey');
         res.json({ token });

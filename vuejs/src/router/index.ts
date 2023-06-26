@@ -7,6 +7,7 @@ import Dashboard from '../views/Dashboard.vue'
 import Stats from '../views/StatsView.vue'
 import Billing from '../views/BillingView.vue'
 import Profile from '../views/ProfileView.vue'
+import User from '../views/UserView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -56,6 +57,12 @@ const router = createRouter({
       path: '/profile',
       name: 'profile',
       component: Profile
+    },
+    {
+      // path: '/user/:slug',
+      path: '/user/:id',
+      name: 'user',
+      component: User
     },
     {
       path: '/about',

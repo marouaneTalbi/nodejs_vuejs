@@ -1,9 +1,9 @@
 <template>
-    <nav class="navbar">
+    <nav class="navbar" v-if="!isMobileMenuOpen">
         <h1>TITLE</h1>
         <ul>
             <li>
-              <router-link to="/admin" :class="{ 'active': currentRoute === '/admin' }">
+              <router-link to="/admin" :class="{ 'active': currentRoute === '/admin' || currentRoute.startsWith('/user/') }">
                 <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
                   <path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 19v-8.5a1 1 0 0 0-.4-.8l-7-5.25a1 1 0 0 0-1.2 0l-7 5.25a1 1 0 0 0-.4.8V19a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1z"></path>
                 </svg>
@@ -40,14 +40,26 @@
             </li>
         </ul>
     </nav>
+    <div class="mobile-menu" v-else>
+    <button class="mobile-menu-toggle" @click="toggleMobileMenu">
+      <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 6h14M5 10h10M5 14h14M5 18h6"></path>
+      </svg>
+    </button>
+    <ul>
+      test
+    </ul>
+  </div>
+    
 </template>
 
 <script>
   export default {
-    name: 'Navbar',
+    name: 'NavBar',
       data() {
         return {
-          currentRoute: ''
+          currentRoute: '',
+          isMobileMenuOpen: false
         };
       },
     created() {
@@ -62,6 +74,9 @@
       changeRoute(route) {
         this.currentRoute = route;
         this.$router.push(route);
+      },
+      toggleMobileMenu() {
+        this.isMobileMenuOpen = !this.isMobileMenuOpen;
       }
     }
   }
