@@ -52,3 +52,16 @@
     }
 }
 
+@media (max-width: 768px) {
+
+    .navbar {
+        display: none;
+    }
+
+    .mobile-menu {
+        display: block;
+        width: 20px;
+        height: 20px;
+        background-color: red;
+    }
+}
