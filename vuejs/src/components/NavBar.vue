@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar">
+    <nav class="navbar" v-if="!isMobileMenuOpen">
         <h1>TITLE</h1>
         <ul>
             <li>
@@ -40,6 +40,17 @@
             </li>
         </ul>
     </nav>
+    <div class="mobile-menu" v-else>
+    <button class="mobile-menu-toggle" @click="toggleMobileMenu">
+      <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 6h14M5 10h10M5 14h14M5 18h6"></path>
+      </svg>
+    </button>
+    <ul>
+      test
+    </ul>
+  </div>
+    
 </template>
 
 <script>
@@ -47,7 +58,8 @@
     name: 'NavBar',
       data() {
         return {
-          currentRoute: ''
+          currentRoute: '',
+          isMobileMenuOpen: false
         };
       },
     created() {
@@ -62,6 +74,9 @@
       changeRoute(route) {
         this.currentRoute = route;
         this.$router.push(route);
+      },
+      toggleMobileMenu() {
+        this.isMobileMenuOpen = !this.isMobileMenuOpen;
       }
     }
   }
