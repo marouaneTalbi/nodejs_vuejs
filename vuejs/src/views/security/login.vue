@@ -27,7 +27,6 @@
 
 <script>
 import axios from 'axios';
-
 export default {
   data() {
     return {
@@ -45,6 +44,7 @@ export default {
           password: this.password
         });
         const token = response.data.token;
+        localStorage.setItem('token', token);
         this.$router.push('/home');
         console.log(response);
       } catch (error) {

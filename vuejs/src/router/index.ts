@@ -3,6 +3,8 @@ import HomeView from '../views/HomeView.vue'
 import GameModeView from '../views/GameModeView.vue'
 import Login from '../views/security/login.vue'
 import Registre from '../views/security/register.vue'
+import Account from '../views/security/account.vue'
+import Logout from '../views/security/logout.vue'
 import Dashboard from '../views/Dashboard.vue'
 import Stats from '../views/StatsView.vue'
 import Billing from '../views/BillingView.vue'
@@ -26,6 +28,16 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: Registre
+    },
+    {
+      path: '/account',
+      name: 'account',
+      component: Account
+    },
+    {
+      path: '/logout',
+      name: 'logout',
+      component: Logout
     },
     {
       path: '/',

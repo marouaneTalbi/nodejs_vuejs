@@ -30,7 +30,8 @@ const User = sequelize.define('_user', {
   },
   picture: {
     type: DataTypes.STRING(255),
-    allowNull: true
+    allowNull: false,
+    defaultValue: 'picture.png',
   },
   coins: {
     type: DataTypes.INTEGER,
@@ -59,6 +60,16 @@ const User = sequelize.define('_user', {
       model: 'Skin',
       key: 'id'
     }
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
+  },
+  role: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+    defaultValue: 'gamer',
   }
 }, {
   tableName: '_user',
