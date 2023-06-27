@@ -50,7 +50,6 @@ const router = createRouter({
       component: GameModeView
     },
     {
-      path: '/dashboard/admin',
       path: '/admin',
       name: 'admin',
       component: Dashboard
