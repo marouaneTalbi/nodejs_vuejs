@@ -34,6 +34,37 @@ module.exports = {
                 console.log(err.statusCode);
                 throw err;
             });
+    },
+    sendCodeEmail: function (email, code) {
+        const request = mailjet.post('send', { version: 'v3.1' }).request({
+            Messages: [
+                {
+                    From: {
+                        Email: 'aminecherigui44@gmail.com',
+                        Name: 'Challenge Stack',
+                    },
+                    To: [
+                        {
+                            Email: email,
+                            Name: 'You',
+                        },
+                    ],
+                    Subject: 'Email Confirmation',
+                    TextPart: 'Greetings from Mailjet!',
+                    HTMLPart: `<h3>Dear Gamer, here is you code :  <h2>${code}</h2> to confirm your Email.`,
+                },
+            ],
+        });
+
+        return request
+            .then(result => {
+                console.log(result.body);
+                return result.body;
+            })
+            .catch(err => {
+                console.log(err.statusCode);
+                throw err;
+            });
     }
 };
 
