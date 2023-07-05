@@ -1,4 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize');
+const UserMongo = require('./userModelMongo')
 const sequelize = new Sequelize({
   dialect: 'postgres',
   host: 'localhost',
@@ -74,5 +75,34 @@ const User = sequelize.define('_user', {
   tableName: '_user',
   timestamps: false
 });
+
+User.afterCreate(async (user, options) => {
+  try {
+    await UserMongo.create({
+      _id: user.id, 
+      pseudo: user.pseudo, 
+      mail: user.mail, 
+      password: user.password
+    })
+    console.log('User creation in MongoDB successful');
+  } catch (error) {
+    console.error('An error occurred after user deletion in MongoDB:', error);
+  }
+})
+
+User.afterUpdate(async (user, options) => {
+  try {
+    const changedFields = user.changed();
+
+    changedFields.map(async (field) => {
+      const updateObj = {};
+      updateObj[field] = user[field];
+      await UserMongo.findByIdAndUpdate(user.id, updateObj);
+    })
+
+  } catch (error) {
+    console.error('An error occurred after user deletion in MongoDB:', error);
+  }
+})
 
 module.exports = User;

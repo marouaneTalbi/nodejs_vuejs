@@ -9,6 +9,12 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const path = require('path');
+
+// MONGODB CONNECTION //
+const mongodb = require('./db/mongo');
+mongodb.initClientDbConnection();
+// MONGODB CONNECTION //
+
 app.use(cors());
 app.use(helmet());
 app.use(cookieParser());

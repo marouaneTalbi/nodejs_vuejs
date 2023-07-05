@@ -1,4 +1,6 @@
 const User = require('../models/userModel');
+const UserMongo = require('../models/userModelMongo');
+
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
@@ -144,11 +146,14 @@ exports.register = async (req, res) => {
 
       const hashedPassword = await bcrypt.hash(password, 10);
       const buffer = crypto.randomBytes(32).toString('hex');
+      try {
       const newUser = await User.create({ mail, password: hashedPassword, pseudo: pseudo, token:buffer, createdAt: new Date() });
       await mailSender.sendConfirmationEmail(newUser.mail, newUser.token);
       const token = jwt.sign({ id: newUser.id }, 'secretKey');
       res.json({ token });
-
+      } catch (error) {
+        console.error('Une erreur s\'est produite lors de l\'enregistrement de l\'utilisateur:', error);
+      }
     } catch (error) {
       console.error('Erreur lors de l\'inscription :', error);
       res.status(500).json({ message: 'Une erreur s\'est produite lors de l\'inscription' });
