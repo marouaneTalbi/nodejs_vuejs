@@ -23,8 +23,23 @@
         <h2>Email Verification</h2>
         <p>Entrez le code de validation d'adresse e-mail :</p>
         <input type="text" v-model="emailVerificationCode">
+        <p>{{ verificationMessage }}</p>
         <button type="submit">Valider</button>
       </form>
+
+      <!-- Formulaire de modification du mot de passe -->
+      <form @submit.prevent="changePassword">
+        <h2>Change Password</h2>
+        <label>Ancien mot de passe:</label>
+        <input type="password" v-model="passwordData.oldPassword">
+        <label>Nouveau mot de passe:</label>
+        <input type="password" v-model="passwordData.newPassword">
+        <label>Confirmer le nouveau mot de passe:</label>
+        <input type="password" v-model="passwordData.confirmPassword">
+        <button type="submit">Changer le mot de passe</button>
+        <p v-if="passwordChangeMessage" :class="{ 'success-message': !passwordChangeError, 'error-message': passwordChangeError }">{{ passwordChangeMessage }}</p>
+      </form>
+
     </div>
   </div>
 </template>
@@ -50,7 +65,15 @@ export default {
         mail: ''
       },
       showEmailVerification: false,
-      emailVerificationCode: ''
+      emailVerificationCode: '',
+      verificationMessage: '',
+      passwordData: {
+        oldPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      },
+      passwordChangeMessage: '',
+      passwordChangeError: false
     };
   },
   mounted() {
@@ -109,7 +132,12 @@ export default {
           Authorization: 'Bearer ' + token
         }
       });
-      this.user = response.data;
+        if (response.status === 200) {
+          this.verificationMessage = 'Code de validation correct';
+          this.showEmailVerification = false;
+        } else if (response.status === 400) {
+          this.verificationMessage = response.data.message || 'Code de validation incorrect';
+        }
     }catch (error) {
       console.error(error);
     }
@@ -119,6 +147,35 @@ export default {
         this.showEmailVerification = true;
       } else {
         this.updateUserInfo();
+      }
+    },
+    async changePassword() {
+      try {
+        const token = Cookies.get('token');
+        const [header, payload, signature] = token.split('.');
+        const decodedPayload = JSON.parse(atob(payload));
+        const userId = decodedPayload.id;
+        if (this.passwordData.newPassword !== this.passwordData.confirmPassword) {
+          console.error('Les nouveaux mots de passe ne correspondent pas');
+          return;
+        }
+        const response = await axios.put(`http://localhost:3000/user/${userId}/change-password`, {
+          oldPassword: this.passwordData.oldPassword,
+          newPassword: this.passwordData.newPassword
+        }, {
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
+        });
+        this.passwordData.oldPassword = '';
+        this.passwordData.newPassword = '';
+        this.passwordData.confirmPassword = '';
+        this.passwordChangeMessage = 'Mot de passe modifié avec succès';
+        this.passwordChangeError = false;
+      } catch (error) {
+        console.error(error);
+        this.passwordChangeMessage = 'Une erreur s\'est produite lors de la modification du mot de passe';
+        this.passwordChangeError = true;
       }
     }
   }

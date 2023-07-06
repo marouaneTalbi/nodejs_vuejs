@@ -58,7 +58,7 @@ exports.updateUser = async (req, res) => {
         const code = Math.floor(1000 + Math.random() * 9000);
         req.session.emailVerificationCode = code;
         await mailSender.sendCodeEmail(mail, code);
-        await user.update({pseudo, mail, isconfirmed:false});
+        await user.update({pseudo, mail, isconfirmed:false, verificationCode:code});
       }else{
         await user.update({pseudo, mail});
       }
@@ -195,17 +195,14 @@ exports.getOne = async (req, res, next) => {
 
 exports.updateIsConfirmed = async (req,res) => {
   const userId = req.params.id;
-  const { code } = req.body;
-  const emailVerificationCode = req.session.emailVerificationCode;
-  console.log("test")
-  console.log(emailVerificationCode)
-  console.log(code)
+  const code = parseInt(req.body.code);
   try {
     const user = await User.findByPk(userId);
+    const emailVerificationCode = user.verificationCode;
     if (user) {
       if (code === emailVerificationCode) {
-        await user.update({isconfirmed: true});
-        delete req.session.emailVerificationCode;
+        user.isconfirmed = true;
+        await user.save();
         res.json(user);
       }else {
         res.status(400).json({ message: 'Code de validation incorrect' });
@@ -218,7 +215,34 @@ exports.updateIsConfirmed = async (req,res) => {
     console.error('Une erreur s\'est produite lors de la mise à jour de l\'utilisateur:', error);
     res.status(500).json({ message: 'Une erreur s\'est produite lors de la mise à jour de l\'utilisateur' });
   }
-}
+};
+
+
+exports.changePassword = async (req, res) => {
+  console.log("test")
+  const userId = req.params.id;
+  const { oldPassword, newPassword } = req.body;
+  try {
+    const user = await User.findByPk(userId);
+    if (user) {
+      const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
+      if (!isPasswordMatch) {
+        return res.status(400).json({ message: 'Ancien mot de passe incorrect' });
+      }
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+      await user.save();
+      res.json({ message: 'Mot de passe modifié avec succès' });
+    } else {
+      res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+  } catch (error) {
+    console.error('Une erreur s\'est produite lors de la modification du mot de passe de l\'utilisateur:', error);
+    res.status(500).json({ message: 'Une erreur s\'est produite lors de la modification du mot de passe de l\'utilisateur' });
+  }
+};
+
+
 
 
 

@@ -15,6 +15,7 @@ route.get('/user/:id', AdminController.getUser)
 route.get('/users', AdminController.getUsers)
 route.delete('/user/:id', AdminController.deleteUser)
 route.patch('/user/:id', AdminController.updateUser)
+route.put('/user/:id/change-password', UserController.changePassword)
 
 module.exports = route;
 

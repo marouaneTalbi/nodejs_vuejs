@@ -70,6 +70,10 @@ const User = sequelize.define('_user', {
     type: DataTypes.STRING(50),
     allowNull: false,
     defaultValue: 'gamer',
+  },
+  verificationCode: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
   }
 }, {
   tableName: '_user',
