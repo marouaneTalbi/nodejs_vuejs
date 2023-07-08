@@ -1,8 +1,10 @@
 const express = require('express');
 const app = express();
 const route = require('./routes/userRoute');
-const userModel = require("./models/userModel");
+const skinRoute = require('./routes/skinRoute');
+
 const User = require("./controllers/UserController")
+
 const sequelize = require('./config/conn');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -12,15 +14,20 @@ const mongodb = require('./db/mongo');
 mongodb.initClientDbConnection();
 // MONGODB CONNECTION //
 
-app.use(cors());
 app.use(helmet());
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}))
+
 app.use('/', route);
+app.use('/', skinRoute);
+
 app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
+
+
 
 app.get('/confirm', async (req, res) => {
     const token = req.query.token;
@@ -42,6 +49,7 @@ app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin','*')
   res.setHeader('Cross-Origin-Resource-Policy','*')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
   next();
 });
 
