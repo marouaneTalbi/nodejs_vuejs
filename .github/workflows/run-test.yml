@@ -1,0 +1,27 @@
+name: run-test
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Vérification du code
+        uses: actions/checkout@v2
+        
+      - name: Installer les dépendances
+        run: |
+          npm install
+
+      - name: Exécuter les tests
+        run: |
+          cd nodejs
+          npm install
+          npm test
