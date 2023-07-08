@@ -13,18 +13,9 @@
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false"
   },
   "dependencies": {
-    "@stripe/stripe-js": "^1.54.1",
-    "@vue-stripe/vue-stripe": "^4.5.0",
     "axios": "^1.4.0",
-    "datatables.net-vue3": "^2.1.1",
-    "jsonwebtoken": "^9.0.0",
-    "majesticons": "^2.1.2",
-    "sass": "^1.63.5",
-    "slugify": "^1.6.6",
-    "util.promisify": "^1.1.2",
     "vue": "^3.3.2",
-    "vue-router": "^4.2.0",
-    "vue3-toastify": "^0.1.11"
+    "vue-router": "^4.2.0"
   },
   "devDependencies": {
     "@tsconfig/node18": "^2.0.1",
@@ -32,13 +23,11 @@
     "@types/node": "^18.16.8",
     "@vitejs/plugin-vue": "^4.2.3",
     "@vitejs/plugin-vue-jsx": "^3.0.1",
-    "@vue/test-utils": "^2.2.7",
+    "@vue/test-utils": "^2.3.2",
     "@vue/tsconfig": "^0.4.0",
     "cypress": "^12.12.0",
     "jsdom": "^22.0.0",
-    "node-sass": "^9.0.0",
     "npm-run-all": "^4.1.5",
-    "sass-loader": "^13.3.2",
     "start-server-and-test": "^2.0.0",
     "typescript": "~5.0.4",
     "vite": "^4.3.5",
