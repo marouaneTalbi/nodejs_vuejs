@@ -27,7 +27,9 @@
         </nav>
         <div class="button-container" v-show="!mobile">
             <button class="button button--transparent">Logout</button>
-            <button class="button">Jouer</button>
+            <router-link to="/gamemode">
+                <button class="button">Jouer</button>
+            </router-link>
         </div>
 
         <div class="icon" v-show="mobile">
