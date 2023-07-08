@@ -7,7 +7,7 @@ export function fetchData(route) {
 }
 
 export function postData(url, data) {
-    return axios.post(url, data);
+    return axios.post(serverURI + url, data);
 }
 
 export function deleteData(route, data) {

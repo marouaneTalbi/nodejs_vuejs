@@ -56,7 +56,7 @@ export default {
     <div class="user-info" v-if="user">
       <p><strong>Nom d'utilisateur:</strong> {{ user.pseudo }}</p>
       <p><strong>Email:</strong> {{ user.mail }}</p>
-      <p><strong>Date de création:</strong> {{ user.createdAt }}</p>
+      <p><strong>Date de création:</strong> {{ user.created_at }}</p>
     </div>
   </div>
 </template>

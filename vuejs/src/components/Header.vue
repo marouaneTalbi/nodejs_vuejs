@@ -23,6 +23,11 @@
                         <a href="#">Profile</a>
                     </router-link>
                 </li>
+                <li>
+                    <router-link to="/skins" :class="{ 'active': currentRoute === '/skins' }">
+                        <a href="#">Skins</a>
+                    </router-link>
+                </li>
             </ul>
         </nav>
         <div class="button-container" v-show="!mobile">
