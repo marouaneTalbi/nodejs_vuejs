@@ -7,6 +7,7 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const mailSender = require('../SMTP/mailsender');
 const session = require('express-session');
+const Skin = require('../models/skin/SkinModel');
 
 // Méthode pour récupérer tous les utilisateurs
 exports.getAllUsers = async (req, res) => {
@@ -147,7 +148,8 @@ exports.register = async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, 10);
       const buffer = crypto.randomBytes(32).toString('hex');
       try {
-      const newUser = await User.create({ mail, password: hashedPassword, pseudo: pseudo, token:buffer, createdAt: new Date() });
+
+      const newUser = await User.create({ mail, password: hashedPassword, pseudo: pseudo, token:buffer, createdat: new Date() });
       await mailSender.sendConfirmationEmail(newUser.mail, newUser.token);
       const token = jwt.sign({ id: newUser.id }, 'secretKey');
       res.json({ token });
@@ -195,6 +197,21 @@ exports.getOne = async (req, res, next) => {
   }
 };
 
+exports.getUserSkins = async (req, res) => {
+  const userId = req.params.id;
+  try {
+    const user = await User.findByPk(userId);
+    if (user) {
+      const skins = await user.getSkins();
+      res.json(skins);
+    } else {
+      res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+  } catch (error) {
+    console.error('Une erreur s\'est produite lors de la récupération des skins de l\'utilisateur:', error);
+    res.status(500).json({ message: 'Une erreur s\'est produite lors de la récupération des skins de l\'utilisateur' });
+  }
+};
 
 exports.updateIsConfirmed = async (req,res) => {
   const userId = req.params.id;
@@ -269,5 +286,22 @@ exports.getCurrentUser = async (req, res, next) => {
     return res.status(500).json({ message: 'Une erreur s\'est produite lors de la récupération du current user' });
   }
 }
+  
+exports.getUserSkin = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findByPk(userId);
 
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+    
+    const skinId = user.skins_fk_id
+    const skin = await Skin.findByPk(skinId)
 
+    res.json(skin);
+  } catch (error) {
+    console.error('Une erreur s\'est produite lors de la récupération des skins de l\'utilisateur:', error);
+    res.status(500).json({ message: 'Une erreur s\'est produite lors de la récupération des skins de l\'utilisateur' });
+  }
+};

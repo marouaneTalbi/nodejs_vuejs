@@ -3,6 +3,7 @@ const app = express();
 const session = require('express-session');
 const UserController = require('../controllers/UserController');
 const AdminController = require('../controllers/AdminController');
+
 const route = express.Router();
 
 
@@ -21,6 +22,8 @@ route.get('/users', AdminController.getUsers)
 route.delete('/user/:id', AdminController.deleteUser)
 route.patch('/user/:id', AdminController.updateUser)
 route.put('/user/:id/change-password', UserController.changePassword)
+route.get('/user/skins/:id', UserController.getUserSkins);
+route.get('/user/skin/:id', UserController.getUserSkin);
 
 module.exports = route;
 
