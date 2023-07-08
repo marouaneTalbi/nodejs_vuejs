@@ -13,6 +13,12 @@ import Stats from '../views/StatsView.vue'
 import Billing from '../views/BillingView.vue'
 import Profile from '../views/ProfileView.vue'
 import User from '../views/UserView.vue'
+import Skins from '../views/SkinsView.vue'
+import Skin from '../views/SkinView.vue'
+import SkinsToBuY from '../views/SkinsToBuyView.vue'
+
+
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -83,6 +89,23 @@ const router = createRouter({
       path: '/game/:id',
       name: 'game',
       component: Game
+    },
+    {
+      path: '/skin/:id',
+      name: 'skin',
+      component: Skin
+    },
+    {
+      // path: '/user/:slug',
+      path: '/skins/',
+      name: 'skins',
+      component: Skins
+    },
+    {
+      // path: '/user/:slug',
+      path: '/skins_to_buy/',
+      name: 'skins_to_buy',
+      component: SkinsToBuY
     },
     {
       path: '/about',

@@ -181,3 +181,30 @@ export default {
   }
 };
 </script>
+
+
+
+<style scoped>
+.account {
+  margin: 20px;
+}
+
+.user-info {
+  background-color: #f5f5f5;
+  padding: 10px;
+  border-radius: 5px;
+}
+</style>
+
+<template>
+  <div class="account">
+    <h2>Mon compte</h2>
+    <div class="user-info" v-if="user">
+      <p><strong>Nom d'utilisateur:</strong> {{ user.pseudo }}</p>
+      <p><strong>Email:</strong> {{ user.mail }}</p>
+      <p><strong>Date de création:</strong> {{ user.created_at }}</p>
+    </div>
+  </div>
+</template>
+
+
