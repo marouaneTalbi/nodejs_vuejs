@@ -4,10 +4,12 @@ const UserController = require('../controllers/UserController');
 const AdminController = require('../controllers/AdminController');
 const route = express.Router();
 
+// AUTH
 route.post('/login', UserController.login)
 route.post('/register', UserController.register)
-route.get("/user/:id", UserController.getOne);
 route.post('/logout',  UserController.logout);
+route.get('/current-user', UserController.getCurrentUser);
+// USER
 route.get('/user/:id', AdminController.getUser)
 route.get('/users', AdminController.getUsers)
 route.delete('/user/:id', AdminController.deleteUser)

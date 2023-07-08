@@ -21,6 +21,7 @@ exports.getUser = async (req, res) => {
 
         res.status(200).json(user);
     } catch (error) {
+        console.log(error)
         res.status(500).json({ message: 'Une erreur s\'est produite lors de la récupération des utilisateurs' });
     }
 }
@@ -42,6 +43,7 @@ exports.updateUser = async (req, res) => {
 
         res.status(200).json(user);
     } catch (error) {
+        console.log(error)
         res.status(500).json({ message: 'Erreur lors de la mise à jour de l\'utilisateur' });
     }
 };
