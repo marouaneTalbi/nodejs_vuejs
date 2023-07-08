@@ -6,6 +6,9 @@ const User = require("./controllers/UserController")
 const sequelize = require('./config/conn');
 const helmet = require('helmet');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const path = require('path');
 
 // MONGODB CONNECTION //
 const mongodb = require('./db/mongo');
@@ -14,10 +17,40 @@ mongodb.initClientDbConnection();
 
 app.use(cors());
 app.use(helmet());
+app.use(cookieParser());
+app.use(session({
+    secret: 'secretKey',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        secure: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000
+    }
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}))
 app.use('/', route);
+
+const corsOptions = {
+    origin: 'http://localhost:8080/pictures',
+};
+
+app.use(cors(corsOptions));
+app.use('/pictures', cors({
+    origin: '*'
+}), express.static(path.join(__dirname, 'pictures')));
+
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    next();
+});
+
+
+
 app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
