@@ -5,12 +5,17 @@ const UserController = require('../controllers/UserController');
 const AdminController = require('../controllers/AdminController');
 const route = express.Router();
 
-route.post('/login',UserController.login)
-route.post('/register',  UserController.register)
-route.get("/user/:id", UserController.getOne);
-route.post('/logout', UserController.logout);
-route.put("/user/:id", UserController.updateUser);
+
+//route.get("/user/:id", UserController.getOne);
+//route.put("/user/:id", UserController.updateUser);
 route.put('/user/:id/verify-email', UserController.updateIsConfirmed);
+
+// AUTH
+route.post('/login', UserController.login)
+route.post('/register', UserController.register)
+route.post('/logout',  UserController.logout);
+route.get('/current-user', UserController.getCurrentUser);
+// USER
 route.get('/user/:id', AdminController.getUser)
 route.get('/users', AdminController.getUsers)
 route.delete('/user/:id', AdminController.deleteUser)

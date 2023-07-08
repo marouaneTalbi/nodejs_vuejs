@@ -6,9 +6,22 @@ const User = require("./controllers/UserController")
 const sequelize = require('./config/conn');
 const helmet = require('helmet');
 const cors = require('cors');
+
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const path = require('path');
+
+const gameSocket = require('./sockets/gameSocket');
+
+// SOCKET.IO //
+const server = require('http').createServer(app);
+const io = require('socket.io')(server, {
+    cors: {
+      origins: ['http://localhost:8080']
+    }
+  });
+// SOCKET.IO //
+
 
 // MONGODB CONNECTION //
 const mongodb = require('./db/mongo');
@@ -78,6 +91,10 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.listen('3000', () => {
+server.listen('3000', () => {
     console.log('Serveur Express en cours d\'exécution sur le port 3000');
+});
+
+io.on('connection', (socket) => {
+    gameSocket(socket);
 });

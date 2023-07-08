@@ -17,6 +17,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  createdat: {
+    type: Date,
+    required: true
+  },
   picture: String,
   coins: Number,
   ratio: Number,

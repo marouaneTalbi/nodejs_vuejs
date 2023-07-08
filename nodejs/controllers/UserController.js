@@ -161,6 +161,7 @@ exports.register = async (req, res) => {
   };
 
 exports.findByToken = async (confirmationToken) => {
+  console.log(confirmationToken)
   try {
     const user = await User.findOne({
       where: {
@@ -177,6 +178,7 @@ exports.findByToken = async (confirmationToken) => {
 
     return user;
   } catch (error) {
+    console.log(error)
     console.error('An error occurred while searching for the user by token:', error);
     throw error;
   }
@@ -192,6 +194,7 @@ exports.getOne = async (req, res, next) => {
     next(err);
   }
 };
+
 
 exports.updateIsConfirmed = async (req,res) => {
   const userId = req.params.id;
@@ -244,6 +247,27 @@ exports.changePassword = async (req, res) => {
 
 
 
-
+exports.getCurrentUser = async (req, res, next) => {
+  const token = req.headers.authorization;
+  if (!token) {
+    return res.status(401).json({ message: 'Token d\'authentification manquant' });
+  }
+  try {
+    const decoded = jwt.verify(token, 'secretKey');
+    
+    const userId = decoded.id;
+    const user = await User.findByPk(userId);
+    console.log('usr: ', user);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur introuvable' });
+    }
+    
+    return res.json(user);
+  } catch (error) {
+    console.error('Une erreur s\'est produite lors de la récupération du current user :', error);
+    return res.status(500).json({ message: 'Une erreur s\'est produite lors de la récupération du current user' });
+  }
+}
 
 
