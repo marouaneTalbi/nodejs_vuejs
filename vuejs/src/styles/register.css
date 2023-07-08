@@ -77,8 +77,6 @@ button {
     position: absolute;
     top: 30%;
     right: 25%;
-    animation: scaleAnimation 5s ease-in-out infinite;
-    transition: transform 2s;
 }
 
 .dollars-container{
@@ -88,8 +86,6 @@ button {
     position: absolute;
     top: 40%;
     right: 15.5%;
-    animation: scaleAnimation 3s ease-in-out infinite;
-    transition: transform 2s;
 }
 
 .crayon-container{
@@ -99,47 +95,8 @@ button {
     position: absolute;
     top: 57%;
     right: 33%;
-    animation: scaleAnimation 2s ease-in-out infinite;
-    transition: transform 2s;
-    transition-duration: 1s;
 }
 
 input[type="text"]:focus {
     background-color: transparent;
-}
-
-@keyframes moveLeftToRight {
-    0% {
-        transform: translateX(0);
-    }
-    50% {
-        transform: translateX(70%);
-    }
-    100% {
-        transform: translateX(0);
-    }
-}
-
-@keyframes moveToTopBottom {
-    0% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(70%);
-    }
-    100% {
-        transform: translateY(0);
-    }
-}
-
-@keyframes scaleAnimation {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.2);
-    }
-    100% {
-        transform: scale(1);
-    }
 }

@@ -1,22 +1,10 @@
-/**{
-    cursor: url('images/santahand.png'), auto;
-}*/
-
 body {
     margin: 0;
     padding: 0;
-    /*background: linear-gradient(to right, rgb(64, 43, 93) 0%, rgba(62,40,90,255) 23%, rgba(27, 27, 27, 1) 25%, rgba(27, 27, 27, 1) 76%, rgb(64, 43, 93) 78%, rgba(62,40,90,255) 100%);*/
+    background: linear-gradient(to right, rgb(64, 43, 93) 0%, rgba(62,40,90,255) 23%, rgba(27, 27, 27, 1) 25%, rgba(27, 27, 27, 1) 76%, rgb(64, 43, 93) 78%, rgba(62,40,90,255) 100%);
 }
 
 .bg-img-container{
     background-size: cover;
     background-repeat: no-repeat;
-}
-
-a{
-    text-decoration: none;
-}
-
-li{
-    list-style: none;
 }
