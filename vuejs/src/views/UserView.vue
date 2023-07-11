@@ -15,11 +15,10 @@
             </div>
         </Modal>
 
-        <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive">
+        <!-- <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive">
             <div class="modal-content" v-if="currentModal === 'skins'">
                 <div class="card-list">
                     <div v-for="skin in skins" :key="skin.id" class="card">
-                        <!-- Contenu de la carte -->
                         <div class="card-image">
                         <img :src="skin.picture" alt="Skin Image">
                         </div>
@@ -27,12 +26,11 @@
                         <h3>{{ skin.title }}</h3>
                         <p>Prix: {{ skin.price }}</p>
                         <button @click="assignSkin(skin)">choisir</button>
-
                         </div>
                     </div>
                 </div>
             </div>
-        </Modal>
+        </Modal> -->
 
         <div class="container">
             <!-- <h3>Administration / user <span>/ {{ user.pseudo }}</span></h3> -->
@@ -69,9 +67,9 @@
                     </div>
                     <div class="row">
                         <div class="text">
-                            <span class="pseudo-title">Skin</span>
+                            <!-- <span class="pseudo-title">Skin</span>
                             <br />
-                            <span class="pseudo">{{ skin.title }}</span>
+                            <span class="pseudo">{{ skin.title }}</span> -->
                         </div>
                     </div>
                 </div>
