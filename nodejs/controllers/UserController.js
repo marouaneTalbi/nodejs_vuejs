@@ -265,20 +265,9 @@ exports.changePassword = async (req, res) => {
 
 
 exports.getCurrentUser = async (req, res, next) => {
-  const token = req.headers.authorization;
-  if (!token) {
-    return res.status(401).json({ message: 'Token d\'authentification manquant' });
-  }
+
   try {
-    const decoded = jwt.verify(token, 'secretKey');
-    
-    const userId = decoded.id;
-    const user = await User.findByPk(userId);
-    console.log('usr: ', user);
-    
-    if (!user) {
-      return res.status(404).json({ message: 'Utilisateur introuvable' });
-    }
+    console.log(req.session.userId);
     
     return res.json(user);
   } catch (error) {

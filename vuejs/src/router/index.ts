@@ -57,55 +57,63 @@ const router = createRouter({
     {
       path: '/gamemode',
       name: 'gamemode',
-      component: GameModeView
+      component: GameModeView,
+      meta: { requiresAuth: true, requiredRole: 'gamer'}
     },
     {
       path: '/admin',
       name: 'admin',
-      component: Dashboard
+      component: Dashboard,
+      meta: { requiresAuth: true, requiredRole: 'admin'}
     },
     {
       path: '/stats',
       name: 'stats',
-      component: Stats
+      component: Stats,
+      meta: { requiresAuth: true, requiredRole: 'guest'}
     },
     {
       path: '/billing',
       name: 'billing',
-      component: Billing
+      component: Billing,
+      meta: { requiresAuth: true, requiredRole: 'guest'}
+
     },
     {
       path: '/profile',
       name: 'profile',
-      component: Profile
+      component: Profile,
+      meta: { requiresAuth: true, requiredRole: 'guest'}
     },
     {
-      // path: '/user/:slug',
       path: '/user/:id',
       name: 'user',
-      component: User
+      component: User,
+      meta: { requiresAuth: true, requiredRole: 'guest'}
     },
     {
       path: '/game/:id',
       name: 'game',
-      component: Game
+      component: Game,
+      meta: { requiresAuth: true, requiredRole: 'guest'}
     },
     {
       path: '/skin/:id',
       name: 'skin',
-      component: Skin
+      component: Skin,
+      meta: { requiresAuth: true, requiredRole: 'guest'}
     },
     {
-      // path: '/user/:slug',
       path: '/skins/',
       name: 'skins',
-      component: Skins
+      component: Skins,
+      meta: { requiresAuth: true, requiredRole: 'guest'}
     },
     {
-      // path: '/user/:slug',
       path: '/skins_to_buy/',
       name: 'skins_to_buy',
-      component: SkinsToBuY
+      component: SkinsToBuY,
+      meta: { requiresAuth: true, requiredRole: 'guest'}
     },
     {
       path: '/about',
