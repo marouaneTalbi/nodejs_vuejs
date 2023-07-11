@@ -74,7 +74,7 @@ const User = sequelize.define('_user', {
     allowNull: false,
     defaultValue: 'gamer',
   },
-  verificationCode: {
+  verificationcode: {
     type: DataTypes.INTEGER,
     allowNull: true,
   }
