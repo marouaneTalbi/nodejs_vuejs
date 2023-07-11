@@ -20,7 +20,7 @@
                 <span class="mail">{{ user.mail }}</span>
             </td>
             <td style="text-align: center;" class="status" v-if="showStatus">Online</td>
-            <td style="text-align: center;" class="date" v-if="showCreationDate">14/06/21</td>
+            <td style="text-align: center;" class="date" v-if="showCreationDate">{{ formatDate(user.createdat) }}</td>
             <td style="text-align: right;" class="action">
               <router-link :to="{ name: 'user', params: { id: user._id } }">View</router-link>
               <!-- <router-link :to="{ name: 'user', params: { slug: generateSlug(user.pseudo) } }">View</router-link> -->
@@ -76,7 +76,12 @@ export default {
     checkScreenWidth() {
       this.showStatus = window.innerWidth >= 850;
       this.showCreationDate = window.innerWidth >= 850; 
-    }
+    },
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      const formattedDate = date.toISOString().split('T')[0];
+      return formattedDate;
+    },
   }
 };
 </script>
