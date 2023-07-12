@@ -15,9 +15,10 @@
           <input type="text" id="pseudo" v-model="pseudo" required>
         </div>
         <button type="submit">Register</button>
+        <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
       </form>
 
-      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+
       <div class="login-link">
         Already have an account? <router-link to="/login">Login</router-link>
       </div>

@@ -117,5 +117,4 @@ User.afterUpdate(async (user, options) => {
     console.error('An error occurred after user deletion in MongoDB:', error);
   }
 })
-
 module.exports = User;

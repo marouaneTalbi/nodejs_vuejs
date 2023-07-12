@@ -50,19 +50,6 @@ app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
 
-// à mettre dans un autre fichier
-app.get('/confirm', async (req, res) => {
-    const token = req.query.token;
-    try {
-        const user = await User.findByToken(token);
-        res.send('Votre compte est confirmé');
-
-    } catch (error) {
-        console.error('An error occurred:', error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
 // CSP configuration
 helmet.contentSecurityPolicy({
     connectSrc: ["'self'", 'http://localhost:5173/'],
