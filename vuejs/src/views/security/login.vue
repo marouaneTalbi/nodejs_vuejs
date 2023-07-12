@@ -11,8 +11,9 @@
         <input type="password" id="password" v-model="password" required>
       </div>
       <button type="submit">Login</button>
+      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
     </form>
-    <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+
     <div class="register-link">
       Don't have an account? <router-link to="/register">Register</router-link>
     </div>
@@ -46,12 +47,22 @@ export default {
         });
         const token = response.data.token;
         Cookies.set('token', token, { secure: true, expires: 7 });
-        //localStorage.setItem('token', token);
         this.$router.push('/home');
         console.log(response);
       } catch (error) {
         console.error(error);
-        this.errorMessage = 'Invalid credentials';
+        if (error.response.status === 401) {
+          const errorMessage = error.response.data.message;
+          if (errorMessage === 'Utilisateur non confirmé') {
+            this.errorMessage = 'Account not confirmed, check your emails';
+          }
+          else{
+            this.errorMessage = 'Invalid credentials';
+          }
+        }
+        else{
+          this.errorMessage = 'Invalid credentials';
+        }
         this.animateForm = true;
         setTimeout(() => {
           this.animateForm = false;

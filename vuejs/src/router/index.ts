@@ -16,6 +16,7 @@ import User from '../views/UserView.vue'
 import Skins from '../views/SkinsView.vue'
 import Skin from '../views/SkinView.vue'
 import SkinsToBuY from '../views/SkinsToBuyView.vue'
+import Confirm from "@/views/security/confirm.vue";
 
 
 
@@ -120,6 +121,12 @@ const router = createRouter({
       name: 'about',
       component: () => import('../views/AboutView.vue'),
       meta: { requiresAuth: false, requiredRole: 'guest' }
+    },
+    {
+      path: '/confirm',
+      name: 'confirm',
+      component: Confirm,
+      meta: { requiresAuth: false, requiredRole: 'guest'}
     }
   ]
 })

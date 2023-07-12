@@ -4,7 +4,7 @@
     <div class="user-info" v-if="user">
       <p><strong>Pseudo :</strong> {{ user.pseudo }}</p>
       <p><strong>Email:</strong> {{ user.mail }}</p>
-      <p><strong>Created At:</strong> {{ user.createdAt }}</p>
+      <p><strong>Created At:</strong> {{ user.createdat }}</p>
       <p><strong>Role :</strong> {{ user.role }}</p>
       <img :src="getUserImageUrl(user.picture)" alt="User Image">
 
@@ -16,13 +16,16 @@
         <label>Email:</label>
         <input type="email" v-model="updatedUser.mail">
         <button type="submit" @click="handleUpdateClick">Mettre à jour</button>
+        <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+        <p v-if="infoChangeMessage" :class="{ 'success-message': !infoChangeError, 'error-message': infoChangeError }">{{ infoChangeMessage }}</p>
+
       </form>
 
       <!-- Formulaire de validation d'adresse e-mail -->
       <form v-if="showEmailVerification" @submit.prevent="verifyEmail">
         <h2>Email Verification</h2>
         <p>Entrez le code de validation d'adresse e-mail :</p>
-        <input type="text" v-model="emailVerificationCode">
+        <input type="text" v-model="emailVerificationcode">
         <p>{{ verificationMessage }}</p>
         <button type="submit">Valider</button>
       </form>
@@ -65,7 +68,7 @@ export default {
         mail: ''
       },
       showEmailVerification: false,
-      emailVerificationCode: '',
+      emailVerificationcode: '',
       verificationMessage: '',
       passwordData: {
         oldPassword: '',
@@ -73,7 +76,9 @@ export default {
         confirmPassword: ''
       },
       passwordChangeMessage: '',
-      passwordChangeError: false
+      passwordChangeError: false,
+      infoChangeMessage: '',
+      infoChangeError: false
     };
   },
   mounted() {
@@ -107,18 +112,22 @@ export default {
         const [header, payload, signature] = token.split('.');
         const decodedPayload = JSON.parse(atob(payload));
         const userId = decodedPayload.id;
-        const response = await axios.put(`http://localhost:3000/user/${userId}`, this.updatedUser, {
+        const response = await axios.put(`http://localhost:3000/user/${userId}/updateuser`, this.updatedUser, {
           headers: {
             Authorization: 'Bearer ' + token
           }
         });
         this.user = response.data;
         console.log('Informations utilisateur mises à jour:', this.user);
+        this.infoChangeMessage = 'Informations modifié avec succès';
+        this.infoChangeError = false;
         // Réinitialiser les champs de formulaire
         this.updatedUser.pseudo = '';
         this.updatedUser.mail = '';
       } catch (error) {
         console.error(error);
+        this.infoChangeMessage = 'Une erreur s\'est produite lors de la modification des informations';
+        this.infoChangeError = true;
       }
     },
     async verifyEmail(){
@@ -127,7 +136,7 @@ export default {
         const [header, payload, signature] = token.split('.');
         const decodedPayload = JSON.parse(atob(payload));
         const userId = decodedPayload.id;
-      const response = await axios.put(`http://localhost:3000/user/${userId}/verify-email`, {code: this.emailVerificationCode}, {
+      const response = await axios.put(`http://localhost:3000/user/${userId}/verify-email`, {code: this.emailVerificationcode}, {
         headers: {
           Authorization: 'Bearer ' + token
         }

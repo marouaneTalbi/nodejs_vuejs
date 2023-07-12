@@ -56,12 +56,24 @@ exports.updateUser = async (req, res) => {
     const user = await User.findByPk(userId);
     if (user) {
       if (mail && mail !== user.mail) {
+        console.log(mail)
+        console.log(user.mail)
         const code = Math.floor(1000 + Math.random() * 9000);
-        req.session.emailVerificationCode = code;
+        req.session.emailVerificationcode = code;
         await mailSender.sendCodeEmail(mail, code);
-        await user.update({pseudo, mail, isconfirmed:false, verificationCode:code});
+        if (pseudo === ""){
+          await user.update({ mail, isconfirmed:false, verificationcode:code});
+        }
+        else{
+          await user.update({pseudo, mail, isconfirmed:false, verificationcode:code});
+        }
       }else{
-        await user.update({pseudo, mail});
+        if (mail === ""){
+          await user.update({pseudo, isconfirmed:true})
+        }
+        else {
+          await user.update({pseudo, mail, isconfirmed:true});
+        }
       }
       res.json(user);
     } else {
@@ -162,27 +174,24 @@ exports.register = async (req, res) => {
     }
   };
 
-exports.findByToken = async (confirmationToken) => {
-  console.log(confirmationToken)
+exports.confirm = async (req, res) => {
+  const token = req.body.token;
+  console.log(token)
   try {
     const user = await User.findOne({
       where: {
-        token: confirmationToken
+        token: token
       }
     });
-
     if (!user) {
-      throw new Error('Invalid token');
+      return res.status(400).json({ message: 'Token invalide' });
     }
-
     user.isconfirmed = true;
     await user.save();
-
-    return user;
+    res.send('Votre compte est confirmé');
   } catch (error) {
-    console.log(error)
-    console.error('An error occurred while searching for the user by token:', error);
-    throw error;
+    console.error('An error occurred:', error);
+    res.status(500).send('Internal Server Error');
   }
 };
 
@@ -218,9 +227,9 @@ exports.updateIsConfirmed = async (req,res) => {
   const code = parseInt(req.body.code);
   try {
     const user = await User.findByPk(userId);
-    const emailVerificationCode = user.verificationCode;
+    const emailVerificationcode = user.verificationcode;
     if (user) {
-      if (code === emailVerificationCode) {
+      if (code === emailVerificationcode) {
         user.isconfirmed = true;
         await user.save();
         res.json(user);
