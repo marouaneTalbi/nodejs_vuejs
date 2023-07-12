@@ -52,7 +52,9 @@
   border-radius: 30px;
 }
 </style>
+
 <script>
+
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
@@ -196,7 +198,7 @@ export default {
 }
 </style>
 
-<template>
+<!-- <template>
   <div class="account">
     <h2>Mon compte</h2>
     <div class="user-info" v-if="user">
@@ -205,6 +207,6 @@ export default {
       <p><strong>Date de création:</strong> {{ user.created_at }}</p>
     </div>
   </div>
-</template>
+</template> -->
 
 

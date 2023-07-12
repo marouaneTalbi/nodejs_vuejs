@@ -134,11 +134,14 @@ function getUserRole() {
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     const token = Cookies.get('token');
+    console.log(token)
     if (!token) {
       next('/login');
     } else {
       const userRole = getUserRole();
       const requiredRole = to.meta.requiredRole;
+
+      console.log(userRole,requiredRole )
 
       if (userRole === requiredRole) {
         next();

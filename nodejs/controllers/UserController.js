@@ -9,7 +9,6 @@ const mailSender = require('../SMTP/mailsender');
 const session = require('express-session');
 const Skin = require('../models/skin/SkinModel');
 
-// Méthode pour récupérer tous les utilisateurs
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.findAll();
@@ -20,7 +19,6 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-// Méthode pour récupérer un utilisateur par son ID
 exports.getUserById = async (req, res) => {
   const userId = req.params.id;
   try {
@@ -36,7 +34,6 @@ exports.getUserById = async (req, res) => {
   }
 };
 
-// Méthode pour créer un nouvel utilisateur
 exports.createUser = async (req, res) => {
   const { pseudo, mail, password } = req.body;
   try {
@@ -48,7 +45,6 @@ exports.createUser = async (req, res) => {
   }
 };
 
-// Méthode pour mettre à jour les informations d'un utilisateur
 exports.updateUser = async (req, res) => {
   const userId = req.params.id;
   const { pseudo, mail } = req.body;
@@ -73,7 +69,6 @@ exports.updateUser = async (req, res) => {
   }
 };
 
-// Méthode pour supprimer un utilisateur
 exports.deleteUser = async (req, res) => {
   const userId = req.params.id;
   try {
@@ -90,7 +85,6 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
-
 exports.login = async (req, res) => {
     try {
       const { mail, password } = req.body;
@@ -102,7 +96,8 @@ exports.login = async (req, res) => {
         }
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (isPasswordValid) {
-          req.session.userId = user.id;
+
+          // req.session.userId = user.id;
           const token = jwt.sign({ id: user.id , role: user.role }, 'secretKey');
           res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
           res.json({ token });
@@ -128,7 +123,6 @@ exports.logout = async (req, res) => {
     }
   });
 };
-
 
 exports.register = async (req, res) => {
     try {
