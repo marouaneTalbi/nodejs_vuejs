@@ -1,12 +1,23 @@
 const express = require('express');
 const app = express();
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+app.use(session({
+    secret: 'secretKey',
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        secure: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000
+    }
+}));
+app.use(cookieParser());
 const route = require('./routes/userRoute');
 const skinRoute = require('./routes/skinRoute');
 const User = require("./controllers/UserController")
 const helmet = require('helmet');
 const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
 const gameSocket = require('./sockets/gameSocket');
 
 // SOCKET.IO //
@@ -29,17 +40,6 @@ mongodb.initClientDbConnection();
 // MIDDLEWARE 
 app.use(cors());
 app.use(helmet());
-app.use(cookieParser());
-app.use(session({
-    secret: 'secretKey',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        httpOnly: true,
-        secure: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000
-    }
-}));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}))
 

@@ -1,12 +1,12 @@
 const User = require('../models/userModel');
 const UserMongo = require('../models/userModelMongo');
-
+const express = require('express');
+const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const mailSender = require('../SMTP/mailsender');
-const session = require('express-session');
 const Skin = require('../models/skin/SkinModel');
 
 // Méthode pour récupérer tous les utilisateurs
@@ -51,13 +51,12 @@ exports.createUser = async (req, res) => {
 // Méthode pour mettre à jour les informations d'un utilisateur
 exports.updateUser = async (req, res) => {
   const userId = req.params.id;
+  console.log(req.session.userId);
   const { pseudo, mail } = req.body;
   try {
     const user = await User.findByPk(userId);
     if (user) {
       if (mail && mail !== user.mail) {
-        console.log(mail)
-        console.log(user.mail)
         const code = Math.floor(1000 + Math.random() * 9000);
         req.session.emailVerificationcode = code;
         await mailSender.sendCodeEmail(mail, code);

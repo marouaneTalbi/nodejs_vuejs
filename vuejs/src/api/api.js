@@ -12,9 +12,7 @@ export function fetchData(route) {
 }
 
 export function postData(route, data) {
-    console.log(serverURI + route, data)
     return axios.post(serverURI + route, data);
-
 }
 
 export function deleteData(route, data) {
