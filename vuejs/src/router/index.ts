@@ -83,29 +83,34 @@ const router = createRouter({
       // path: '/user/:slug',
       path: '/user/:id',
       name: 'user',
-      component: User
+      component: User,
+      meta: { requiresAuth: true, requiredRole: 'admin'}
     },
     {
       path: '/game/:id',
       name: 'game',
-      component: Game
+      component: Game,
+      meta: { requiresAuth: true, requiredRole: 'admin'}
     },
     {
       path: '/skin/:id',
       name: 'skin',
-      component: Skin
+      component: Skin,
+      meta: { requiresAuth: true, requiredRole: 'admin'}
     },
     {
       // path: '/user/:slug',
       path: '/skins/',
       name: 'skins',
-      component: Skins
+      component: Skins,
+      meta: { requiresAuth: true, requiredRole: 'admin'}
     },
     {
       // path: '/user/:slug',
       path: '/skins_to_buy/',
       name: 'skins_to_buy',
-      component: SkinsToBuY
+      component: SkinsToBuY,
+      meta: { requiresAuth: true, requiredRole: 'admin'}
     },
     {
       path: '/about',

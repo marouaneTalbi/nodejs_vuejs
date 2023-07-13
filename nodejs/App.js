@@ -11,7 +11,8 @@ const session = require('express-session');
 const path = require('path');
 const gameSocket = require('./sockets/gameSocket');
 const bodyParser = require('body-parser');
-app.use(express.urlencoded({ extended: true, limit: "200mb" }));
+
+app.use(express.urlencoded({ extended: false, limit: "200mb" }));
 app.use(express.json({ limit: '50mb' }));
 
 app.use('/pictures', express.static(path.join(__dirname, 'pictures')));
@@ -31,14 +32,7 @@ const io = require('socket.io')(server, {
 // SOCKET.IO //
 
 
-
-
-// app.use(express.urlencoded({extended: false}))
-// app.use(express.json());
-
 app.use(helmet());
-
-
 app.use(cors());
 app.use('/', route);
 app.use('/', skinRoute);
