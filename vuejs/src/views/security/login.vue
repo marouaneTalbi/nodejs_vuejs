@@ -1,7 +1,8 @@
 <template>
   <div class="login-form" :class="{ 'form-error': errorMessage, 'form-shake': animateForm }">
-    <h2>Login</h2>
+    <Header />
     <form @submit.prevent="login">
+      <h2>Login</h2>
       <div class="form-group">
         <label for="email">Email:</label>
         <input type="email" id="email" v-model="email" required>
@@ -30,6 +31,9 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 export default {
+  components: {
+    Header,
+  },
   data() {
     return {
       email: '',
@@ -74,4 +78,5 @@ export default {
 
 import './../../styles/global.css';
 import './../../styles/login.css';
+import Header from "@/components/Header.vue";
 </script>
