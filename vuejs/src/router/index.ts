@@ -28,105 +28,105 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: Login,
-      meta: { requiresAuth: false, requiredRoles: ['guest', 'admin'] }
+      meta: { requiresAuth: false, requiredRole: 'guest' }
     },
     {
       path: '/register',
       name: 'register',
       component: Registre,
-      meta: { requiresAuth: false, requiredRoles: 'guest'  }
+      meta: { requiresAuth: false, requiredRole: 'guest'  }
     },
     {
       path: '/account',
       name: 'account',
       component: Account,
-      meta: { requiresAuth: true, requiredRoles: 'gamer' }
+      meta: { requiresAuth: true, requiredRole: 'gamer' }
     },
     {
       path: '/logout',
       name: 'logout',
       component: Logout,
-      meta: { requiresAuth: true, requiredRoles: 'gamer' }
+      meta: { requiresAuth: true, requiredRole: 'gamer' }
     },
     {
       path: '/',
       name: 'home',
       component: HomeView,
-      meta: { requiresAuth: false, requiredRoles: 'guest'}
+      meta: { requiresAuth: false, requiredRole: 'guest'}
 
     },
     {
       path: '/gamemode',
       name: 'gamemode',
       component: GameModeView,
-      meta: { requiresAuth: true, requiredRoles: 'gamer'}
+      meta: { requiresAuth: true, requiredRole: 'gamer'}
     },
     {
       path: '/admin',
       name: 'admin',
       component: Dashboard,
-      meta: { requiresAuth: true, requiredRoles: 'admin'}
+      meta: { requiresAuth: true, requiredRole: 'admin'}
     },
     {
       path: '/stats',
       name: 'stats',
       component: Stats,
-      meta: { requiresAuth: true, requiredRoles: 'guest'}
+      meta: { requiresAuth: true, requiredRole: 'guest'}
     },
     {
       path: '/billing',
       name: 'billing',
       component: Billing,
-      meta: { requiresAuth: true, requiredRoles: 'guest'}
+      meta: { requiresAuth: true, requiredRole: 'guest'}
 
     },
     {
       path: '/profile',
       name: 'profile',
       component: Profile,
-      meta: { requiresAuth: true, requiredRoles: 'guest'}
+      meta: { requiresAuth: true, requiredRole: 'guest'}
     },
     {
       path: '/user/:id',
       name: 'user',
       component: User,
-      meta: { requiresAuth: true, requiredRoles: 'guest'}
+      meta: { requiresAuth: true, requiredRole: 'guest'}
     },
     {
       path: '/game/:id',
       name: 'game',
       component: Game,
-      meta: { requiresAuth: true, requiredRoles: 'guest'}
+      meta: { requiresAuth: true, requiredRole: 'guest'}
     },
     {
       path: '/skin/:id',
       name: 'skin',
       component: Skin,
-      meta: { requiresAuth: true, requiredRoles: 'guest'}
+      meta: { requiresAuth: true, requiredRole: 'guest'}
     },
     {
       path: '/skins/',
       name: 'skins',
       component: Skins,
-      meta: { requiresAuth: true, requiredRoles: 'guest'}
+      meta: { requiresAuth: true, requiredRole: 'guest'}
     },
     {
       path: '/skins_to_buy/',
       name: 'skins_to_buy',
       component: SkinsToBuY,
-      meta: { requiresAuth: true, requiredRoles: 'guest'}
+      meta: { requiresAuth: true, requiredRole: 'guest'}
     },
     {
       path: '/about',
       name: 'about',
       component: () => import('../views/AboutView.vue'),
-      meta: { requiresAuth: false, requiredRoles: 'guest' }
+      meta: { requiresAuth: false, requiredRole: 'guest' }
     },
     {
       path: '/confirm',
       name: 'confirm',
       component: Confirm,
-      meta: { requiresAuth: false, requiredRoles: 'guest'}
+      meta: { requiresAuth: false, requiredRole: 'guest'}
     }
   ]
 })
@@ -153,8 +153,9 @@ router.beforeEach((to, from, next) => {
       next('/login');
     } else {
       const userRole = getUserRole();
-      const requiredRoles = to.meta.requiredRoles;
-      if (requiredRoles.includes(userRole)) {
+      const requiredRole = to.meta.requiredRole;
+
+      if (userRole === requiredRole) {
         next();
       } else {
         next('/access-denied');
