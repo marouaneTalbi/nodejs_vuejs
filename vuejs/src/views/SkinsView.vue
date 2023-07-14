@@ -63,7 +63,7 @@
 </template>  
 
 <script>
-import { fetchData, postData } from '../api/api';
+import { fetchData, postData, serverURI } from '../api/api';
 import Header from '../components/Header.vue';
 import Modal from '../components/Modal.vue';
 import slugify from 'slugify';
@@ -101,7 +101,7 @@ export default {
   },
   methods: {
     getPictureUrl(picture) {
-    return `http://localhost:3000${picture}`;
+    return `${serverURI}${picture}`;
   },
     base64func (blob) {
       return new Promise((resolve, reject) => {
@@ -131,7 +131,6 @@ export default {
     },
 
     createSkin(data) {
-      const newData = {title: 'r', price: 43, money_type:'ff', picture:'gg'}
       postData('/skin/create', data)
       .then(response => {
           toast('Le Skin a bien été Creer', {

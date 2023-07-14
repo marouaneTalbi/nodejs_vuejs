@@ -48,7 +48,7 @@
   </template>
   
   <script>
-  import { fetchData, postData } from '../api/api';
+  import { fetchData, postData, serverURI } from '../api/api';
   import Header from '../components/Header.vue';
   import Modal from '../components/Modal.vue';
   import { ref } from 'vue';
@@ -57,6 +57,7 @@
   import axios from 'axios';    
   import { StripeCheckout } from '@vue-stripe/vue-stripe';
   import { loadStripe } from '@stripe/stripe-js';
+  import Cookies from 'js-cookie';
 
   export default {
     components: {
@@ -103,16 +104,22 @@
           });
       },
       getPictureUrl(picture) {
-        return `http://localhost:3000${picture}`;
+        return `${serverURI}${picture}`;
       },
     async buySkin(skin) {
+      const token = Cookies.get('token');
+      const [header, payload, signature] = token.split('.');
+      const decodedPayload = JSON.parse(atob(payload));
+      const userId = decodedPayload.id;
+
       const stripePromise = loadStripe('pk_test_51IM8ZrEwRtoFpDAHs6Iu7d92N4DPiPWs4MjYP3BhnlNyf0Lz3itqGdpugMYLXIMyHZeQvxNyH4FCEAAtoJv9b7V600AGKAwSrE');
       const stripe = await stripePromise;
       const response = await postData('/skin/pay', {skin})
       const sessionId = response.data.sessionId;
 
+
       if(sessionId) {
-        postData('/skin/purchase', {userId:1, skinId:skin.id})
+        postData('/skin/purchase', {userId:userId, skinId:skin.id})
       }
 
       const { error } = await stripe.redirectToCheckout({

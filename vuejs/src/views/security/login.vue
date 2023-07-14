@@ -30,6 +30,8 @@
 <script>
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { serverURI } from '../../api/api';
+
 export default {
   components: {
     Header,
@@ -45,7 +47,7 @@ export default {
   methods: {
     async login() {
       try {
-        const response = await axios.post('http://localhost:3000/login', {
+        const response = await axios.post(`${serverURI}/login`, {
           mail: this.email,
           password: this.password
         });

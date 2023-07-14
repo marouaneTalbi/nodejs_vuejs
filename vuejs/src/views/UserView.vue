@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import { fetchData, deleteData, patchData, postData } from '../api/api';
+import { fetchData, deleteData, patchData, postData, serverURI } from '../api/api';
 import Header from '../components/Header.vue';
 import Modal from '../components/Modal.vue';
 import { ref } from 'vue';
@@ -150,7 +150,7 @@ export default {
         },
         getPictureUrl(picture) {
             console.log(picture)
-            return `http://localhost:3000/pictures/skins/${picture}`;
+            return `${serverURI}/pictures/skins/${picture}`;
         },
         getUserSkins(userId) {
             fetchData('/user/skins/' + userId)

@@ -40,6 +40,7 @@
 <script>
 import Cookies from "js-cookie";
 import axios from "axios";
+import { serverURI } from '../api/api.js';
 
 export default {
   name: 'Header',
@@ -106,7 +107,7 @@ export default {
         const [header, payload, signature] = token.split('.');
         const decodedPayload = JSON.parse(atob(payload));
         const userId = decodedPayload.id;
-        const response = await axios.get(`http://localhost:3000/user/${userId}/postgres`, {
+        const response = await axios.get(`${serverURI}/user/${userId}/postgres`, {
           headers: {
             Authorization: 'Bearer ' + token
           }
@@ -119,7 +120,7 @@ export default {
     async logout() {
       try {
         const token = Cookies.get('token');
-        await axios.post('http://localhost:3000/logout');
+        await axios.post(`${serverURI}/logout`);
         Cookies.remove('token');
         this.$router.push('/login');
       } catch (error) {

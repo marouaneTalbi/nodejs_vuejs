@@ -131,6 +131,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Header from '../../components/Header.vue';
+import { serverURI } from '../../api/api';
 
 export default {
   components: {
@@ -167,20 +168,18 @@ export default {
         const [header, payload, signature] = token.split('.');
         const decodedPayload = JSON.parse(atob(payload));
         const userId = decodedPayload.id;
-        const response = await axios.get(`http://localhost:3000/user/${userId}/postgres`, {
+        const response = await axios.get(`${serverURI}/user/${userId}/postgres`, {
           headers: {
             Authorization: 'Bearer ' + token
           }
         });
         this.user = response.data;
-        console.log(this.user);
       } catch (error) {
         console.error(error);
       }
     },
     getUserImageUrl(picture) {
-      const serverUrl = 'http://localhost:3000';
-      return `${serverUrl}/pictures/${picture}`;
+      return `${serverURI}/pictures/${picture}`;
     },
     async updateUserInfo() {
       try {
@@ -188,7 +187,7 @@ export default {
         const [header, payload, signature] = token.split('.');
         const decodedPayload = JSON.parse(atob(payload));
         const userId = decodedPayload.id;
-        const response = await axios.put(`http://localhost:3000/user/${userId}/updateuser`, this.updatedUser, {
+        const response = await axios.put(`${serverURI}/user/${userId}/updateuser`, this.updatedUser, {
           headers: {
             Authorization: 'Bearer ' + token
           }
@@ -212,7 +211,7 @@ export default {
         const [header, payload, signature] = token.split('.');
         const decodedPayload = JSON.parse(atob(payload));
         const userId = decodedPayload.id;
-      const response = await axios.put(`http://localhost:3000/user/${userId}/verify-email`, {code: this.emailVerificationcode}, {
+      const response = await axios.put(`${serverURI}/user/${userId}/verify-email`, {code: this.emailVerificationcode}, {
         headers: {
           Authorization: 'Bearer ' + token
         }
@@ -244,7 +243,7 @@ export default {
           console.error('Les nouveaux mots de passe ne correspondent pas');
           return;
         }
-        const response = await axios.put(`http://localhost:3000/user/${userId}/change-password`, {
+        const response = await axios.put(`${serverURI}/user/${userId}/change-password`, {
           oldPassword: this.passwordData.oldPassword,
           newPassword: this.passwordData.newPassword
         }, {

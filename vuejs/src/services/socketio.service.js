@@ -1,12 +1,13 @@
 import { io } from 'socket.io-client';
 import router from '../router/index.ts';
+import {  serverURI } from '../api/api';
 
 class SocketioService {
     socket;
     constructor() {}
     
     setupSocketConnection() {
-        this.socket = io('http://localhost:3000');
+        this.socket = io(serverURI);
     }
 
     joinWaitingRoom(gamemode, userId) {
