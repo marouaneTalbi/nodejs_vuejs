@@ -1,8 +1,6 @@
  <template>
   <section class="dashboard">
     <Header />
-
-
     <div class="container">
       <div class="user-list" >
         <div style="display:flex; align-items: center; justify-content: space-between;">
@@ -50,6 +48,7 @@
             <label for="picture" >Photo</label>
             <input type="file" style="color:white" id="picture" @change="handlePictureChange" placeholder="Photo" required>
           </div>
+
 
           <div class="form-group">
             <label for="money_type">Type de monnaie</label>
@@ -102,6 +101,7 @@ export default {
   methods: {
     getPictureUrl(picture) {
     return `${serverURI}${picture}`;
+
   },
     base64func (blob) {
       return new Promise((resolve, reject) => {
@@ -129,7 +129,6 @@ export default {
         this.picture = f
       })
     },
-
     createSkin(data) {
       postData('/skin/create', data)
       .then(response => {
@@ -146,7 +145,6 @@ export default {
           })
       });
     },
-  
     openModal(type) {
       this.modalActive = true;
       this.currentModal = type;

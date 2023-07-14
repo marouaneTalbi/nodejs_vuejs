@@ -33,7 +33,6 @@
           <div class="card-image">
             <!-- <img :src="skin.picture" alt="Skin Image"> -->
             <img :src="getPictureUrl(skin.picture)" alt="" style=" object-fit: contain;">
-
           </div>
           <div class="card-content">
             <h4>{{ skin.title }}</h4>
@@ -117,7 +116,6 @@
       const response = await postData('/skin/pay', {skin})
       const sessionId = response.data.sessionId;
 
-
       if(sessionId) {
         postData('/skin/purchase', {userId:userId, skinId:skin.id})
       }
@@ -125,6 +123,7 @@
       const { error } = await stripe.redirectToCheckout({
         sessionId: sessionId
       });
+
 
 
       if(error) {

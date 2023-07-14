@@ -51,6 +51,7 @@ exports.createSkin = async (req, res) => {
 
   try {
     const newSkin = await Skin.create({ title, price, picture:pictureName, money_type});
+
     res.status(201).json(newSkin);
   } catch (error) {
     console.error('Une erreur s\'est produite lors de la création du skin:', error);
@@ -159,6 +160,7 @@ exports.purchaseSkin = async (req, res) => {
               currency: 'eur',
               product_data: {
                 name: skin.title, 
+
               },
               unit_amount: skin.price * 100,
             },
@@ -170,6 +172,7 @@ exports.purchaseSkin = async (req, res) => {
         cancel_url: 'http://localhost:5173/skins', // URL d'annulation du paiement
       });
       res.json({ sessionId: session.id });
+
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

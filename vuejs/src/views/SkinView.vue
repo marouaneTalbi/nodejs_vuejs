@@ -32,14 +32,11 @@
                         <img :src="getPictureUrl(picture)" alt="" style="height: 200px; width: 200px; object-fit: contain;">
                         <input type="file" style="color:white" id="picture" @change="handlePictureChange" placeholder="Photo" required>
                     </div>
-
                 </form>
             </div>
         </Modal>
         <div class="container">
-
             <div class="block">
-             
                 <div class="card">
                     <div class="row">
                         <div class="text">
@@ -80,9 +77,6 @@
                     </button>
                     <button class="closebutton" @click="closeModalAndGoBack">Fermer</button>
                 </div>
-
- 
-
             </div>
         </div>
     </section>
@@ -123,6 +117,7 @@ export default {
     methods: {
         getPictureUrl(picture) {
             return `${serverURI}/pictures/skins/${picture}`;
+
         },
         handlePictureChange(event) {
             const selectedFile = event.target.files[0];
@@ -225,7 +220,6 @@ export default {
             this.closeModal();
             this.$router.push('/skins');
         },
-
         closeModal() {
             this.modalActive = false;
         }
@@ -241,3 +235,4 @@ export default {
 
 }
 </style>
+

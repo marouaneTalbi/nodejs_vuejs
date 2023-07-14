@@ -84,6 +84,7 @@ const router = createRouter({
       name: 'user',
       component: User,
       meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin']}
+
     },
     {
       path: '/game/:id',
@@ -150,6 +151,7 @@ router.beforeEach((to, from, next) => {
       const requiredRoles = to.meta.requiredRoles;
 
       if (requiredRoles.some((role) => userRole === role)) {
+
         next();
       } else {
         next('/access-denied');

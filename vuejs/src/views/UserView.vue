@@ -152,6 +152,7 @@ export default {
             console.log(picture)
             return `${serverURI}/pictures/skins/${picture}`;
         },
+
         getUserSkins(userId) {
             fetchData('/user/skins/' + userId)
             .then(response => {

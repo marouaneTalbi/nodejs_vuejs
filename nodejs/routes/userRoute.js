@@ -27,6 +27,8 @@ route.put('/user/:id/change-password', UserController.changePassword)
 route.get('/user/skins/:id', UserController.getUserSkins);
 route.get('/user/skin/:id', UserController.getUserSkin);
 
+
+
 module.exports = route;
 
 

@@ -66,6 +66,7 @@ const User = sequelize.define('_user', {
     }
   },
   createdat: {
+
     type: DataTypes.DATE,
     allowNull: false,
     defaultValue: DataTypes.NOW,
