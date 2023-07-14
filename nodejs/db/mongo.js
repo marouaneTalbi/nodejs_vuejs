@@ -8,7 +8,7 @@ const clientOptions = {
 
 exports.initClientDbConnection = async () => {
     try {
-        await mongoose.connect(process.env.URL_MONGO, clientOptions)
+        await mongoose.connect('mongodb://myuser:mypassword@localhost:27017/?authMechanism=DEFAULT', clientOptions)
         console.log('Connected');
     } catch (error) {
         console.log(error);

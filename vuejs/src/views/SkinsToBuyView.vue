@@ -29,10 +29,10 @@
       </Modal>
     <div class="container">
       <div class="card-list" v-if="!modalActive">
-        <h5>Skins</h5>
         <div class="card" v-for="skin in skins" :key="skin._id">
           <div class="card-image">
-            <img :src="skin.picture" alt="Skin Image">
+            <!-- <img :src="skin.picture" alt="Skin Image"> -->
+            <img :src="getPictureUrl(skin.picture)" alt="" style=" object-fit: contain;">
           </div>
           <div class="card-content">
             <h4>{{ skin.title }}</h4>
@@ -54,7 +54,7 @@
   import { toast } from 'vue3-toastify';
   import 'vue3-toastify/dist/index.css';
   import axios from 'axios';    
-  // import { StripeCheckout } from '@vue-stripe/vue-stripe';
+  import { StripeCheckout } from '@vue-stripe/vue-stripe';
   import { loadStripe } from '@stripe/stripe-js';
 
   export default {
@@ -83,7 +83,6 @@
         price: '',
         money_type: '',
         picture: null,
-        // publishableKey: 'pk_test_51IM8ZrEwRtoFpDAHs6Iu7d92N4DPiPWs4MjYP3BhnlNyf0Lz3itqGdpugMYLXIMyHZeQvxNyH4FCEAAtoJv9b7V600AGKAwSrE', // Remplacez par votre clé publique Stripe
       }
     },
     mounted() {
@@ -102,29 +101,27 @@
             });
           });
       },
-
+      getPictureUrl(picture) {
+        return `http://localhost:3000${picture}`;
+      },
     async buySkin(skin) {
       const stripePromise = loadStripe('pk_test_51IM8ZrEwRtoFpDAHs6Iu7d92N4DPiPWs4MjYP3BhnlNyf0Lz3itqGdpugMYLXIMyHZeQvxNyH4FCEAAtoJv9b7V600AGKAwSrE');
       const stripe = await stripePromise;
-
-      console.log(skin)
-
       const response = await postData('/skin/pay', {skin})
       const sessionId = response.data.sessionId;
 
+      if(sessionId) {
+        postData('/skin/purchase', {userId:1, skinId:skin.id})
+      }
       const { error } = await stripe.redirectToCheckout({
         sessionId: sessionId
       });
-
-   
-
       if(error) {
         toast(error.message, {
           autoClose: 2000,
           type: 'error'
         });
       } 
-
     }
   }
   };
@@ -133,14 +130,15 @@
   <style scoped>
   .card-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 20px;
   }
   
   .card {
     background-color: #f0f0f0;
     border-radius: 8px;
-    padding: 20px;
+    padding: 4px;
+
   }
   
   .card-image {

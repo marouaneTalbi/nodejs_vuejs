@@ -27,6 +27,7 @@
 
 <script>
 import axios from 'axios';
+import Cookies from 'js-cookie';
 export default {
   data() {
     return {
@@ -44,7 +45,8 @@ export default {
           password: this.password
         });
         const token = response.data.token;
-        localStorage.setItem('token', token);
+        Cookies.set('token', token, { secure: true, expires: 7 });
+        //localStorage.setItem('token', token);
         this.$router.push('/home');
         console.log(response);
       } catch (error) {

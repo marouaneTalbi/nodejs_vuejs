@@ -27,19 +27,16 @@
             </div>
             <div class="modal-content" v-if="currentModal === 'editPicture'">
                 <h2>Modifier la Photo</h2>
-                <form @submit.prevent="handleConfirm">
-                <input type="text" v-model="picture" placeholder="Photo" required>
+                <form @submit.prevent="handleConfirm" sty>
+                    <div style="display: flex; justify-content: center;flex-direction: column; align-items: center;">
+                        <img :src="getPictureUrl(picture)" alt="" style="height: 200px; width: 200px; object-fit: contain;">
+                        <input type="file" style="color:white" id="picture" @change="handlePictureChange" placeholder="Photo" required>
+                    </div>
                 </form>
             </div>
         </Modal>
         <div class="container">
             <div class="block">
-                <div class="skin-profile">
-                    <div class="img"></div>
-                    <div class="text">
-                        <span class="pseudo">{{ skin.title }}</span>
-                    </div>
-                </div>
                 <div class="card">
                     <div class="row">
                         <div class="text">
@@ -65,19 +62,22 @@
                         </div>
                         <button @click="openModal('editMoneyType')">Edit</button>
                     </div>
-                    <div class="row">
-                        <div class="text">
-                            <span class="pseudo-title">Picture</span>
+                    <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                        <div class="text" >
                             <br />
-                            <span class="pseudo">{{ skin.picture }}</span>
+                            <img :src="getPictureUrl(skin.picture)" alt="" style="height: 200px; width: 200px; object-fit: contain;">
+
                         </div>
                         <button @click="openModal('editPicture')">Edit</button>
                     </div>
                 </div>
 
-                <button @click="openModal('delete')">
-                    Supprimer le skin
-                </button>
+                <div style="display:flex; justify-content: space-around;width: 100%;">
+                    <button @click="openModal('delete')">
+                         Supprimer le skin
+                    </button>
+                    <button class="closebutton" @click="closeModalAndGoBack">Fermer</button>
+                </div>
             </div>
         </div>
     </section>
@@ -116,6 +116,15 @@ export default {
         this.getSkin(skinId);
     },
     methods: {
+        getPictureUrl(picture) {
+            return `http://localhost:3000/pictures/skins/${picture}`;
+        },
+        handlePictureChange(event) {
+            const selectedFile = event.target.files[0];
+            this.base64func(selectedFile).then((f) => {
+                this.picture = f
+            })
+        },
         getSkin(skinId) {
             fetchData('/skin/' + skinId)
             .then(response => {
@@ -127,6 +136,16 @@ export default {
             })
             .catch(error => {
             });
+        },
+        base64func (blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader()
+                reader.onerror = reject
+                reader.onload = () => {
+                resolve(reader.result)
+                }
+                reader.readAsDataURL(blob)
+            })
         },
         deleteSkin(skinId) {
             deleteData('/skin/delete/', skinId)
@@ -145,7 +164,6 @@ export default {
             });
         },
         updateSkin(skinId, data) {
-            console.log(this.$route.params.id)
             patchData('/skin/update/' + skinId, data)
             .then(response => {
                 toast('Le skin a bien été modifié', {
@@ -198,6 +216,11 @@ export default {
 
             this.closeModal();
         },
+        closeModalAndGoBack() {
+            this.closeModal();
+            this.$router.push('/skins');
+        },
+
 
         closeModal() {
             this.modalActive = false;
@@ -205,3 +228,13 @@ export default {
     }
 };
 </script>
+
+<style>
+.closebutton{
+    height: 40px;
+    width: 140px;
+    margin: 20px;
+
+}
+</style>
+

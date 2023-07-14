@@ -1,0 +1,77 @@
+.gamemode {
+    width: 100vw;
+    height: 100vh;
+    background-color: #17181F;
+    display: flex;
+    flex-direction: column;
+
+    & h3 {
+        text-align: center;
+        color: white;
+        font-size: 50px;
+        font-weight: 800;
+        margin: 20px 0 40px 0;
+    }
+
+    & .card-container {
+        display: flex;
+        justify-content: space-around;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        & .card {
+            width: 285px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+
+            & img {
+                cursor: pointer;
+                position: absolute;
+                top: 0;
+                transition-duration: .3s;
+
+                &:hover {
+                    transform: scale(1.1);
+                }
+            }
+
+            & .content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-direction: column;
+
+                & h4 {
+                    text-align: center;
+                    font-size: 30px;
+                    color: white;
+                    font-weight: 800;
+                    margin-bottom: 20px;
+                }
+    
+                & p {
+                    text-align: center;
+                    color: white;
+                    font-weight: 300;
+                    font-size: 15px;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 980px) {
+    .gamemode {
+        height: max-content;
+        padding-bottom: 40px;
+
+        & .card-container {
+            flex-direction: column !important;
+            align-items: center;
+        }
+    }
+}
