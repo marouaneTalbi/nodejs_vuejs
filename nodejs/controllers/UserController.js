@@ -155,7 +155,11 @@ exports.register = async (req, res) => {
         res.status(409).json({ message: 'Adresse e-mail déjà existante' });
         return;
       }
-
+      const passwordRegex = /^(?=.*\d)(?=.*[A-Z]).{6,}$/;
+      if (!passwordRegex.test(password)) {
+        res.status(400).json({ message: 'Mot de passe invalide. Il doit comporter au moins 6 caractères, une majuscule et un chiffre.' });
+        return;
+      }
       const hashedPassword = await bcrypt.hash(password, 10);
       const buffer = crypto.randomBytes(32).toString('hex');
       try {
