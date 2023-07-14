@@ -15,22 +15,22 @@
             </div>
         </Modal>
 
-        <!-- <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive">
-            <div class="modal-content" v-if="currentModal === 'skins'">
+
+        <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive">
+            <div class="modal-content" v-if="currentModal === 'skins'" style="width: 600px;">
                 <div class="card-list">
                     <div v-for="skin in skins" :key="skin.id" class="card">
                         <div class="card-image">
-                        <img :src="skin.picture" alt="Skin Image">
+                            <img :src="getPictureUrl(skin.picture)" alt="" style=" object-fit: contain;">
                         </div>
                         <div class="card-content">
                         <h3>{{ skin.title }}</h3>
-                        <p>Prix: {{ skin.price }}</p>
                         <button @click="assignSkin(skin)">choisir</button>
                         </div>
                     </div>
                 </div>
             </div>
-        </Modal> -->
+        </Modal> 
 
         <div class="container">
             <!-- <h3>Administration / user <span>/ {{ user.pseudo }}</span></h3> -->
@@ -148,6 +148,10 @@ export default {
             .catch(error => {
             });
         },
+        getPictureUrl(picture) {
+            console.log(picture)
+            return `http://localhost:3000/pictures/skins/${picture}`;
+        },
         getUserSkins(userId) {
             fetchData('/user/skins/' + userId)
             .then(response => {
@@ -262,8 +266,9 @@ export default {
 .card {
   background-color: #f0f0f0;
   border-radius: 8px;
-  padding: 20px;
-  width: 45%;
+  padding: 4px;
+  width: 100%;
+  margin: 10px;
 }
 
 .card-image {

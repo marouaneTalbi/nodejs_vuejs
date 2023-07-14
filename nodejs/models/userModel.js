@@ -2,6 +2,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 const UserMongo = require('./userModelMongo');
 const Skin = require('./skin/SkinModel');
 const UserSkin = require('./user_skin/user_skin');
+
 const sequelize = new Sequelize({
   dialect: 'postgres',
   host: 'localhost',            
@@ -86,7 +87,6 @@ const User = sequelize.define('_user', {
 
 Skin.belongsToMany(User, { through: 'user_skin', foreignKey: 'skin_id' });
 User.belongsToMany(Skin, { through: 'user_skin', foreignKey: 'user_id' });
-
 
 User.afterCreate(async (user, options) => {
   try {

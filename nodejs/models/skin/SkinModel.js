@@ -1,4 +1,5 @@
 const { DataTypes, Sequelize } = require('sequelize');
+const User = require('../userModel');
 
 const sequelize = new Sequelize({
   dialect: 'postgres',

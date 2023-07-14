@@ -125,7 +125,9 @@
   text-align: center;
 }
 </style>
+
 <script>
+
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Header from '../../components/Header.vue';
@@ -267,3 +269,14 @@ export default {
 
 
 
+<style scoped>
+.account {
+  margin: 20px;
+}
+
+.user-info {
+  background-color: #f5f5f5;
+  padding: 10px;
+  border-radius: 5px;
+}
+</style>

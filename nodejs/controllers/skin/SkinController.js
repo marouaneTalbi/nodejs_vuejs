@@ -1,12 +1,17 @@
+const path = require('path');
 const Skin = require('../../models/skin/SkinModel');
 const User = require('../../models/userModel');
 const stripe = require('stripe')('sk_test_51IM8ZrEwRtoFpDAHRzosyjI15p26BORIEDgbmAyTU6vftlVeTcKt3ncppiL7SPkqlOcKYsH3sdHfo41hvqrgBb4G00hRY1LExZ');
+const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
+var base64ToImage = require('base64-to-image');
 
-// Méthode pour récupérer tous les skins
 exports.getAllSkins = async (req, res) => {
   try {
-    console.log('test')
     const skins = await Skin.findAll();
+    skins.forEach((skin) => {
+      skin.picture = path.join('/pictures/skins/', skin.picture);
+    });
     res.json(skins);
   } catch (error) {
     console.error('Une erreur s\'est produite lors de la récupération des skins:', error);
@@ -14,7 +19,6 @@ exports.getAllSkins = async (req, res) => {
   }
 };
 
-// Méthode pour récupérer un skin par son ID
 exports.getSkinById = async (req, res) => {
   const skinId = req.params.id;
   try {
@@ -30,12 +34,23 @@ exports.getSkinById = async (req, res) => {
   }
 };
 
-// Méthode pour créer un nouveau skin
+
+function saveSkinImage(imageTitle, imageData) {
+  const fileName = uuidv4()+ '_' +imageTitle
+  const imageType = 'png';
+
+  const imagePath = path.join(__dirname, '../../pictures/skins/');
+  var optionalObj = {fileName: fileName, 'type':imageType};
+  base64ToImage(imageData, imagePath, optionalObj); 
+  return fileName+'.'+imageType;
+}
+
 exports.createSkin = async (req, res) => {
-  const { title, type, price, picture, money_type} = req.body;
-  console.log('test')
+  const { title, price, picture, money_type} = req.body;
+  const pictureName =  saveSkinImage(title, picture)
+
   try {
-    const newSkin = await Skin.create({ title, type, price, picture, money_type});
+    const newSkin = await Skin.create({ title, price, picture:pictureName, money_type});
     res.status(201).json(newSkin);
   } catch (error) {
     console.error('Une erreur s\'est produite lors de la création du skin:', error);
@@ -43,14 +58,14 @@ exports.createSkin = async (req, res) => {
   }
 };
 
-// Méthode pour mettre à jour les informations d'un skin
 exports.updateSkin = async (req, res) => {
   const skinId = req.params.id;
   const { title, price, picture, money_type } = req.body;
+  const pictureName =  saveSkinImage(title, picture)
   try {
     const skin = await Skin.findByPk(skinId);
     if (skin) {
-      await skin.update({ title, price, picture, money_type });
+      await skin.update({ title, price,  picture:pictureName, money_type });
       res.json(skin);
     } else {
       res.status(404).json({ message: 'Skin non trouvé' });
@@ -77,7 +92,6 @@ exports.deleteSkin = async (req, res) => {
     res.status(500).json({ message: 'Une erreur s\'est produite lors de la suppression du skin' });
   }
 };
-
 
 exports.purchaseSkin = async (req, res) => {
     const userId = req.body.userId;
@@ -135,8 +149,7 @@ exports.purchaseSkin = async (req, res) => {
 
 
   exports.paySkin =  async (req, res) => {
-    const { skin } = req.body;
-
+    const  {skin}  = req.body;
     try {
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
@@ -146,7 +159,6 @@ exports.purchaseSkin = async (req, res) => {
               currency: 'eur',
               product_data: {
                 name: skin.title, 
-                images: [skin.picture],
               },
               unit_amount: skin.price * 100,
             },
@@ -158,8 +170,6 @@ exports.purchaseSkin = async (req, res) => {
         cancel_url: 'http://localhost:5173/skins', // URL d'annulation du paiement
       });
       res.json({ sessionId: session.id });
-
-
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

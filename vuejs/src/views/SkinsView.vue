@@ -1,7 +1,38 @@
  <template>
   <section class="dashboard">
     <Header />
-      <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive">
+
+
+    <div class="container">
+      <div class="user-list" >
+        <div style="display:flex; align-items: center; justify-content: space-between;">
+          <h5>skins</h5>
+          <button @click="openModal('createSkin')" style="height: 30px; width: 100px; text-align: center;">Creer</button>
+        </div>
+        <table>
+          <colgroup span="4"></colgroup>
+          <tr class="header">
+            <th>TITLE</th>
+            <th >PRICE</th>
+            <th>MONEY TYPE</th>
+            <th>PICTURE</th>
+            <th>ACTION</th>
+          </tr>
+          <tr v-for="skin in skins" :key="skin._id" class="user-row">
+            <td style="text-align: left;" class="status" >  {{ skin.title }}</td>
+            <td style="text-align: center;" class="status">  {{ skin.price }}</td>
+            <td style="text-align: center;" class="status">{{ skin.money_type }}</td>
+            <td style="text-align: center;" class="status">
+              <img :src="getPictureUrl(skin.picture)" alt="" style="height: 100px; width: 100px; object-fit: contain;">
+            </td>
+            <td style="text-align: right;" class="action">
+              <router-link :to="{ name: 'skin', params: { id: skin.id } }">View</router-link>
+            </td>
+          </tr>
+        </table>
+      </div>      
+    </div>
+    <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive" >
       <div class="modal-content" v-if="currentModal === 'createSkin'">
         <h2 style="color: white;">Créer le Skin</h2>
         <form @submit.prevent="handleConfirm">
@@ -28,34 +59,6 @@
         </form>
       </div>
     </Modal>
-
-    <div class="container">
-      <div class="user-list" v-if="!modalActive">
-        <div style="display:flex; align-items: center; justify-content: space-between;">
-          <h5>skins</h5>
-          <button @click="openModal('createSkin')" style="height: 30px; width: 10px; text-align: center;">Creer</button>
-        </div>
-        <table>
-          <colgroup span="4"></colgroup>
-          <tr class="header">
-            <th>TITLE</th>
-            <th >PRICE</th>
-            <th>MONEY TYPE</th>
-            <th>PICTURE</th>
-            <th>ACTION</th>
-          </tr>
-          <tr v-for="skin in skins" :key="skin._id" class="user-row">
-            <td style="text-align: left;" class="status" >  {{ skin.title }}</td>
-            <td style="text-align: center;" class="status">  {{ skin.price }}</td>
-            <td style="text-align: center;" class="status">{{ skin.money_type }}</td>
-            <td style="text-align: center;" class="status">{{ skin.picture }}</td>
-            <td style="text-align: right;" class="action">
-              <router-link :to="{ name: 'skin', params: { id: skin.id } }">View</router-link>
-            </td>
-          </tr>
-        </table>
-      </div>      
-    </div>
   </section>
 </template>  
 
@@ -88,22 +91,47 @@ export default {
       title: '',
       price: '',
       money_type: '',
-      picture: null
+      picture: null,
+      image: null,
+      base64: null
     };
   },
   mounted() {
-    const e = this.getSkins();
+    this.getSkins();
   },
   methods: {
+    getPictureUrl(picture) {
+    return `http://localhost:3000${picture}`;
+  },
+    base64func (blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onerror = reject
+        reader.onload = () => {
+          resolve(reader.result)
+        }
+        reader.readAsDataURL(blob)
+      })
+    },
     getSkins() {
       fetchData('/skins')
       .then(response => {
+        console.log(response)
         this.skins = response.data
       })
       .catch(error => {
       });
     },
+
+    handlePictureChange(event) {
+      const selectedFile = event.target.files[0];
+      this.base64func(selectedFile).then((f) => {
+        this.picture = f
+      })
+    },
+
     createSkin(data) {
+      const newData = {title: 'r', price: 43, money_type:'ff', picture:'gg'}
       postData('/skin/create', data)
       .then(response => {
           toast('Le Skin a bien été Creer', {
@@ -119,15 +147,12 @@ export default {
           })
       });
     },
-    handlePictureChange(event) {
-    const selectedFile = event.target.files[0].name;
-    
-    this.picture = selectedFile;
-    },
+  
     openModal(type) {
       this.modalActive = true;
       this.currentModal = type;
     },
+
     handleConfirm() {
       if (this.title === '' || this.price === '') {
         toast('Veuillez remplir tous les champs.', {
@@ -136,7 +161,6 @@ export default {
         });
         return;
       }
-
       const newSkin = {
         title: this.title,
         price: this.price,
@@ -154,8 +178,10 @@ export default {
       this.createSkin(newSkin);
       this.closeModal();
     },
+
+ 
     closeModal() {
-        this.modalActive = false;
+          this.modalActive = false;
     }
 },
 };
