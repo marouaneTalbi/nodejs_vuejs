@@ -113,6 +113,23 @@ const router = createRouter({
       meta: { requiresAuth: true, requiredRole: 'admin'}
     },
     {
+      path: '/skin/:id',
+      name: 'skin',
+      component: Skin
+    },
+    {
+      // path: '/user/:slug',
+      path: '/skins/',
+      name: 'skins',
+      component: Skins
+    },
+    {
+      // path: '/user/:slug',
+      path: '/skins_to_buy/',
+      name: 'skins_to_buy',
+      component: SkinsToBuY
+    },
+    {
       path: '/about',
       name: 'about',
       component: () => import('../views/AboutView.vue'),

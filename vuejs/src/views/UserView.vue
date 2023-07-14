@@ -26,6 +26,7 @@
                         <div class="card-content">
                         <h3>{{ skin.title }}</h3>
                         <button @click="assignSkin(skin)">choisir</button>
+
                         </div>
                     </div>
                 </div>
@@ -152,6 +153,7 @@ export default {
             console.log(picture)
             return `http://localhost:3000/pictures/skins/${picture}`;
         },
+
         getUserSkins(userId) {
             fetchData('/user/skins/' + userId)
             .then(response => {

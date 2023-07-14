@@ -1,8 +1,6 @@
  <template>
   <section class="dashboard">
     <Header />
-
-
     <div class="container">
       <div class="user-list" >
         <div style="display:flex; align-items: center; justify-content: space-between;">
@@ -113,6 +111,7 @@ export default {
         reader.readAsDataURL(blob)
       })
     },
+
     getSkins() {
       fetchData('/skins')
       .then(response => {
@@ -128,9 +127,7 @@ export default {
         this.picture = f
       })
     },
-
     createSkin(data) {
-      const newData = {title: 'r', price: 43, money_type:'ff', picture:'gg'}
       postData('/skin/create', data)
       .then(response => {
           toast('Le Skin a bien été Creer', {
@@ -146,7 +143,6 @@ export default {
           })
       });
     },
-  
     openModal(type) {
       this.modalActive = true;
       this.currentModal = type;
@@ -177,10 +173,8 @@ export default {
       this.createSkin(newSkin);
       this.closeModal();
     },
-
- 
     closeModal() {
-          this.modalActive = false;
+        this.modalActive = false;
     }
 },
 };

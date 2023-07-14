@@ -55,24 +55,6 @@ helmet.contentSecurityPolicy({
     connectSrc: ["'self'", 'http://localhost:5173/'],
   })
 
-// app.use(cookieParser());
-// app.use(session({
-//     secret: 'secretKey',
-//     resave: false,
-//     saveUninitialized: false,
-//     cookie: {
-//         httpOnly: true,
-//         secure: true,
-//         maxAge: 7 * 24 * 60 * 60 * 1000
-//     }
-// }));
-
-
-// app.use(express.urlencoded({ extended: true, limit: "200mb" }));
-// app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-// app.use(express.json({ limit: '50mb' }));
-
-
 
 server.listen('3000', () => {
     console.log('Serveur Express en cours d\'exécution sur le port 3000');

@@ -7,6 +7,7 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const mailSender = require('../SMTP/mailsender');
 const session = require('express-session');
+
 const Skin = require('../models/skin/SkinModel');
 
 exports.getAllUsers = async (req, res) => {
@@ -142,7 +143,6 @@ exports.register = async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, 10);
       const buffer = crypto.randomBytes(32).toString('hex');
       try {
-
       const newUser = await User.create({ mail, password: hashedPassword, pseudo: pseudo, token:buffer, createdat: new Date() });
       await mailSender.sendConfirmationEmail(newUser.mail, newUser.token);
       const token = jwt.sign({ id: newUser.id }, 'secretKey');
@@ -255,8 +255,6 @@ exports.changePassword = async (req, res) => {
     res.status(500).json({ message: 'Une erreur s\'est produite lors de la modification du mot de passe de l\'utilisateur' });
   }
 };
-
-
 
 exports.getCurrentUser = async (req, res, next) => {
   const token = req.headers.authorization;

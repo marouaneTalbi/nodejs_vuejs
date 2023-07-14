@@ -33,7 +33,6 @@
           <div class="card-image">
             <!-- <img :src="skin.picture" alt="Skin Image"> -->
             <img :src="getPictureUrl(skin.picture)" alt="" style=" object-fit: contain;">
-
           </div>
           <div class="card-content">
             <h4>{{ skin.title }}</h4>
@@ -114,12 +113,9 @@
       if(sessionId) {
         postData('/skin/purchase', {userId:1, skinId:skin.id})
       }
-
       const { error } = await stripe.redirectToCheckout({
         sessionId: sessionId
       });
-
-
       if(error) {
         toast(error.message, {
           autoClose: 2000,
@@ -140,9 +136,9 @@
   
   .card {
     background-color: #f0f0f0;
-    
     border-radius: 8px;
     padding: 4px;
+
   }
   
   .card-image {
