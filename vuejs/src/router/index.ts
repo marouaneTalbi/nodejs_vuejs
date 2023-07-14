@@ -6,7 +6,6 @@ import Game from '../views/GameView.vue'
 import Login from '../views/security/login.vue'
 import Registre from '../views/security/register.vue'
 import Account from '../views/security/account.vue'
-import Logout from '../views/security/logout.vue'
 import Cookies from "js-cookie";
 import Dashboard from '../views/Dashboard.vue'
 import Stats from '../views/StatsView.vue'
@@ -16,6 +15,7 @@ import User from '../views/UserView.vue'
 import Skins from '../views/SkinsView.vue'
 import Skin from '../views/SkinView.vue'
 import SkinsToBuY from '../views/SkinsToBuyView.vue'
+import Confirm from "@/views/security/confirm.vue";
 
 
 
@@ -27,113 +27,100 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: Login,
-      meta: { requiresAuth: false, requiredRole: 'guest' }
+      meta: { requiresAuth: false, requiredRoles: ['gamer', 'admin'] }
     },
     {
       path: '/register',
       name: 'register',
       component: Registre,
-      meta: { requiresAuth: false, requiredRole: 'guest'  }
+      meta: { requiresAuth: false, requiredRoles: ['gamer', 'admin']  }
     },
     {
       path: '/account',
       name: 'account',
       component: Account,
-      meta: { requiresAuth: true, requiredRole: 'gamer' }
-    },
-    {
-      path: '/logout',
-      name: 'logout',
-      component: Logout,
-      meta: { requiresAuth: true, requiredRole: 'gamer' }
+      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin'] }
     },
     {
       path: '/',
       name: 'home',
       component: HomeView,
-      meta: { requiresAuth: false, requiredRole: 'guest'}
+      meta: { requiresAuth: false, requiredRoles: ['gamer', 'admin'] }
 
     },
     {
       path: '/gamemode',
       name: 'gamemode',
-      component: GameModeView
+      component: GameModeView,
+      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin'] }
     },
     {
       path: '/admin',
       name: 'admin',
-      component: Dashboard
+      component: Dashboard,
+      meta: { requiresAuth: true, requiredRoles: ['admin'] }
     },
     {
       path: '/stats',
       name: 'stats',
-      component: Stats
+      component: Stats,
+      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin'] }
     },
     {
       path: '/billing',
       name: 'billing',
-      component: Billing
+      component: Billing,
+      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin']}
+
     },
     {
       path: '/profile',
       name: 'profile',
-      component: Profile
+      component: Profile,
+      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin']}
     },
     {
-      // path: '/user/:slug',
       path: '/user/:id',
       name: 'user',
       component: User,
-      meta: { requiresAuth: true, requiredRole: 'admin'}
+      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin']}
+
     },
     {
       path: '/game/:id',
       name: 'game',
       component: Game,
-      meta: { requiresAuth: true, requiredRole: 'admin'}
+      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin']}
     },
     {
       path: '/skin/:id',
       name: 'skin',
       component: Skin,
-      meta: { requiresAuth: true, requiredRole: 'admin'}
+      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin']}
     },
     {
-      // path: '/user/:slug',
       path: '/skins/',
       name: 'skins',
       component: Skins,
-      meta: { requiresAuth: true, requiredRole: 'admin'}
+      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin']}
     },
     {
-      // path: '/user/:slug',
       path: '/skins_to_buy/',
       name: 'skins_to_buy',
       component: SkinsToBuY,
-      meta: { requiresAuth: true, requiredRole: 'admin'}
-    },
-    {
-      path: '/skin/:id',
-      name: 'skin',
-      component: Skin
-    },
-    {
-      // path: '/user/:slug',
-      path: '/skins/',
-      name: 'skins',
-      component: Skins
-    },
-    {
-      // path: '/user/:slug',
-      path: '/skins_to_buy/',
-      name: 'skins_to_buy',
-      component: SkinsToBuY
+      meta: { requiresAuth: true, requiredRoles:['gamer', 'admin', 'gamer']}
     },
     {
       path: '/about',
       name: 'about',
       component: () => import('../views/AboutView.vue'),
-      meta: { requiresAuth: false, requiredRole: 'guest' }
+      meta: { requiresAuth: false, requiredRoles: ['gamer', 'admin'] }
+    },
+    {
+      path: '/confirm',
+      name: 'confirm',
+      component: Confirm,
+      meta: { requiresAuth: false, requiredRoles: ['gamer', 'admin']}
     }
   ]
 })
@@ -150,7 +137,7 @@ function getUserRole() {
       console.error('Error decoding token:', error);
     }
   }
-  return 'guest';
+  return 'gamer';
 }
 
 router.beforeEach((to, from, next) => {
@@ -161,11 +148,10 @@ router.beforeEach((to, from, next) => {
       next('/login');
     } else {
       const userRole = getUserRole();
-      const requiredRole = to.meta.requiredRole;
+      const requiredRoles = to.meta.requiredRoles;
 
-      console.log(userRole,requiredRole )
+      if (requiredRoles.some((role) => userRole === role)) {
 
-      if (userRole === requiredRole) {
         next();
       } else {
         next('/access-denied');

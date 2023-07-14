@@ -66,7 +66,6 @@
                         <div class="text" >
                             <br />
                             <img :src="getPictureUrl(skin.picture)" alt="" style="height: 200px; width: 200px; object-fit: contain;">
-
                         </div>
                         <button @click="openModal('editPicture')">Edit</button>
                     </div>
@@ -84,7 +83,7 @@
 </template>
 
 <script>
-import { fetchData, deleteData, patchData } from '../api/api';
+import { fetchData, deleteData, patchData, serverURI } from '../api/api';
 import Header from '../components/Header.vue';
 import Modal from '../components/Modal.vue';
 import { ref } from 'vue';
@@ -117,7 +116,8 @@ export default {
     },
     methods: {
         getPictureUrl(picture) {
-            return `http://localhost:3000/pictures/skins/${picture}`;
+            return `${serverURI}/pictures/skins/${picture}`;
+
         },
         handlePictureChange(event) {
             const selectedFile = event.target.files[0];
@@ -220,8 +220,6 @@ export default {
             this.closeModal();
             this.$router.push('/skins');
         },
-
-
         closeModal() {
             this.modalActive = false;
         }

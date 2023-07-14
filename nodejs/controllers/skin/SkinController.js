@@ -12,7 +12,6 @@ exports.getAllSkins = async (req, res) => {
     skins.forEach((skin) => {
       skin.picture = path.join('/pictures/skins/', skin.picture);
     });
-
     res.json(skins);
   } catch (error) {
     console.error('Une erreur s\'est produite lors de la récupération des skins:', error);
@@ -68,7 +67,6 @@ exports.updateSkin = async (req, res) => {
     const skin = await Skin.findByPk(skinId);
     if (skin) {
       await skin.update({ title, price,  picture:pictureName, money_type });
-
       res.json(skin);
     } else {
       res.status(404).json({ message: 'Skin non trouvé' });

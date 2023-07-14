@@ -8,7 +8,7 @@ const route = express.Router();
 
 
 //route.get("/user/:id", UserController.getOne);
-//route.put("/user/:id", UserController.updateUser);
+route.put("/user/:id/updateuser", UserController.updateUser);
 route.put('/user/:id/verify-email', UserController.updateIsConfirmed);
 
 // AUTH
@@ -16,6 +16,8 @@ route.post('/login', UserController.login)
 route.post('/register', UserController.register)
 route.post('/logout',  UserController.logout);
 route.get('/current-user', UserController.getCurrentUser);
+route.post('/confirm', UserController.confirm)
+route.get('/user/:id/postgres', UserController.getUserById)
 // USER
 route.get('/user/:id', AdminController.getUser)
 route.get('/users', AdminController.getUsers)

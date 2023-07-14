@@ -1,13 +1,12 @@
 const User = require('../models/userModel');
 const UserMongo = require('../models/userModelMongo');
-
+const express = require('express');
+const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const mailSender = require('../SMTP/mailsender');
-const session = require('express-session');
-
 const Skin = require('../models/skin/SkinModel');
 
 exports.getAllUsers = async (req, res) => {
@@ -48,17 +47,28 @@ exports.createUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   const userId = req.params.id;
+  console.log(req.session.userId);
   const { pseudo, mail } = req.body;
   try {
     const user = await User.findByPk(userId);
     if (user) {
       if (mail && mail !== user.mail) {
         const code = Math.floor(1000 + Math.random() * 9000);
-        req.session.emailVerificationCode = code;
+        req.session.emailVerificationcode = code;
         await mailSender.sendCodeEmail(mail, code);
-        await user.update({pseudo, mail, isconfirmed:false, verificationCode:code});
+        if (pseudo === ""){
+          await user.update({ mail, isconfirmed:false, verificationcode:code});
+        }
+        else{
+          await user.update({pseudo, mail, isconfirmed:false, verificationcode:code});
+        }
       }else{
-        await user.update({pseudo, mail});
+        if (mail === ""){
+          await user.update({pseudo, isconfirmed:true})
+        }
+        else {
+          await user.update({pseudo, mail, isconfirmed:true});
+        }
       }
       res.json(user);
     } else {
@@ -139,7 +149,11 @@ exports.register = async (req, res) => {
         res.status(409).json({ message: 'Adresse e-mail déjà existante' });
         return;
       }
-
+      const passwordRegex = /^(?=.*\d)(?=.*[A-Z]).{6,}$/;
+      if (!passwordRegex.test(password)) {
+        res.status(400).json({ message: 'Mot de passe invalide. Il doit comporter au moins 6 caractères, une majuscule et un chiffre.' });
+        return;
+      }
       const hashedPassword = await bcrypt.hash(password, 10);
       const buffer = crypto.randomBytes(32).toString('hex');
       try {
@@ -156,27 +170,24 @@ exports.register = async (req, res) => {
     }
   };
 
-exports.findByToken = async (confirmationToken) => {
-  console.log(confirmationToken)
+exports.confirm = async (req, res) => {
+  const token = req.body.token;
+  console.log(token)
   try {
     const user = await User.findOne({
       where: {
-        token: confirmationToken
+        token: token
       }
     });
-
     if (!user) {
-      throw new Error('Invalid token');
+      return res.status(400).json({ message: 'Token invalide' });
     }
-
     user.isconfirmed = true;
     await user.save();
-
-    return user;
+    res.send('Votre compte est confirmé');
   } catch (error) {
-    console.log(error)
-    console.error('An error occurred while searching for the user by token:', error);
-    throw error;
+    console.error('An error occurred:', error);
+    res.status(500).send('Internal Server Error');
   }
 };
 
@@ -212,9 +223,9 @@ exports.updateIsConfirmed = async (req,res) => {
   const code = parseInt(req.body.code);
   try {
     const user = await User.findByPk(userId);
-    const emailVerificationCode = user.verificationCode;
+    const emailVerificationcode = user.verificationcode;
     if (user) {
-      if (code === emailVerificationCode) {
+      if (code === emailVerificationcode) {
         user.isconfirmed = true;
         await user.save();
         res.json(user);
@@ -257,20 +268,9 @@ exports.changePassword = async (req, res) => {
 };
 
 exports.getCurrentUser = async (req, res, next) => {
-  const token = req.headers.authorization;
-  if (!token) {
-    return res.status(401).json({ message: 'Token d\'authentification manquant' });
-  }
+
   try {
-    const decoded = jwt.verify(token, 'secretKey');
-    
-    const userId = decoded.id;
-    const user = await User.findByPk(userId);
-    console.log('usr: ', user);
-    
-    if (!user) {
-      return res.status(404).json({ message: 'Utilisateur introuvable' });
-    }
+    console.log(req.session.userId);
     
     return res.json(user);
   } catch (error) {

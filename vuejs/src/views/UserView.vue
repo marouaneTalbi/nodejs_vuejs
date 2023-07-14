@@ -15,23 +15,22 @@
             </div>
         </Modal>
 
+
         <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive">
             <div class="modal-content" v-if="currentModal === 'skins'" style="width: 600px;">
                 <div class="card-list">
                     <div v-for="skin in skins" :key="skin.id" class="card">
-                        <!-- Contenu de la carte -->
                         <div class="card-image">
                             <img :src="getPictureUrl(skin.picture)" alt="" style=" object-fit: contain;">
                         </div>
                         <div class="card-content">
                         <h3>{{ skin.title }}</h3>
                         <button @click="assignSkin(skin)">choisir</button>
-
                         </div>
                     </div>
                 </div>
             </div>
-        </Modal>
+        </Modal> 
 
         <div class="container">
             <!-- <h3>Administration / user <span>/ {{ user.pseudo }}</span></h3> -->
@@ -68,9 +67,9 @@
                     </div>
                     <div class="row">
                         <div class="text">
-                            <span class="pseudo-title">Skin</span>
+                            <!-- <span class="pseudo-title">Skin</span>
                             <br />
-                            <span class="pseudo">{{ skin.title }}</span>
+                            <span class="pseudo">{{ skin.title }}</span> -->
                         </div>
                     </div>
                 </div>
@@ -103,7 +102,7 @@
 </template>
 
 <script>
-import { fetchData, deleteData, patchData, postData } from '../api/api';
+import { fetchData, deleteData, patchData, postData, serverURI } from '../api/api';
 import Header from '../components/Header.vue';
 import Modal from '../components/Modal.vue';
 import { ref } from 'vue';
@@ -151,7 +150,7 @@ export default {
         },
         getPictureUrl(picture) {
             console.log(picture)
-            return `http://localhost:3000/pictures/skins/${picture}`;
+            return `${serverURI}/pictures/skins/${picture}`;
         },
 
         getUserSkins(userId) {

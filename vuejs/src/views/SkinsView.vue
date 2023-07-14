@@ -49,6 +49,7 @@
             <input type="file" style="color:white" id="picture" @change="handlePictureChange" placeholder="Photo" required>
           </div>
 
+
           <div class="form-group">
             <label for="money_type">Type de monnaie</label>
             <input type="text" style="color:white" v-model="money_type" id="money_type" placeholder="Type de monnaie" required>
@@ -61,7 +62,7 @@
 </template>  
 
 <script>
-import { fetchData, postData } from '../api/api';
+import { fetchData, postData, serverURI } from '../api/api';
 import Header from '../components/Header.vue';
 import Modal from '../components/Modal.vue';
 import slugify from 'slugify';
@@ -95,11 +96,12 @@ export default {
     };
   },
   mounted() {
-    const e = this.getSkins();
+    this.getSkins();
   },
   methods: {
     getPictureUrl(picture) {
-    return `http://localhost:3000${picture}`;
+    return `${serverURI}${picture}`;
+
   },
     base64func (blob) {
       return new Promise((resolve, reject) => {
@@ -111,10 +113,10 @@ export default {
         reader.readAsDataURL(blob)
       })
     },
-
     getSkins() {
       fetchData('/skins')
       .then(response => {
+        console.log(response)
         this.skins = response.data
       })
       .catch(error => {
@@ -173,8 +175,10 @@ export default {
       this.createSkin(newSkin);
       this.closeModal();
     },
+
+ 
     closeModal() {
-        this.modalActive = false;
+          this.modalActive = false;
     }
 },
 };

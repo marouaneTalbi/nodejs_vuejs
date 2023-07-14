@@ -1,55 +1,128 @@
 <template>
-  <div class="account">
-    <h2>My Account</h2>
-    <div class="user-info" v-if="user">
-      <p><strong>Pseudo :</strong> {{ user.pseudo }}</p>
-      <p><strong>Email:</strong> {{ user.mail }}</p>
-      <p><strong>Created At:</strong> {{ user.createdAt }}</p>
-      <p><strong>Role :</strong> {{ user.role }}</p>
-      <img :src="getUserImageUrl(user.picture)" alt="User Image">
+  <section class="user">
+    <Header />
+    <div class="container">
+      <div class="block" v-if="user">
+        <div class="user-profile">
+          <div class="img"></div>
+          <div class="text">
+            <span class="pseudo">{{ user.pseudo }}</span>
+            <span>Online</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="row">
+            <div class="text">
+              <span class="pseudo-title">Pseudo</span>
+              <br />
+              <span class="pseudo">{{ user.pseudo }}</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="text">
+              <span class="pseudo-title">Email</span>
+              <br />
+              <span class="pseudo">{{ user.mail }}</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="text">
+              <span class="pseudo-title">Creation date</span>
+              <br />
+              <span class="pseudo">{{ user.createdat }}</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="text">
+              <span class="pseudo-title">Role</span>
+              <br />
+              <span class="pseudo">{{ user.role }}</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="text">
+            </div>
+          </div>
+        </div>
 
-      <!-- Formulaire de modification des informations générales -->
-      <h2>Update Informations</h2>
-      <form @submit.prevent="updateUserInfo">
-        <label>Nom d'utilisateur:</label>
-        <input type="text" v-model="updatedUser.pseudo">
-        <label>Email:</label>
-        <input type="email" v-model="updatedUser.mail">
-        <button type="submit" @click="handleUpdateClick">Mettre à jour</button>
-      </form>
+        <div class="card card--footer">
+          <div class="row">
+            <div class="text">
+              <h2 class="pseudo-title" >Update Informations</h2>
+              <form @submit.prevent="updateUserInfo">
+                <label>Nom d'utilisateur:</label>
+                <input type="text" v-model="updatedUser.pseudo">
+                <label>Email:</label>
+                <input type="email" v-model="updatedUser.mail">
+                <button type="submit" @click="handleUpdateClick" class="maj">Mettre à jour</button>
+                <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+                <p v-if="infoChangeMessage" :class="{ 'success-message': !infoChangeError, 'error-message': infoChangeError }">{{ infoChangeMessage }}</p>
+              </form>
+              <form v-if="showEmailVerification" @submit.prevent="verifyEmail">
+                <h2 class="pseudo-title">Email Verification</h2>
+                <p>Entrez le code de validation d'adresse e-mail :</p>
+                <input type="text" v-model="emailVerificationcode">
+                <p>{{ verificationMessage }}</p>
+                <button type="submit">Valider</button>
+              </form>
+            </div>
+          </div>
+        </div>
 
-      <!-- Formulaire de validation d'adresse e-mail -->
-      <form v-if="showEmailVerification" @submit.prevent="verifyEmail">
-        <h2>Email Verification</h2>
-        <p>Entrez le code de validation d'adresse e-mail :</p>
-        <input type="text" v-model="emailVerificationCode">
-        <p>{{ verificationMessage }}</p>
-        <button type="submit">Valider</button>
-      </form>
+        <div class="card card--footer">
+          <div class="row">
+            <div class="text">
+              <form @submit.prevent="changePassword">
+                <h2 class="pseudo-title">Change Password</h2>
+                <label>Ancien mot de passe:</label>
+                <input type="password" v-model="passwordData.oldPassword">
+                <label>Nouveau mot de passe:</label>
+                <input type="password" v-model="passwordData.newPassword">
+                <label>Confirmer le nouveau mot de passe:</label>
+                <input type="password" v-model="passwordData.confirmPassword">
+                <button type="submit" class="maj">Changer le mot de passe</button>
+                <p v-if="passwordChangeMessage" :class="{ 'success-message': !passwordChangeError, 'error-message': passwordChangeError }">{{ passwordChangeMessage }}</p>
+              </form>
+            </div>
+          </div>
+        </div>
 
-      <!-- Formulaire de modification du mot de passe -->
-      <form @submit.prevent="changePassword">
-        <h2>Change Password</h2>
-        <label>Ancien mot de passe:</label>
-        <input type="password" v-model="passwordData.oldPassword">
-        <label>Nouveau mot de passe:</label>
-        <input type="password" v-model="passwordData.newPassword">
-        <label>Confirmer le nouveau mot de passe:</label>
-        <input type="password" v-model="passwordData.confirmPassword">
-        <button type="submit">Changer le mot de passe</button>
-        <p v-if="passwordChangeMessage" :class="{ 'success-message': !passwordChangeError, 'error-message': passwordChangeError }">{{ passwordChangeMessage }}</p>
-      </form>
-
+        <button>
+          Supprimer mon compte
+        </button>
+      </div>
     </div>
-  </div>
+  </section>
 </template>
 
 
-<style>
-.account{
-  background-color: white;
-  padding : 30px;
-  border-radius: 30px;
+<style scoped>
+.maj{
+  background-color: green !important;
+  margin-top: 10px !important;
+ }
+
+.card {
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  padding: 20px;
+  width: 45%;
+}
+
+.card-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+}
+
+.card-image img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.card-content {
+  text-align: center;
 }
 </style>
 
@@ -57,8 +130,13 @@
 
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import Header from '../../components/Header.vue';
+import { serverURI } from '../../api/api';
 
 export default {
+  components: {
+    Header,
+  },
   data() {
     return {
       user: null,
@@ -67,7 +145,7 @@ export default {
         mail: ''
       },
       showEmailVerification: false,
-      emailVerificationCode: '',
+      emailVerificationcode: '',
       verificationMessage: '',
       passwordData: {
         oldPassword: '',
@@ -75,7 +153,9 @@ export default {
         confirmPassword: ''
       },
       passwordChangeMessage: '',
-      passwordChangeError: false
+      passwordChangeError: false,
+      infoChangeMessage: '',
+      infoChangeError: false
     };
   },
   mounted() {
@@ -88,20 +168,18 @@ export default {
         const [header, payload, signature] = token.split('.');
         const decodedPayload = JSON.parse(atob(payload));
         const userId = decodedPayload.id;
-        const response = await axios.get(`http://localhost:3000/user/${userId}`, {
+        const response = await axios.get(`${serverURI}/user/${userId}/postgres`, {
           headers: {
             Authorization: 'Bearer ' + token
           }
         });
         this.user = response.data;
-        console.log(this.user);
       } catch (error) {
         console.error(error);
       }
     },
     getUserImageUrl(picture) {
-      const serverUrl = 'http://localhost:3000';
-      return `${serverUrl}/pictures/${picture}`;
+      return `${serverURI}/pictures/${picture}`;
     },
     async updateUserInfo() {
       try {
@@ -109,18 +187,22 @@ export default {
         const [header, payload, signature] = token.split('.');
         const decodedPayload = JSON.parse(atob(payload));
         const userId = decodedPayload.id;
-        const response = await axios.put(`http://localhost:3000/user/${userId}`, this.updatedUser, {
+        const response = await axios.put(`${serverURI}/user/${userId}/updateuser`, this.updatedUser, {
           headers: {
             Authorization: 'Bearer ' + token
           }
         });
         this.user = response.data;
         console.log('Informations utilisateur mises à jour:', this.user);
+        this.infoChangeMessage = 'Informations modifié avec succès';
+        this.infoChangeError = false;
         // Réinitialiser les champs de formulaire
         this.updatedUser.pseudo = '';
         this.updatedUser.mail = '';
       } catch (error) {
         console.error(error);
+        this.infoChangeMessage = 'Une erreur s\'est produite lors de la modification des informations';
+        this.infoChangeError = true;
       }
     },
     async verifyEmail(){
@@ -129,7 +211,7 @@ export default {
         const [header, payload, signature] = token.split('.');
         const decodedPayload = JSON.parse(atob(payload));
         const userId = decodedPayload.id;
-      const response = await axios.put(`http://localhost:3000/user/${userId}/verify-email`, {code: this.emailVerificationCode}, {
+      const response = await axios.put(`${serverURI}/user/${userId}/verify-email`, {code: this.emailVerificationcode}, {
         headers: {
           Authorization: 'Bearer ' + token
         }
@@ -161,7 +243,7 @@ export default {
           console.error('Les nouveaux mots de passe ne correspondent pas');
           return;
         }
-        const response = await axios.put(`http://localhost:3000/user/${userId}/change-password`, {
+        const response = await axios.put(`${serverURI}/user/${userId}/change-password`, {
           oldPassword: this.passwordData.oldPassword,
           newPassword: this.passwordData.newPassword
         }, {
@@ -197,16 +279,4 @@ export default {
   border-radius: 5px;
 }
 </style>
-
-<!-- <template>
-  <div class="account">
-    <h2>Mon compte</h2>
-    <div class="user-info" v-if="user">
-      <p><strong>Nom d'utilisateur:</strong> {{ user.pseudo }}</p>
-      <p><strong>Email:</strong> {{ user.mail }}</p>
-      <p><strong>Date de création:</strong> {{ user.created_at }}</p>
-    </div>
-  </div>
-</template> -->
-
 

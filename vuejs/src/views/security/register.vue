@@ -9,15 +9,17 @@
         <div class="form-group">
           <label for="password">Password:</label>
           <input type="password" id="password" v-model="password" required>
+          <div v-if="passwordErrorMessage" class="error-message">{{ passwordErrorMessage }}</div>
         </div>
         <div class="form-group">
           <label for="pseudo">Pseudo:</label>
           <input type="text" id="pseudo" v-model="pseudo" required>
         </div>
         <button type="submit">Register</button>
+        <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
       </form>
 
-      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+
       <div class="login-link">
         Already have an account? <router-link to="/login">Login</router-link>
       </div>
@@ -32,6 +34,7 @@
   
   <script>
   import axios from 'axios';
+import { serverURI } from '../../api/api';
   
   export default {
     data() {
@@ -39,21 +42,24 @@
         email: '',
         password: '',
         pseudo: '',
-        errorMessage: ''
+        errorMessage: '',
+        passwordErrorMessage: ''
       };
     },
     methods: {
       async register() {
-        console.log("first");
         try {
-          console.log("try");
-          const response = await axios.post('http://localhost:3000/register', {
+          const passwordRegex = /^(?=.*\d)(?=.*[A-Z]).{6,}$/;
+          if (!passwordRegex.test(this.password)) {
+            this.passwordErrorMessage = 'Le mot de passe doit comporter au moins 6 caractères, une majuscule et un chiffre.';
+            return;
+          }
+          const response = await axios.post(`${serverURI}/register`, {
             mail: this.email,
             password: this.password,
             pseudo: this.pseudo
           });
           const token = response.data.token;
-          // Rediriger vers une autre page après l'enregistrement
           this.$router.push('/login');
           console.log(response);
         } catch (error) {
