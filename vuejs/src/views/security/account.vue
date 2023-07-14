@@ -55,7 +55,9 @@
   border-radius: 30px;
 }
 </style>
+
 <script>
+
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
@@ -204,5 +206,3 @@ export default {
   border-radius: 5px;
 }
 </style>
-
-

@@ -90,31 +90,31 @@ const router = createRouter({
       path: '/user/:id',
       name: 'user',
       component: User,
-      meta: { requiresAuth: true, requiredRole: 'guest'}
+      meta: { requiresAuth: true, requiredRole: 'admin'}
     },
     {
       path: '/game/:id',
       name: 'game',
       component: Game,
-      meta: { requiresAuth: true, requiredRole: 'guest'}
+      meta: { requiresAuth: true, requiredRole: 'admin'}
     },
     {
       path: '/skin/:id',
       name: 'skin',
       component: Skin,
-      meta: { requiresAuth: true, requiredRole: 'guest'}
+      meta: { requiresAuth: true, requiredRole: 'admin'}
     },
     {
       path: '/skins/',
       name: 'skins',
       component: Skins,
-      meta: { requiresAuth: true, requiredRole: 'guest'}
+      meta: { requiresAuth: true, requiredRole: 'admin'}
     },
     {
       path: '/skins_to_buy/',
       name: 'skins_to_buy',
       component: SkinsToBuY,
-      meta: { requiresAuth: true, requiredRole: 'guest'}
+      meta: { requiresAuth: true, requiredRole: 'admin'}
     },
     {
       path: '/about',
@@ -149,11 +149,14 @@ function getUserRole() {
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     const token = Cookies.get('token');
+    console.log(token)
     if (!token) {
       next('/login');
     } else {
       const userRole = getUserRole();
       const requiredRole = to.meta.requiredRole;
+
+      console.log(userRole,requiredRole )
 
       if (userRole === requiredRole) {
         next();

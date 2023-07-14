@@ -1,7 +1,21 @@
 const express = require('express');
 const app = express();
+const route = require('./routes/userRoute');
+const skinRoute = require('./routes/skinRoute');
+const User = require("./controllers/UserController")
+const helmet = require('helmet');
+const cors = require('cors');
+const gameSocket = require('./sockets/gameSocket');
+const sequelize = require('./config/conn');
+const path = require('path');
+const bodyParser = require('body-parser');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+
+app.use(express.urlencoded({ extended: false, limit: "200mb" }));
+app.use(express.json({ limit: '50mb' }));
+app.use('/pictures', express.static(path.join(__dirname, 'pictures')));
+
 app.use(session({
     secret: 'secretKey',
     resave: true,
@@ -13,17 +27,18 @@ app.use(session({
     }
 }));
 app.use(cookieParser());
-const route = require('./routes/userRoute');
-const skinRoute = require('./routes/skinRoute');
-const User = require("./controllers/UserController")
-const helmet = require('helmet');
-const cors = require('cors');
-const gameSocket = require('./sockets/gameSocket');
+
+
+// MONGODB CONNECTION //
+const mongodb = require('./db/mongo');
+mongodb.initClientDbConnection();
+// MONGODB CONNECTION //
 
 // SOCKET.IO //
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
     cors: {
+
         origins: ['http://localhost:8080']
     }
 });
@@ -32,10 +47,6 @@ io.on('connection', (socket) => {
 });
 // SOCKET.IO //
 
-
-// MONGODB connection
-const mongodb = require('./db/mongo');
-mongodb.initClientDbConnection();
 
 // MIDDLEWARE 
 app.use(cors());
@@ -46,23 +57,28 @@ app.use(express.urlencoded({extended: false}))
 // ROUTES
 app.use('/', route);
 app.use('/', skinRoute);
-app.get('/', (req, res) => {
-    res.send('Hello, World!');
+// CSP configuration
+
+
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    next();
 });
 
-// CSP configuration
-helmet.contentSecurityPolicy({
-    connectSrc: ["'self'", 'http://localhost:5173/'],
-})
-
-// CORS configuration
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin','*')
     res.setHeader('Cross-Origin-Resource-Policy','*')
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
     next();
-});
+  });
+
+helmet.contentSecurityPolicy({
+    connectSrc: ["'self'", 'http://localhost:5173/'],
+  })
+
 
 // START express server
 server.listen('3000', () => {
