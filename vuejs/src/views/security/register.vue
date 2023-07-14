@@ -9,6 +9,7 @@
         <div class="form-group">
           <label for="password">Password:</label>
           <input type="password" id="password" v-model="password" required>
+          <div v-if="passwordErrorMessage" class="error-message">{{ passwordErrorMessage }}</div>
         </div>
         <div class="form-group">
           <label for="pseudo">Pseudo:</label>
@@ -40,21 +41,24 @@
         email: '',
         password: '',
         pseudo: '',
-        errorMessage: ''
+        errorMessage: '',
+        passwordErrorMessage: ''
       };
     },
     methods: {
       async register() {
-        console.log("first");
         try {
-          console.log("try");
+          const passwordRegex = /^(?=.*\d)(?=.*[A-Z]).{6,}$/;
+          if (!passwordRegex.test(this.password)) {
+            this.passwordErrorMessage = 'Le mot de passe doit comporter au moins 6 caractères, une majuscule et un chiffre.';
+            return;
+          }
           const response = await axios.post('http://localhost:3000/register', {
             mail: this.email,
             password: this.password,
             pseudo: this.pseudo
           });
           const token = response.data.token;
-          // Rediriger vers une autre page après l'enregistrement
           this.$router.push('/login');
           console.log(response);
         } catch (error) {

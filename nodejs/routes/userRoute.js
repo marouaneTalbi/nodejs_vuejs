@@ -17,6 +17,7 @@ route.post('/register', UserController.register)
 route.post('/logout',  UserController.logout);
 route.get('/current-user', UserController.getCurrentUser);
 route.post('/confirm', UserController.confirm)
+route.get('/user/:id/postgres', UserController.getUserById)
 // USER
 route.get('/user/:id', AdminController.getUser)
 route.get('/users', AdminController.getUsers)
