@@ -5,7 +5,7 @@ module.exports = function (socket) {
     socket.on('joinWaitingRoom', async ({gamemode, userId}) => {
         try {
             const game = await GameController.createGame(gamemode, userId);
-            console.log(userId);
+
             socket.userId = userId;
             socket.gameId = game.id;
 
@@ -17,6 +17,10 @@ module.exports = function (socket) {
 
             if (playersCount === 2) {
                 socket.to(game.id).emit('waitingForPlayers', playersCount);
+                
+                await GameController.updateGame(game.id, {
+                    status: 'progress'
+                })
             } else {
                 socket.emit('waitingForPlayers', playersCount);
             }
