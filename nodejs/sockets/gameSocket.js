@@ -5,7 +5,7 @@ module.exports = function (socket) {
     socket.on('joinWaitingRoom', async ({gamemode, userId}) => {
         try {
             const game = await GameController.createGame(gamemode, userId);
-            
+            console.log(userId);
             socket.userId = userId;
             socket.gameId = game.id;
 
@@ -30,7 +30,7 @@ module.exports = function (socket) {
 
     socket.on('disconnect', async () => {
         try {
-            await UserGameService.deleteUserGame(socket.gameId, socket.userId);
+            //await UserGameService.deleteUserGame(socket.gameId, socket.userId);
             socket.to(socket.gameId).emit('userLeft');
         } catch (error) {
             console.error('Erreur lors de la gestion de la déconnexion du joueur :', error);

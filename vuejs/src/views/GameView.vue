@@ -19,6 +19,7 @@ import SocketioService from '../services/socketio.service';
 import { fetchData } from '../api/api';
 import Modal from '../components/Modal.vue';
 import { ref } from 'vue';
+import Cookies from 'js-cookie';
 
 export default {
     components: {
@@ -35,6 +36,7 @@ export default {
     },
 
     setup() {
+        console.log('gameeee')
         const modalActive = ref(false);
 
         const toggleModal = () => {
