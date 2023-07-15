@@ -16,8 +16,8 @@ import User from '../views/UserView.vue'
 import Skins from '../views/SkinsView.vue'
 import Skin from '../views/SkinView.vue'
 import SkinsToBuY from '../views/SkinsToBuyView.vue'
-
-
+import AccessDenied from '../views/security/access-denied.vue'
+import NotFound from '../views/security/not-found.vue'
 
 
 const router = createRouter({
@@ -70,14 +70,13 @@ const router = createRouter({
       path: '/stats',
       name: 'stats',
       component: Stats,
-      meta: { requiresAuth: true, requiredRole: 'guest'}
+      meta: { requiresAuth: true, requiredRole: 'gamer'}
     },
     {
       path: '/billing',
       name: 'billing',
       component: Billing,
-      meta: { requiresAuth: true, requiredRole: 'guest'}
-
+      meta: { requiresAuth: true, requiredRole: 'gamer'}
     },
     {
       path: '/profile',
@@ -115,6 +114,17 @@ const router = createRouter({
       component: SkinsToBuY,
       meta: { requiresAuth: true, requiredRole: 'guest'}
     },
+    {
+      path: '/access-denied',
+      name: 'access-denied',
+      component: AccessDenied,
+      meta: { requiresAuth: false, requiredRole: 'guest'}
+    },
+    { 
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: NotFound 
+    },  
     {
       path: '/about',
       name: 'about',
