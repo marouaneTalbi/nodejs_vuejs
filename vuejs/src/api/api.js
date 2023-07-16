@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 // prod
-export const serverURI = 'http://159.203.128.74:3000';
+export const serverURI = 'https://159.203.128.74:3000';
 
 // export const serverURI = 'http://localhost:3000';
 

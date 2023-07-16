@@ -11,6 +11,8 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+const fs = require('fs');
+const https = require('https');
 
 app.use(express.urlencoded({ extended: false, limit: "200mb" }));
 app.use(express.json({ limit: '50mb' }));
@@ -36,7 +38,14 @@ mongodb.initClientDbConnection();
 // MONGODB CONNECTION //
 
 // SOCKET.IO //
-const server = require('http').createServer(app);
+//const server = require('http').createServer(app);
+const options = {
+  key: fs.readFileSync('/etc/letsencrypt/live/challenge.ovh/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/challenge.ovh/fullchain.pem'),
+};
+
+const server = https.createServer(options, app);
+
 const io = require('socket.io')(server, {
     cors: {
 
@@ -49,7 +58,7 @@ io.on('connection', (socket) => {
 // SOCKET.IO //
 
 
-// MIDDLEWARE 
+// MIDDLEWARE
 app.use(cors());
 app.use(helmet());
 app.use(express.json());
@@ -78,4 +87,3 @@ helmet.contentSecurityPolicy({
 server.listen('3000', () => {
     console.log('Serveur Express en cours d\'exécution sur le port 3000');
 });
-
