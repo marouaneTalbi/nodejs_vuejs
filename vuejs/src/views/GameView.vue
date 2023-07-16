@@ -19,6 +19,7 @@ import SocketioService from '../services/socketio.service';
 import { fetchData } from '../api/api';
 import Modal from '../components/Modal.vue';
 import { ref } from 'vue';
+import Cookies from 'js-cookie';
 
 export default {
     components: {
@@ -35,6 +36,7 @@ export default {
     },
 
     setup() {
+        console.log('gameeee')
         const modalActive = ref(false);
 
         const toggleModal = () => {
@@ -66,14 +68,12 @@ export default {
 
     methods: {
         getCurrentUser() {
-            fetchData('/current-user')
-            .then(response => {
-                this.user = response.data.id; // Stockez l'ID de l'utilisateur dans la variable userId
-                console.log('current user : ', this.user);
-            })
-            .catch(error => {
-                console.error(error);
-            });
+            const token = Cookies.get('token');
+            if (token) {
+                const [header, payload, signature] = token.split('.');
+                const decodedPayload = JSON.parse(atob(payload));
+                this.userId = decodedPayload.id;
+            }
         },
         handleConfirm() {
             this.modalActive = false;

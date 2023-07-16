@@ -32,6 +32,7 @@
 import Header from '../components/Header.vue';
 import SocketioService from '../services/socketio.service';
 import { fetchData } from '../api/api';
+import Cookies from 'js-cookie';
 
 export default {
   components: {
@@ -46,8 +47,8 @@ export default {
 
   created() {
     SocketioService.setupSocketConnection();
-    this.getCurrentUser();
     SocketioService.joinGameSucces();
+    this.getCurrentUser();
   },
 
   setup() {
@@ -72,15 +73,13 @@ export default {
     },
 
     getCurrentUser() {
-      fetchData('/current-user')
-      .then(response => {
-          this.userId = response.data.id; // Stockez l'ID de l'utilisateur dans la variable userId
-          console.log('current user : ', this.userId);
-        })
-        .catch(error => {
-          console.error(error);
-      });
-    }
+      const token = Cookies.get('token');
+      if (token) {
+        const [header, payload, signature] = token.split('.');
+        const decodedPayload = JSON.parse(atob(payload));
+        this.userId = decodedPayload.id;
+      }
+    },
   },
 }
 </script>

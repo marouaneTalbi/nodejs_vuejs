@@ -16,7 +16,7 @@
         </Modal>
 
 
-        <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive">
+        <!-- <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive">
             <div class="modal-content" v-if="currentModal === 'skins'" style="width: 600px;">
                 <div class="card-list">
                     <div v-for="skin in skins" :key="skin.id" class="card">
@@ -30,10 +30,9 @@
                     </div>
                 </div>
             </div>
-        </Modal> 
+        </Modal>  -->
 
         <div class="container">
-            <!-- <h3>Administration / user <span>/ {{ user.pseudo }}</span></h3> -->
             <div class="block">
                 <div class="user-profile">
                     <div class="img"></div>

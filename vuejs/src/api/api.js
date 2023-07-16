@@ -1,13 +1,18 @@
 import axios from 'axios';    
+import Cookies from 'js-cookie';
 
-export const serverURI = 'http://159.203.128.74:3000';
+// prod
+export const serverURI = 'http://159.203.128.74:3002';
 
-// export const serverURI = 'http://localhost:3000';
+//export const serverURI = 'http://localhost:3000';
 
-// à changer
-const token = localStorage.getItem('token');
-axios.defaults.headers.common['Authorization'] = token;
-
+axios.interceptors.request.use((config) => {
+    const token = Cookies.get('token');
+    if (token) {
+        config.headers.Authorization = 'Bearer ' + token;
+    }
+    return config;
+});
 
 export function fetchData(route) {
     return axios.get((serverURI + route));
