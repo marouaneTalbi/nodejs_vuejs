@@ -16,7 +16,6 @@
 <script>
 import Header from '../components/Header.vue';
 import SocketioService from '../services/socketio.service';
-import { fetchData } from '../api/api';
 import Modal from '../components/Modal.vue';
 import { ref } from 'vue';
 import Cookies from 'js-cookie';
@@ -29,14 +28,35 @@ export default {
 
     data() {
         return {
-            user: null,
+            userId: null,
             waitingForOpponent: false,
             userLeft: false,
         };
     },
+    // beforeUnmount() {
+    //     SocketioService.userLeft(() => {
+    //             console.log('fg');
+    //             this.userLeft = true;
+    //             this.openModal();
+    //         });  
+    //     },
+    beforeRouteLeave() {
+        //const reply = window.confirm('You have unsaved changes! Do you want to leave?')
+        SocketioService.userLeft(() => {
+                this.userLeft = true;
+                this.openModal();
+            });
+        // if (!reply) {
+        //     return false
+        // } else {
+        //     SocketioService.userLeft(() => {
+        //         this.userLeft = true;
+        //         this.openModal();
+        //     });
+        // }
+    },
 
     setup() {
-        console.log('gameeee')
         const modalActive = ref(false);
 
         const toggleModal = () => {
@@ -50,12 +70,9 @@ export default {
         this.getCurrentUser();
 
         SocketioService.waitingForPlayers((playersCount) => {
-            console.log('ddd');
             if (playersCount < 2) {
-                // Mettre à jour l'affichage pour afficher le message "En attente d'un adversaire"
                 this.waitingForOpponent = true;
             } else {
-                // Il y a suffisamment de joueurs, mettre à jour l'affichage en conséquence
                 this.waitingForOpponent = false;
             }
         });
@@ -81,13 +98,6 @@ export default {
         openModal() {
             this.modalActive = true;
         },
-    },
-
-    mounted() {
-        
-    },
-
-    unmounted() {
     },
 }
 </script>
