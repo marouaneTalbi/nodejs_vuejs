@@ -40,7 +40,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
     cors: {
 
-        origins: ['https://159.203.128.74:80']
+        origins: ['http://159.203.128.74:80']
     }
 });
 io.on('connection', (socket) => {
@@ -70,7 +70,7 @@ app.use((req, res, next) => {
   });
 
 helmet.contentSecurityPolicy({
-    connectSrc: ["'self'", 'https://159.203.128.74:5173/'],
+    connectSrc: ["'self'", 'http://159.203.128.74:5173/'],
   })
 
 
