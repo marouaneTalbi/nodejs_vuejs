@@ -21,6 +21,9 @@ CREATE TABLE _user (
   ratio DECIMAL(10,2),
   token VARCHAR,
   isconfirmed BOOLEAN DEFAULT false,
+  role VARCHAR(255),
+  createdat TIMESTAMP,
+  verificationcode INT,
   points INT,
   skins_fk_id INT,
   FOREIGN KEY (skins_fk_id) REFERENCES skin(id)

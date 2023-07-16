@@ -40,7 +40,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
     cors: {
 
-        origins: ['http://localhost:8080']
+        origins: ['http://159.203.128.74:80']
     }
 });
 io.on('connection', (socket) => {
@@ -61,24 +61,16 @@ app.use('/', skinRoute);
 // CSP configuration
 
 
-
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    next();
-});
-
-app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin','*')
     res.setHeader('Cross-Origin-Resource-Policy','*')
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
     next();
   });
 
 helmet.contentSecurityPolicy({
-    connectSrc: ["'self'", 'http://localhost:5173/'],
+    connectSrc: ["'self'", 'http://159.203.128.74:5173/'],
   })
 
 
