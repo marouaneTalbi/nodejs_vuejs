@@ -1,8 +1,8 @@
 import axios from 'axios';    
 
-// export const serverURI = 'http://159.203.128.74:3002';
+export const serverURI = 'http://159.203.128.74:3000';
 
-export const serverURI = 'http://localhost:3000';
+// export const serverURI = 'http://localhost:3000';
 
 // à changer
 const token = localStorage.getItem('token');

@@ -129,9 +129,9 @@ function getUserRole() {
   const token = Cookies.get('token');
   if (token) {
     try {
-      const decodedToken = jwtDecode(token);
-      if (decodedToken && decodedToken.role) {
-        return decodedToken.role;
+      const decodedToken:any = jwtDecode(token);
+      if (decodedToken && decodedToken!.role) {
+        return decodedToken!.role;
       }
     } catch (error) {
       console.error('Error decoding token:', error);
@@ -148,9 +148,11 @@ router.beforeEach((to, from, next) => {
       next('/login');
     } else {
       const userRole = getUserRole();
-      const requiredRoles = to.meta.requiredRoles;
+      const requiredRoles : any = to.meta.requiredRoles;
 
-      if (requiredRoles.some((role) => userRole === role)) {
+      
+
+      if (requiredRoles.some((role:any  ) => userRole === role)) {
 
         next();
       } else {
