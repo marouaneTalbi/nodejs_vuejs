@@ -49,7 +49,7 @@ const server = https.createServer(options, app);
 const io = require('socket.io')(server, {
     cors: {
 
-        origins: ['http://159.203.128.74:80']
+        origins: ['http://challenge.ovh:80']
     }
 });
 io.on('connection', (socket) => {
@@ -79,7 +79,7 @@ app.use((req, res, next) => {
   });
 
 helmet.contentSecurityPolicy({
-    connectSrc: ["'self'", 'http://159.203.128.74:5173/'],
+    connectSrc: ["'self'", 'http://challenge.ovh:5173/'],
   })
 
 
