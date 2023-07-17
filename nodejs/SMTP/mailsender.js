@@ -1,3 +1,5 @@
+const { serverURI } = require('../controllers/skin/SkinController');
+
 const mailjet = require('node-mailjet').apiConnect(
     '94cb59578ce8bf999fba891984ba559f',
     '9655b7604d4692e64eaacf74939f2ee9',
@@ -20,7 +22,9 @@ module.exports = {
                     ],
                     Subject: 'Account Confirmation',
                     TextPart: 'Greetings from Mailjet!',
-                    HTMLPart: `<h3>Dear Gamer, welcome to our Gaming App</h3><br>Click <a href="http://localhost:5173/confirm?token=${token}">here</a> to confirm your account.`,
+                    // HTMLPart: `<h3>Dear Gamer, welcome to our Gaming App</h3><br>Click <a href="http://localhost:5173/confirm?token=${token}">here</a> to confirm your account.`,
+                    HTMLPart: `<h3>Dear Gamer, welcome to our Gaming App</h3><br>Click <a href="${serverURI}/confirm?token=${token}">here</a> to confirm your account.`,
+
                 },
             ],
         });

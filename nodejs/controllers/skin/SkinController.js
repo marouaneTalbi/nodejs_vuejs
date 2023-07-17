@@ -6,6 +6,8 @@ const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 var base64ToImage = require('base64-to-image');
 
+export const serverURI = 'https://challenge.ovh';
+
 exports.getAllSkins = async (req, res) => {
   try {
     const skins = await Skin.findAll();
@@ -168,8 +170,8 @@ exports.purchaseSkin = async (req, res) => {
           },
         ],
         mode: 'payment',
-        success_url: 'http://localhost:5173/skins_to_buy', // URL de succès du paiement
-        cancel_url: 'http://localhost:5173/skins', // URL d'annulation du paiement
+        success_url: `${serverURI}/skins_to_buy`, // URL de succès du paiement
+        cancel_url: `${serverURI}/skins`, // URL d'annulation du paiement
       });
       res.json({ sessionId: session.id });
 

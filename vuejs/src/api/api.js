@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 // prod
-export const serverURI = 'https://challenge.ovh';
+export const serverURI = 'https://challenge.ovh:3000';
 
 // export const serverURI = 'http://localhost:3000';
 
