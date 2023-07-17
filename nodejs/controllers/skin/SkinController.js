@@ -6,7 +6,7 @@ const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 var base64ToImage = require('base64-to-image');
 
-export const serverURI = 'https://challenge.ovh';
+const serverURI = 'https://challenge.ovh';
 
 exports.getAllSkins = async (req, res) => {
   try {
