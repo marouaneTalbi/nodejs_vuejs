@@ -65,6 +65,36 @@ module.exports = {
                 console.log(err.statusCode);
                 throw err;
             });
+    },
+    sendForgotPassword: function (email, token) {
+        const request = mailjet.post('send', { version: 'v3.1' }).request({
+            Messages: [
+                {
+                    From: {
+                        Email: 'aminecherigui44@gmail.com',
+                        Name: 'Challenge Stack',
+                    },
+                    To: [
+                        {
+                            Email: email,
+                            Name: 'You',
+                        },
+                    ],
+                    Subject: 'Forgot Password',
+                    TextPart: 'Greetings from Mailjet!',
+                    HTMLPart: `<h3>Dear Gamer, welcome to our Gaming App</h3><br>Click <a href="http://localhost:5173/initPassword?token=${token}">here</a> to initialise your Password.`,
+                },
+            ],
+        });
+        return request
+            .then(result => {
+                console.log(result.body);
+                return result.body;
+            })
+            .catch(err => {
+                console.log(err.statusCode);
+                throw err;
+            });
     }
 };
 

@@ -16,7 +16,8 @@
     </form>
 
     <div class="register-link">
-      Don't have an account? <router-link to="/register">Register</router-link>
+      Don't have an account? <router-link to="/register">Register</router-link><br>
+      <router-link to="/forgot-password">Forgot Password ?</router-link>
     </div>
   </div>
   <div class="des-container bg-img-container">

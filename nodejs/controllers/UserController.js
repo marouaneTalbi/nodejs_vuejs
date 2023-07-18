@@ -172,7 +172,6 @@ exports.register = async (req, res) => {
 
 exports.confirm = async (req, res) => {
   const token = req.body.token;
-  console.log(token)
   try {
     const user = await User.findOne({
       where: {
@@ -244,7 +243,6 @@ exports.updateIsConfirmed = async (req,res) => {
 
 
 exports.changePassword = async (req, res) => {
-  console.log("test")
   const userId = req.params.id;
   const { oldPassword, newPassword } = req.body;
   try {
@@ -295,5 +293,38 @@ exports.getUserSkin = async (req, res) => {
   } catch (error) {
     console.error('Une erreur s\'est produite lors de la récupération des skins de l\'utilisateur:', error);
     res.status(500).json({ message: 'Une erreur s\'est produite lors de la récupération des skins de l\'utilisateur' });
+  }
+};
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { mail } = req.body;
+    const existUser = await User.findOne({ where: { mail } });
+    if (existUser) {
+      const token = jwt.sign({ id: existUser.id }, 'secretKey');
+      await existUser.update({forgot_pwd:token});
+      await mailSender.sendForgotPassword(existUser.mail, token)
+      res.status(409).json({ message: 'Utilisateur trouvé' });
+    }else {
+      res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Une erreur s\'est produite lors de le recuperation du mdp' });
+  }
+};
+
+exports.initPassword = async (req, res) => {
+  try {
+    const { password, token } = req.body;
+    const existUser = await User.findOne({ where: { forgot_pwd:token } });
+    if (existUser) {
+      existUser.password = await bcrypt.hash(password, 10);
+      await existUser.save();
+      res.json({ message: 'Mot de passe modifié avec succès' });
+    }else {
+      res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Une erreur s\'est produite lors de le recuperation du mdp' });
   }
 };
