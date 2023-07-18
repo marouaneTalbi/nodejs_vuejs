@@ -79,6 +79,10 @@ const User = sequelize.define('_user', {
   verificationcode: {
     type: DataTypes.INTEGER,
     allowNull: true,
+  },
+  forgot_pwd: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
   }
 }, {
   tableName: '_user',

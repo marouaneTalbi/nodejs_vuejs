@@ -18,6 +18,9 @@ route.post('/logout',  UserController.logout);
 route.get('/current-user', UserController.getCurrentUser);
 route.post('/confirm', UserController.confirm)
 route.get('/user/:id/postgres', UserController.getUserById)
+route.post('/forgotPassword',  UserController.forgotPassword);
+route.post('/initPassword',  UserController.initPassword);
+
 // USER
 route.get('/user/:id', AdminController.getUser)
 route.get('/users', AdminController.getUsers)
