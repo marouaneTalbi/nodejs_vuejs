@@ -1,7 +1,11 @@
 const express = require('express');
 const app = express();
+
+// ROUTING
 const route = require('./routes/userRoute');
 const skinRoute = require('./routes/skinRoute');
+const gameRoute = require('./routes/gameRoute');
+
 const User = require("./controllers/UserController")
 const helmet = require('helmet');
 const cors = require('cors');
@@ -58,6 +62,7 @@ app.use(express.urlencoded({extended: false}))
 // ROUTES
 app.use('/', route);
 app.use('/', skinRoute);
+app.use('/', gameRoute);
 // CSP configuration
 
 
