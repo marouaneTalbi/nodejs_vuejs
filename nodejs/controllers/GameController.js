@@ -72,10 +72,10 @@ exports.updateGame = async(gameId, updatedData) => {
     
         await game.update(updatedData);
 
-        return res.status(200).json({ game });
+        return game;
 
     } catch (error) {
-        return res.status(500).json({ message: 'Erreur lors de la mise à jour de la game' });
+        return 'Erreur lors de la mise à jour de la game' ;
     }
 }
 
@@ -83,7 +83,6 @@ exports.findGameByCode = async (code) => {
     try {
 
         const game = await Game.findOne({ where: { code } });
-        console.log('game : ', game)
         return game;
 
     } catch (error) {
