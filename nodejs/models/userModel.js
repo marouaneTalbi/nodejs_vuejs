@@ -66,7 +66,6 @@ const User = sequelize.define('_user', {
     }
   },
   createdat: {
-
     type: DataTypes.DATE,
     allowNull: false,
     defaultValue: DataTypes.NOW,
@@ -99,8 +98,12 @@ User.afterCreate(async (user, options) => {
       _id: user.id, 
       pseudo: user.pseudo, 
       mail: user.mail, 
+      createdat: user.createdat,
+      coins: user.coins,
+      role: user.role,
+      picture: user.picture,
+      ratio: user.ratio,
       password: user.password,
-      createdat: user.createdat
     })
     console.log('User creation in MongoDB successful');
   } catch (error) {

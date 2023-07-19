@@ -16,6 +16,7 @@ CREATE TABLE _user (
   pseudo VARCHAR(255) NOT NULL,
   mail VARCHAR(255),
   password VARCHAR(255),
+  forgot_pwd VARCHAR(255),
   picture VARCHAR(255),
   coins INT,
   ratio DECIMAL(10,2),

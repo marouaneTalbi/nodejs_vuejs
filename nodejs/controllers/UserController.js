@@ -157,7 +157,7 @@ exports.register = async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, 10);
       const buffer = crypto.randomBytes(32).toString('hex');
       try {
-      const newUser = await User.create({ mail, password: hashedPassword, pseudo: pseudo, token:buffer, createdat: new Date() });
+      const newUser = await User.create({ mail, password: hashedPassword, pseudo: pseudo, token:buffer, createdat: new Date(),coins:100 });
       await mailSender.sendConfirmationEmail(newUser.mail, newUser.token);
       const token = jwt.sign({ id: newUser.id }, 'secretKey');
       res.json({ token });

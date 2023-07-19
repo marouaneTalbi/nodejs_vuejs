@@ -46,11 +46,11 @@ function saveSkinImage(imageTitle, imageData) {
 }
 
 exports.createSkin = async (req, res) => {
-  const { title, price, picture, money_type} = req.body;
+  const { title, price, picture, money_type, coins_price} = req.body;
   const pictureName =  saveSkinImage(title, picture)
 
   try {
-    const newSkin = await Skin.create({ title, price, picture:pictureName, money_type});
+    const newSkin = await Skin.create({ title, price, picture:pictureName, money_type, coins_price});
 
     res.status(201).json(newSkin);
   } catch (error) {
@@ -95,8 +95,10 @@ exports.deleteSkin = async (req, res) => {
 };
 
 exports.purchaseSkin = async (req, res) => {
+  
     const userId = req.body.userId;
     const skinId = req.body.skinId;
+    console.log(userId, skinId)
     try {
       const user = await User.findByPk(userId);
       if (!user) {
@@ -106,6 +108,7 @@ exports.purchaseSkin = async (req, res) => {
       if (!skin) {
         return res.status(404).json({ message: 'Skin non trouvé' });
       }
+
         user.skins_fk_id = skinId;
         user.addSkin(skin)
         await user.save();

@@ -30,6 +30,10 @@ const Skin = sequelize.define('skin', {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
   },
+  coins_price: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: false,
+  },
   money_type: {
     type: DataTypes.STRING(255),
     allowNull: false,

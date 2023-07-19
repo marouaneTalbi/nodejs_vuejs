@@ -13,6 +13,7 @@
             <th>TITLE</th>
             <th >PRICE</th>
             <th>MONEY TYPE</th>
+            <th>COINS PRICE</th>
             <th>PICTURE</th>
             <th>ACTION</th>
           </tr>
@@ -20,6 +21,7 @@
             <td style="text-align: left;" class="status" >  {{ skin.title }}</td>
             <td style="text-align: center;" class="status">  {{ skin.price }}</td>
             <td style="text-align: center;" class="status">{{ skin.money_type }}</td>
+            <td style="text-align: center;" class="status">{{ skin.coins_price }}</td>
             <td style="text-align: center;" class="status">
               <img :src="getPictureUrl(skin.picture)" alt="" style="height: 100px; width: 100px; object-fit: contain;">
             </td>
@@ -49,10 +51,14 @@
             <input type="file" style="color:white" id="picture" @change="handlePictureChange" placeholder="Photo" required>
           </div>
 
-
           <div class="form-group">
             <label for="money_type">Type de monnaie</label>
             <input type="text" style="color:white" v-model="money_type" id="money_type" placeholder="Type de monnaie" required>
+          </div>
+
+          <div class="form-group">
+            <label for="money_type">Coins</label>
+            <input type="text" style="color:white" v-model="coins_price" id="coins_price" placeholder="Coins" required>
           </div>
           <!-- <button type="submit">Créer</button> -->
         </form>
@@ -90,13 +96,14 @@ export default {
       title: '',
       price: '',
       money_type: '',
+      coins_price: '',
       picture: null,
       image: null,
       base64: null
     };
   },
   mounted() {
-    this.getSkins();
+   this.getSkins();
   },
   methods: {
     getPictureUrl(picture) {
@@ -116,7 +123,6 @@ export default {
     getSkins() {
       fetchData('/skins')
       .then(response => {
-        console.log(response)
         this.skins = response.data
       })
       .catch(error => {
@@ -162,7 +168,8 @@ export default {
         title: this.title,
         price: this.price,
         money_type: this.money_type,
-        picture: this.picture
+        picture: this.picture,
+        coins_price: this.coins_price 
       };
 
       if (isNaN(parseFloat(newSkin.price))) {
