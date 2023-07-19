@@ -1,28 +1,47 @@
 const GameController = require('../controllers/GameController');
-const UserGameService = require('../services/userGameService');
+const UserGameController = require('../controllers/UserGame/UserGameController');
 
 module.exports = function (socket) {
-    socket.on('joinWaitingRoom', async ({gamemode, userId}) => {
+    socket.on('joinWaitingRoom', async ({gamemode, userId, code}) => {
         try {
-            const game = await GameController.createGame(gamemode, userId);
+
+            let game
+            
+            if(code != null && gamemode == "private") {
+
+                game = await GameController.findGameByCode(code);
+
+                if (game === null) {
+                    socket.emit('joinPrivateGameError', 'Code invalide. Partie privée non trouvée.');
+                    return;
+                }
+
+                await UserGameController.createUserGame(game.id, userId);
+
+            } else {
+
+                game = await GameController.createGame(gamemode, userId);
+                
+            }
 
             socket.userId = userId;
             socket.gameId = game.id;
-
             socket.join(game.id);
-
             socket.emit('joinGameSucces', game.id);
 
-            const playersCount = await UserGameService.UsersInGame(game.id);
-
+            const playersCount = await UserGameController.UsersInGame(game.id);
+            
             if (playersCount === 2) {
+
                 socket.to(game.id).emit('waitingForPlayers', playersCount);
-                
                 await GameController.updateGame(game.id, {
                     status: 'progress'
                 })
+
             } else {
+
                 socket.emit('waitingForPlayers', playersCount);
+
             }
 
         } catch (error) {
