@@ -183,6 +183,7 @@ exports.confirm = async (req, res) => {
     }
     user.isconfirmed = true;
     await user.save();
+    await mailSender.sendWelcomEmail(user.mail);
     res.send('Votre compte est confirmé');
   } catch (error) {
     console.error('An error occurred:', error);
