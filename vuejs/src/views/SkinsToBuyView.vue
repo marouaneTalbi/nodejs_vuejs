@@ -1,55 +1,40 @@
 <template>
     <section class="dashboard">
+    <Header />
+
       <div id="card-element"></div>
-      <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive">
-        <div class="modal-content" v-if="currentModal === 'createSkin'">
-          <h2 style="color: white;">Créer le Skin</h2>
-          <form @submit.prevent="handleConfirm">
-            <div class="form-group">
-              <label for="title">Titre</label>
-              <input type="text" style="color:white" v-model="title" id="title" placeholder="Titre" required>
-            </div>
-            <div class="form-group">
-              <label for="price">Prix</label>
-              <input type="text" style="color:white" v-model="price" id="price" placeholder="Prix" required>
-              <p v-if="!isValidPrice" class="error-message">Veuillez entrer une valeur numérique pour le prix.</p>
-            </div>
-  
-            <div class="form-group">
-              <label for="picture">Photo</label>
-              <input type="file" style="color:white" id="picture" @change="handlePictureChange" placeholder="Photo" required>
-            </div>
-  
-            <div class="form-group">
-              <label for="money_type">Type de monnaie</label>
-              <input type="text" style="color:white" v-model="money_type" id="money_type" placeholder="Type de monnaie" required>
-            </div>
-          </form>
-        </div>
-      </Modal>
-    <div class="container">
-      <div class="card-list" v-if="!modalActive">
-        <div class="card" v-for="skin in skins" :key="skin._id">
-          <div class="card-image">
-            <!-- <img :src="skin.picture" alt="Skin Image"> -->
-            <img :src="getPictureUrl(skin.picture)" alt="" style=" object-fit: contain;">
+        <Popup @close="paymentToggleModal"  :popupActive="paymentModalActive" >
+          <div class="popupButtons">
+            <button class="buy-button" @click="buySkin()">Payer par carte</button>
+            <button class="buy-button" @click="buyByCoins()">Payer avec Les Coins</button>
           </div>
-          <div class="card-content">
-            <h4>{{ skin.title }}</h4>
-            <p>{{ skin.price }}</p>
-            <button class="buy-button" @click="buySkin(skin)">Acheter</button>
+        </Popup>
+
+        <div class="container">
+          <div class="card-list">
+            <div class="card" v-for="skin in skins" :key="skin._id">
+              <div class="card-image">
+                <img :src="getPictureUrl(skin.picture)" alt="" style=" object-fit: contain;">
+              </div>
+              <div class="card-content">
+                <h4 class="titleStyle">{{ skin.title }}</h4>
+                <div class="pricesContainer">
+                  <p class="titleStyle">{{ skin.price }}$</p>
+                  <p class="titleStyle">{{ skin.coins_price }} coins</p>
+                </div>
+                <button class="buy-button" @click="openModal(skin)">Acheter</button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  
     </section>
   </template>
   
   <script>
-  import { fetchData, postData, serverURI } from '../api/api';
+  import { fetchData, postData, serverURI, patchData } from '../api/api';
   import Header from '../components/Header.vue';
-  import Modal from '../components/Modal.vue';
+  import Popup from '../components/Popup.vue';
+
   import { ref } from 'vue';
   import { toast } from 'vue3-toastify';
   import 'vue3-toastify/dist/index.css';
@@ -61,16 +46,20 @@
   export default {
     components: {
       Header,
-      Modal,
+      Popup,
       loadStripe
     },
     setup() {
       const modalActive = ref(false);
+      const paymentModalActive = ref(false);
       const toggleModal = () => {
         modalActive.value = !modalActive.value;
       };
+      const paymentToggleModal = () => {
+        paymentModalActive.value = !paymentModalActive.value;
+      };
       const isValidPrice = ref(true);
-      return { modalActive, toggleModal, currentModal: null, isValidPrice };
+      return { modalActive, toggleModal, currentModal: null, isValidPrice, paymentModalActive, paymentToggleModal, currentPaymentModal: null, };
     },
     data() {
       return {
@@ -90,6 +79,10 @@
       this.getSkins();
     },
     methods: {
+      openModal(skin){
+        this.paymentModalActive = true;
+        this.skin = skin
+      },
       getSkins() {
         fetchData('/skins')
           .then(response => {
@@ -105,7 +98,7 @@
       getPictureUrl(picture) {
         return `${serverURI}${picture}`;
       },
-    async buySkin(skin) {
+    async buySkin() {
       const token = Cookies.get('token');
       const [header, payload, signature] = token.split('.');
       const decodedPayload = JSON.parse(atob(payload));
@@ -113,18 +106,16 @@
 
       const stripePromise = loadStripe('pk_test_51IM8ZrEwRtoFpDAHs6Iu7d92N4DPiPWs4MjYP3BhnlNyf0Lz3itqGdpugMYLXIMyHZeQvxNyH4FCEAAtoJv9b7V600AGKAwSrE');
       const stripe = await stripePromise;
-      const response = await postData('/skin/pay', {skin})
+      const response = await postData('/skin/pay', {skin: this.skin})
       const sessionId = response.data.sessionId;
 
       if(sessionId) {
-        postData('/skin/purchase', {userId:userId, skinId:skin.id})
+         postData('/skin/purchase', {userId:userId, skinId:this.skin.id})
       }
 
       const { error } = await stripe.redirectToCheckout({
         sessionId: sessionId
       });
-
-
 
       if(error) {
         toast(error.message, {
@@ -132,6 +123,42 @@
           type: 'error'
         });
       } 
+    },
+    async buyByCoins(){
+      const token = Cookies.get('token');
+      const [header, payload, signature] = token.split('.');
+      const decodedPayload = JSON.parse(atob(payload));
+      const userId = decodedPayload.id;
+
+      const currentUser = await fetchData('/user/'+userId)
+
+      console.log(currentUser.data.coins , this.skin.coins_price)
+
+      if(currentUser.data.coins >= this.skin.coins_price){
+        const newCoinsValue = currentUser.data.coins - this.skin.coins_price
+
+        patchData('/user/' + userId, {coins : newCoinsValue})
+        .then( response => {
+          postData('/skin/purchase', {userId:userId, skinId:this.skin.id})
+          toast('Le Skin a bien été acheté', {
+            autoClose: 2000,
+            type: 'success'
+          })
+        })
+
+        .catch(error => {
+          toast(error.message, {
+            autoClose: 2000,
+            type: 'error',
+          })
+        })
+
+      } else {
+        toast('vous n\'avez pas asse de coins', {
+            autoClose: 2000,
+            type: 'error',
+        })
+      }
     }
   }
   };
@@ -145,8 +172,7 @@
   }
   
   .card {
-    background-color: #f0f0f0;
-    
+    background-color: #f0f0f035;
     border-radius: 8px;
     padding: 4px;
   }
@@ -168,13 +194,27 @@
   }
   
   .buy-button {
+    height: 40px;
+    width: 40%;
     margin-top: 10px;
     padding: 10px 20px;
-    background-color: #2196f3;
     color: #fff;
     border: none;
-    border-radius: 4px;
+    border-radius: 10px;
     cursor: pointer;
+  }
+  .popupButtons{
+    display: flex;
+    margin: 3%;
+    justify-content: space-between;
+    padding: 10px;
+  }
+  .titleStyle {
+    color:#fff
+  }
+  .pricesContainer{
+    display: flex;
+    justify-content: space-between;
   }
   </style>
   

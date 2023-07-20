@@ -1,7 +1,7 @@
 <template>
     <section class="user">
         <Header />
-        <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive">
+        <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive" :showConfirmButton="true">
             <div class="modal-content" v-if="currentModal === 'delete'">
                 <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 15V7m0 8 5.504 3.145A1 1 0 0 0 20 17.277V4.723a1 1 0 0 0-1.496-.868L13 7m0 8h-3m3-8H7a4 4 0 0 0-4 4v0a4 4 0 0 0 4 4v0m0 0v4.5A1.5 1.5 0 0 0 8.5 21v0a1.5 1.5 0 0 0 1.5-1.5V15m-3 0h3"></path></svg>
                 <h2>Supprimer un utilisateur</h2>
@@ -16,8 +16,9 @@
         </Modal>
 
 
-        <!-- <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive">
-            <div class="modal-content" v-if="currentModal === 'skins'" style="width: 600px;">
+
+        <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive" v-if="skin">
+            <div class="modal-content" v-if="currentModal === 'skins'" >
                 <div class="card-list">
                     <div v-for="skin in skins" :key="skin.id" class="card">
                         <div class="card-image">
@@ -30,7 +31,7 @@
                     </div>
                 </div>
             </div>
-        </Modal>  -->
+        </Modal>  
 
         <div class="container">
             <div class="block">
@@ -66,9 +67,16 @@
                     </div>
                     <div class="row">
                         <div class="text">
-                            <!-- <span class="pseudo-title">Skin</span>
+                            <span class="pseudo-title">Coins</span>
                             <br />
-                            <span class="pseudo">{{ skin.title }}</span> -->
+                            <span class="pseudo">{{ user?.coins }}</span>
+                        </div>
+                    </div>
+                    <div class="row" v-if="skin">
+                        <div class="text">
+                            <span class="pseudo-title">Skin</span>
+                            <br />
+                            <span class="pseudo">{{ skin?.title }}</span>
                         </div>
                     </div>
                 </div>
@@ -86,7 +94,7 @@
                         <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 12-6-6m6 6-6 6m6-6H5"></path></svg>
                     </div>
 
-                    <div class="footer" @click="openModal('skins')">
+                    <div class="footer" @click="openModal('skins')"  v-if="skin">
                         Voir mes skins
                         <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 12-6-6m6 6-6 6m6-6H5"></path></svg>
                     </div>
@@ -141,6 +149,7 @@ export default {
         getUser(userId) {
             fetchData('/user/' + userId)
             .then(response => {
+                console.log(response)
                 this.user = response.data
                 this.pseudo = response.data.pseudo;
             })
@@ -148,7 +157,6 @@ export default {
             });
         },
         getPictureUrl(picture) {
-            console.log(picture)
             return `${serverURI}/pictures/skins/${picture}`;
         },
 
@@ -161,7 +169,6 @@ export default {
             });
         },
         assignUserSkin(data, userId) {
-            console.log(userId)
             postData('/skin/assign', data)
             .then(response => {
                 toast('Skin vous a bien été affecter', {
@@ -185,22 +192,13 @@ export default {
                 userId: this.$route.params.id,
                 skinId: skin.id,
             };
-
             this.assignUserSkin(newSkin, this.$route.params.id)
-
         },
         getUserSkin(userId){
-            console.log('test')
             fetchData('/user/skin/' + userId)
             .then(response => {
                 this.skin = response.data
             })
-            .catch(error => {
-                toast(error.message, {
-                    autoClose: 2000,
-                    type: 'error',
-                })
-            });
         },
         deleteUser(userId) {
             deleteData('/user/', userId)
@@ -241,7 +239,9 @@ export default {
             const userId = this.$route.params.id;
 
             if(this.currentModal == 'delete') {
-                this.deleteUser(userId);
+                console.log(userId)
+                // this.deleteUser(userId);
+                // this.$router.push('/admin');
             }
 
             if(this.currentModal == 'edit') {
@@ -257,17 +257,16 @@ export default {
 </script>
 <style scoped>
 .card-list {
-  display: flex;
-  height: 100%;
-  width: 100%;
-  justify-content:space-between;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .card {
   background-color: #f0f0f0;
   border-radius: 8px;
   padding: 4px;
-  width: 100%;
+  width: 20%;
   margin: 10px;
 }
 

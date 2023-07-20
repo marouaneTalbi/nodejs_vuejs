@@ -25,6 +25,12 @@
                 <input type="text" v-model="money_type" placeholder="Type de monnaie" required>
                 </form>
             </div>
+            <div class="modal-content" v-if="currentModal === 'editCoins'">
+                <h2>Modifier le prix de Coins</h2>
+                <form @submit.prevent="handleConfirm">
+                <input type="text" v-model="coins_price" placeholder="Coins" required>
+                </form>
+            </div>
             <div class="modal-content" v-if="currentModal === 'editPicture'">
                 <h2>Modifier la Photo</h2>
                 <form @submit.prevent="handleConfirm" sty>

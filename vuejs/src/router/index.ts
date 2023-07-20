@@ -16,6 +16,8 @@ import Skins from '../views/SkinsView.vue'
 import Skin from '../views/SkinView.vue'
 import SkinsToBuY from '../views/SkinsToBuyView.vue'
 import Confirm from "@/views/security/confirm.vue";
+import ForgotPassword from "@/views/security/forgotPassword.vue";
+import InitPassword from "@/views/security/initPassword.vue";
 
 
 
@@ -121,6 +123,18 @@ const router = createRouter({
       name: 'confirm',
       component: Confirm,
       meta: { requiresAuth: false, requiredRoles: ['gamer', 'admin']}
+    },
+    {
+      path: '/forgot-password',
+      name: 'forgotPassword',
+      component: ForgotPassword,
+      meta: { requiresAuth: false, requiredRoles: []}
+    },
+    {
+      path: '/initPassword',
+      name: 'initPassword',
+      component: InitPassword,
+      meta: { requiresAuth: false, requiredRoles: []}
     }
   ]
 })

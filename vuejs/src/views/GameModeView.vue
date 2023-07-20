@@ -1,6 +1,21 @@
 <template>
   <section class="gamemode">
     <Header />
+
+    <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive" :showConfirmButton="false">
+      <div class="modal-content">
+        <h2>Private Game</h2>
+        <button @click="joinWaitingRoom('private')">Créer</button>
+        <hr />
+        <form @submit.prevent="handleConfirm">
+          <input type="text" v-model="code" placeholder="Code" required>
+          <button>
+            <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m10 7 5 5-5 5"></path></svg>
+          </button>
+        </form>
+      </div>
+    </Modal>
+
     <h3>GAMEMODE</h3>
     <div class="card-container">
       <div class="card card--ranked" @click="joinWaitingRoom('ranked')">
@@ -17,7 +32,7 @@
           <p>L'unranked est un mode de jeu décontracté où les joueurs peuvent jouer sans se soucier d'un classement ou d'un niveau de compétition spécifique.</p>
         </div>
       </div>
-      <div class="card card--private" @click="joinWaitingRoom('private')">
+      <div class="card card--private" @click="openModal()">
         <img src="../styles/images/battle_helmet.png" />
         <div class="content">
           <h4>PRIVATE</h4>
@@ -34,9 +49,15 @@ import SocketioService from '../services/socketio.service';
 import { fetchData } from '../api/api';
 import Cookies from 'js-cookie';
 
+import Modal from '../components/Modal.vue';
+import { ref } from 'vue';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+
 export default {
   components: {
     Header,
+    Modal
   },
 
   data() {
@@ -49,9 +70,23 @@ export default {
     SocketioService.setupSocketConnection();
     SocketioService.joinGameSucces();
     this.getCurrentUser();
+
+    SocketioService.joinPrivateGameError((error) => {
+      toast(error, {
+        autoClose: 2000,
+        type: 'error'
+      })
+    });
   },
 
   setup() {
+
+    const modalActive = ref(false);
+    const code = ref('');
+
+    const toggleModal = () => {
+      modalActive.value = !modalActive.value;
+    }
 
     // Émettre l'événement pour rejoindre une salle d'attente
     const joinWaitingRoom = (gamemode) => {
@@ -65,11 +100,19 @@ export default {
 
     return {
       joinGameSucces,
+      modalActive, 
+      toggleModal, 
+      currentModal: null,
+      code
     };
   },
   methods: {
     joinWaitingRoom(gamemode) {
-      SocketioService.joinWaitingRoom(gamemode, this.userId);
+      SocketioService.joinWaitingRoom(gamemode, this.userId, null);
+    },
+
+    joinWaitingRoomWithCode(gamemode) {
+      SocketioService.joinWaitingRoom(gamemode, this.userId, this.code);
     },
 
     getCurrentUser() {
@@ -80,6 +123,20 @@ export default {
         this.userId = decodedPayload.id;
       }
     },
+
+
+    openModal() {
+      this.modalActive = true;
+    },
+
+    handleConfirm() {
+      this.joinWaitingRoomWithCode('private');
+      this.closeModal();
+    },
+
+        closeModal() {
+            this.modalActive = false;
+        }
   },
 }
 </script>

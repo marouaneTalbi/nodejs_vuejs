@@ -1,4 +1,4 @@
-.modal {
+.popup {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,9 +8,8 @@
     top: 0;
     left: 0;
     background-color: rgba(0,0,0,0.7);
-    z-index: 10;
 
-    & .modal-inner {
+    & .popup-inner {
         position: relative;
         max-width: 640px;
         width: 80%;
@@ -52,27 +51,27 @@
 }
 
 //ANIMATIONS//
-.modal-animation-enter-active,
-.modal-antimation-leave-active {
+.popup-animation-enter-active,
+.popup-antimation-leave-active {
     transition: opacity 0.3s cubic-bezier(0.52, 0.02, 0.19, 1.02);
 }
 
-.modal-animation-enter-from,
-.modal-animation-leave-to {
+.popup-animation-enter-from,
+.popup-animation-leave-to {
     opacity: 0;
 }
 
-.modal-animation-inner-enter-active {
+.popup-animation-inner-enter-active {
     transition: all 0.3s cubic-bezier(0.52, 0.02, 0.19, 1.02) 0.15s;
 }
-.modal-animation-inner-leave-active {
+.popup-animation-inner-leave-active {
     transition: all 0.3s cubic-bezier(0.52, 0.02, 0.19, 1.02);
 }
 
-.modal-animation-inner-enter-from {
+.popup-animation-inner-enter-from {
     opacity: 0;
     transform: scale(0.8);
 }
-.modal-animation-inner-leave-to {
+.popup-animation-inner-leave-to {
     transform: scale(0.8);
 }

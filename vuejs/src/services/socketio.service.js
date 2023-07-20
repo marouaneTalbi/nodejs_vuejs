@@ -10,9 +10,16 @@ class SocketioService {
         this.socket = io(serverURI);
     }
 
-    joinWaitingRoom(gamemode, userId) {
-        this.socket.emit('joinWaitingRoom', { gamemode, userId });
+    joinWaitingRoom(gamemode, userId, code) {
+        this.socket.emit('joinWaitingRoom', { gamemode, userId, code });
     }
+
+    joinPrivateGameError(callback) {
+        this.socket.on('joinPrivateGameError', (error) => {
+            console.log('ggggg')
+          callback(error);
+        });
+      }
     
     waitingForPlayers(callback) {
         this.socket.on('waitingForPlayers', (playersCount) => {
