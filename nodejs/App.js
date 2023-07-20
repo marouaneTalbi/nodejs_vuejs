@@ -53,6 +53,7 @@ const io = require('socket.io')(server, {
         origins: ['http://159.203.128.74:80']
     }
 });
+
 io.on('connection', (socket) => {
     gameSocket(socket);
 });

@@ -20,10 +20,13 @@ CREATE TABLE _user (
   picture VARCHAR(255),
   coins INT,
   ratio DECIMAL(10,2),
+  role VARCHAR(255),
+  verificationcode INT,
   token VARCHAR,
   isconfirmed BOOLEAN DEFAULT false,
   points INT,
   skins_fk_id INT,
+  createdat TIMESTAMP
   FOREIGN KEY (skins_fk_id) REFERENCES skin(id)
 );
 
@@ -85,6 +88,9 @@ CREATE TABLE user_game (
 
 -- Création de la relation entre user et grade
 ALTER TABLE _user ADD COLUMN grade_id INT;
+ALTER TABLE _user ADD COLUMN verificationcode  INT;
+ALTER TABLE _user ADD COLUMN role  VARCHAR;
+
 ALTER TABLE _user ADD FOREIGN KEY (grade_id) REFERENCES grade(id);
 
 -- Création de la relation entre user et payment

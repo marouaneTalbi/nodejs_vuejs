@@ -60,7 +60,7 @@
             <label for="money_type">Coins</label>
             <input type="text" style="color:white" v-model="coins_price" id="coins_price" placeholder="Coins" required>
           </div>
-          <!-- <button type="submit">Créer</button> -->
+          <button type="submit">Créer</button>
         </form>
       </div>
     </Modal>
