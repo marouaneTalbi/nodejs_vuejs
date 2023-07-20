@@ -17,7 +17,7 @@
 
 
 
-        <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive" v-if="skin">
+        <Modal @close="togglePopupModal" @confirm="handleConfirm" :modalActive="modalPopupActive" >
             <div class="modal-content" v-if="currentModal === 'skins'" >
                 <div class="card-list">
                     <div v-for="skin in skins" :key="skin.id" class="card">
@@ -65,14 +65,14 @@
                             <span class="pseudo">14/07/21</span>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" >
                         <div class="text">
                             <span class="pseudo-title">Coins</span>
                             <br />
-                            <span class="pseudo">{{ user?.coins }}</span>
+                            <span class="pseudo">{{ user?.coins  ? user?.coins  : 0}}</span>
                         </div>
                     </div>
-                    <div class="row" v-if="skin">
+                    <div class="row" v-if="skin.title">
                         <div class="text">
                             <span class="pseudo-title">Skin</span>
                             <br />
@@ -94,7 +94,7 @@
                         <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 12-6-6m6 6-6 6m6-6H5"></path></svg>
                     </div>
 
-                    <div class="footer" @click="openModal('skins')"  v-if="skin">
+                    <div class="footer" @click="openModal('skins')"  v-if="skin.title">
                         Voir mes skins
                         <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 12-6-6m6 6-6 6m6-6H5"></path></svg>
                     </div>
@@ -129,8 +129,13 @@ export default {
         const toggleModal = () => {
             modalActive.value = !modalActive.value;
         }
+        const modalPopupActive = ref(false);
+        const togglePopupModal = () => {
+            modalPopupActive.value = !modalPopupActive.value;
+        }
 
-        return { modalActive, toggleModal, currentModal: null, pseudo }
+
+        return { modalActive, toggleModal, currentModal: null, pseudo, modalPopupActive, togglePopupModal, currentPopupModal: null}
     },
     data() {
         return {

@@ -1,11 +1,13 @@
 -- Création de la table skin
 CREATE TABLE skin (
-  id INT PRIMARY KEY,
-  title VARCHAR(255),
-  picture VARCHAR(255),
-  price DECIMAL(10,2),
-  mony_type VARCHAR(255)
+    id SERIAL PRIMARY KEY,
+    title TEXT,
+    picture TEXT,
+    price DECIMAL,
+    coins_price DECIMAL,
+    money_type TEXT
 );
+
 
 -- Créer une séquence pour la colonne id
 CREATE SEQUENCE user_id_seq;

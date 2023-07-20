@@ -63,12 +63,16 @@ exports.createSkin = async (req, res) => {
 
 exports.updateSkin = async (req, res) => {
   const skinId = req.params.id;
-  const { title, price, picture, money_type } = req.body;
-  const pictureName =  saveSkinImage(title, picture)
+  const { title, price, picture, money_type, coins_price } = req.body;
   try {
     const skin = await Skin.findByPk(skinId);
     if (skin) {
-      await skin.update({ title, price,  picture:pictureName, money_type });
+      if(picture) {
+        const pictureName =  saveSkinImage(title, picture)
+        await skin.update({ title, price,  picture:pictureName, money_type, coins_price });
+      } else {
+        await skin.update({ title, price,  money_type, coins_price });
+      }
       res.json(skin);
     } else {
       res.status(404).json({ message: 'Skin non trouvé' });
@@ -136,11 +140,6 @@ exports.purchaseSkin = async (req, res) => {
       if (!skin) {
         return res.status(404).json({ message: 'Skin non trouvé' });
       }
-
-      // const hasSkin = await user.hasSkin(skin); // Vérifier si l'utilisateur a déjà le skin
-      // if (hasSkin) {
-      //   return res.status(400).json({ message: 'L\'utilisateur possède déjà ce skin' });
-      // }
   
       user.skins_fk_id = skinId;
 
