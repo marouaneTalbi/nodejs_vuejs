@@ -56,6 +56,12 @@ const router = createRouter({
       meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin'] }
     },
     {
+      path: '/gamemode',
+      name: 'gamemode',
+      component: GameModeView,
+      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin'] }
+    },
+    {
       path: '/admin',
       name: 'admin',
       component: Dashboard,
