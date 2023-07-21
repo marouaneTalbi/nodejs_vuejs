@@ -77,8 +77,8 @@ const router = createRouter({
     {
       path: '/profile',
       name: 'profile',
-      component: Profile,
-      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin']}
+      component: Account,
+      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin'] }
     },
     {
       path: '/user/:id',

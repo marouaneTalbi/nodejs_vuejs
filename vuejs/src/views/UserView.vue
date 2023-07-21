@@ -18,7 +18,7 @@
 
 
         <Modal @close="togglePopupModal" @confirm="handleConfirm" :modalActive="modalPopupActive" >
-            <div class="modal-content" v-if="currentModal === 'skins'" >
+            <div class="modal-content"  v-if="currentPopupModal === 'skins'">
                 <div class="card-list">
                     <div v-for="skin in skins" :key="skin.id" class="card">
                         <div class="card-image">
@@ -62,7 +62,7 @@
                         <div class="text">
                             <span class="pseudo-title">Creation date</span>
                             <br />
-                            <span class="pseudo">14/07/21</span>
+                            <span class="pseudo">{{ user.createdat ? formatDate(user.createdat) : '14/07/21' }}</span>
                         </div>
                     </div>
                     <div class="row" >
@@ -154,7 +154,6 @@ export default {
         getUser(userId) {
             fetchData('/user/' + userId)
             .then(response => {
-                console.log(response)
                 this.user = response.data
                 this.pseudo = response.data.pseudo;
             })
@@ -164,11 +163,18 @@ export default {
         getPictureUrl(picture) {
             return `${serverURI}/pictures/skins/${picture}`;
         },
-
+        formatDate(dateString) {
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0'); 
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        },
         getUserSkins(userId) {
             fetchData('/user/skins/' + userId)
             .then(response => {
                 this.skins = response.data
+
             })
             .catch(error => {
             });
@@ -237,16 +243,23 @@ export default {
             })
         },
         openModal(type) {
-            this.modalActive = true;
-            this.currentModal = type;
+      
+            cosnsle.log(this)
+            if(type == 'skins') {
+                this.modalPopupActive = true
+                this.currentPopupModal = type
+            } else {
+                this.modalActive = true;
+                this.currentModal = type;
+            }
         },
         handleConfirm() {
             const userId = this.$route.params.id;
 
             if(this.currentModal == 'delete') {
-                console.log(userId)
-                // this.deleteUser(userId);
-                // this.$router.push('/admin');
+                // console.log(userId)
+                this.deleteUser(userId);
+                this.$router.push('/admin');
             }
 
             if(this.currentModal == 'edit') {

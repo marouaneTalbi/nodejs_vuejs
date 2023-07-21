@@ -39,7 +39,7 @@ mongodb.initClientDbConnection();
 // MONGODB CONNECTION //
 
 // SOCKET.IO //
-//const server = require('http').createServer(app);
+// const server = require('http').createServer(app);
 const options = {
   key: fs.readFileSync('/etc/letsencrypt/live/challenge.ovh/privkey.pem'),
   cert: fs.readFileSync('/etc/letsencrypt/live/challenge.ovh/fullchain.pem'),
@@ -51,7 +51,7 @@ const server = https.createServer(options, app);
 const io = require('socket.io')(server, {
     cors: {
 
-        origins: ['http://159.203.128.74:80']
+        origins: ['https://challenge.ovh:80']
     }
 });
 
@@ -79,10 +79,6 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
     next();
   });
-
-helmet.contentSecurityPolicy({
-    connectSrc: ["'self'", 'http://159.203.128.74:5173/'],
-  })
 
 
 // START express server
