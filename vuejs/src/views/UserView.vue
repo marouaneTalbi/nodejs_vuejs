@@ -72,7 +72,7 @@
                             <span class="pseudo">{{ user?.coins  ? user?.coins  : 0}}</span>
                         </div>
                     </div>
-                    <div class="row" v-if="skin.title">
+                    <div class="row" v-if="skin && skin.title != undefined">
                         <div class="text">
                             <span class="pseudo-title">Skin</span>
                             <br />
@@ -94,7 +94,7 @@
                         <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 12-6-6m6 6-6 6m6-6H5"></path></svg>
                     </div>
 
-                    <div class="footer" @click="openModal('skins')"  v-if="skin.title">
+                    <div class="footer" @click="openModal('skins')"  v-if="skin && skin.title != undefined">
                         Voir mes skins
                         <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 12-6-6m6 6-6 6m6-6H5"></path></svg>
                     </div>
