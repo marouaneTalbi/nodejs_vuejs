@@ -244,7 +244,6 @@ export default {
         },
         openModal(type) {
       
-            cosnsle.log(this)
             if(type == 'skins') {
                 this.modalPopupActive = true
                 this.currentPopupModal = type
