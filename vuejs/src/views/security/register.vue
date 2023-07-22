@@ -54,7 +54,7 @@
             this.passwordErrorMessage = 'Le mot de passe doit comporter au moins 6 caractères, une majuscule et un chiffre.';
             return;
           }
-          const response = postData('/register', {mail: this.email, password: this.password, pseudo: this.pseudo});
+          const response = await postData('/register', {mail: this.email, password: this.password, pseudo: this.pseudo});
           const token = response.data.token;
           this.$router.push('/login');
         } catch (error) {
