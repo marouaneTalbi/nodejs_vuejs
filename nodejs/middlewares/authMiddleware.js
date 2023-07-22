@@ -16,7 +16,6 @@ module.exports = (roles = []) => {
             if (roles.length > 0 && !roles.includes(user.role)) {
                 return next(new UnauthorizedError());
             }
-
             next();
         } catch (err) {
             return next(new UnauthorizedError());

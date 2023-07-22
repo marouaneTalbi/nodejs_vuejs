@@ -34,7 +34,7 @@
   
   <script>
   import axios from 'axios';
-import { serverURI } from '../../api/api';
+  import {postData, serverURI} from '../../api/api';
   
   export default {
     data() {
@@ -54,16 +54,10 @@ import { serverURI } from '../../api/api';
             this.passwordErrorMessage = 'Le mot de passe doit comporter au moins 6 caractères, une majuscule et un chiffre.';
             return;
           }
-          const response = await axios.post(`${serverURI}/register`, {
-            mail: this.email,
-            password: this.password,
-            pseudo: this.pseudo
-          });
+          const response = postData('/register', {mail: this.email, password: this.password, pseudo: this.pseudo});
           const token = response.data.token;
           this.$router.push('/login');
-          console.log(response);
         } catch (error) {
-          console.log("catch");
           console.error(error);
           this.errorMessage = error.response.data.message;
         }
