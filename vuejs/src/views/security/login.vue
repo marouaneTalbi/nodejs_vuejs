@@ -31,7 +31,7 @@
 <script>
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { serverURI } from '../../api/api';
+import {postData, serverURI} from '../../api/api';
 
 export default {
   components: {
@@ -48,10 +48,7 @@ export default {
   methods: {
     async login() {
       try {
-        const response = await axios.post(`${serverURI}/login`, {
-          mail: this.email,
-          password: this.password
-        });
+        const response = postData('/login', {mail: this.email, password: this.password});
         const token = response.data.token;
         Cookies.set('token', token, { secure: true, expires: 7 });
         this.$router.push('/home');
