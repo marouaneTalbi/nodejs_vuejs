@@ -5,6 +5,7 @@ const route = express.Router();
 const authMiddleware = require('../middlewares/authMiddleware');
 
 // Public routes
+
 route.post('/login', UserController.login)
 route.post('/register', UserController.register)
 route.get('/current-user', UserController.getCurrentUser);
