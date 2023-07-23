@@ -48,7 +48,6 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
       meta: { requiresAuth: false, requiredRoles: ['gamer', 'admin'] }
-
     },
     {
       path: '/gamemode',
@@ -78,8 +77,8 @@ const router = createRouter({
     {
       path: '/profile',
       name: 'profile',
-      component: Profile,
-      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin']}
+      component: Account,
+      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin'] }
     },
     {
       path: '/user/:id',
@@ -143,7 +142,7 @@ function getUserRole() {
   const token = Cookies.get('token');
   if (token) {
     try {
-      const decodedToken = jwtDecode(token);
+      const decodedToken:any = jwtDecode(token);
       if (decodedToken && decodedToken.role) {
         return decodedToken.role;
       }
@@ -157,14 +156,13 @@ function getUserRole() {
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     const token = Cookies.get('token');
-    console.log(token)
     if (!token) {
       next('/login');
     } else {
       const userRole = getUserRole();
-      const requiredRoles = to.meta.requiredRoles;
+      const requiredRoles:any = to.meta.requiredRoles;
 
-      if (requiredRoles.some((role) => userRole === role)) {
+      if (requiredRoles.some((role:any) => userRole === role)) {
 
         next();
       } else {

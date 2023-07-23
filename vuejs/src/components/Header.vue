@@ -1,6 +1,8 @@
 <template>
   <header :class="{'scrolled-nav': windowWidth}">
-    <h1>MEMO</h1>
+    <router-link to="/gamemode">
+        <h1>MEMO</h1>
+    </router-link>
     <nav v-show="!mobile">
       <ul>
         <li v-for="menuOption in filteredMenuOptions" :key="menuOption.route">

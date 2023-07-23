@@ -15,6 +15,8 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+const fs = require('fs');
+const https = require('https');
 
 app.use(express.urlencoded({ extended: false, limit: "200mb" }));
 app.use(express.json({ limit: '50mb' }));
@@ -38,19 +40,28 @@ mongodb.initClientDbConnection();
 
 // SOCKET.IO //
 const server = require('http').createServer(app);
+// const options = {
+//   key: fs.readFileSync('/etc/letsencrypt/live/challenge.ovh/privkey.pem'),
+//   cert: fs.readFileSync('/etc/letsencrypt/live/challenge.ovh/fullchain.pem'),
+// };
+
+// const server = https.createServer(options, app);
+
+// const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
     cors: {
 
-        origins: ['http://localhost:8080']
+        origins: ['https://challenge.ovh:80']
     }
 });
+
 io.on('connection', (socket) => {
     gameSocket(socket);
 });
 // SOCKET.IO //
 
 
-// MIDDLEWARE 
+// MIDDLEWARE
 app.use(cors());
 app.use(helmet());
 
@@ -61,29 +72,16 @@ app.use('/', gameRoute);
 // CSP configuration
 
 
-
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    next();
-});
-
-app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin','*')
     res.setHeader('Cross-Origin-Resource-Policy','*')
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
     next();
   });
-
-helmet.contentSecurityPolicy({
-    connectSrc: ["'self'", 'http://localhost:5173/'],
-  })
 
 
 // START express server
 server.listen('3000', () => {
     console.log('Serveur Express en cours d\'exécution sur le port 3000');
 });
-
