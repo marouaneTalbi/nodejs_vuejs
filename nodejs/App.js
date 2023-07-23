@@ -5,6 +5,7 @@ const app = express();
 const route = require('./routes/userRoute');
 const skinRoute = require('./routes/skinRoute');
 const gameRoute = require('./routes/gameRoute');
+const userGameRoute = require('./routes/userGameRoute');
 
 const User = require("./controllers/UserController")
 const helmet = require('helmet');
@@ -40,7 +41,6 @@ mongodb.initClientDbConnection();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
     cors: {
-
         origins: ['http://localhost:8080']
     }
 });
@@ -58,6 +58,7 @@ app.use(helmet());
 app.use('/', route);
 app.use('/', skinRoute);
 app.use('/', gameRoute);
+app.use('/', userGameRoute);
 // CSP configuration
 
 
