@@ -14,6 +14,8 @@ route.get('/user/:id/postgres', UserController.getUserById)
 route.post('/forgotPassword',  UserController.forgotPassword);
 route.post('/initPassword',  UserController.initPassword);
 route.put('/user/:id/verify-email', UserController.updateIsConfirmed);
+route.get('/user/:id/stats', UserController.getUserStats);
+route.get('/user/:id/games-history', UserController.getUserGamesHistory);
 
 // Routes protected by authentication middleware
 route.use(authMiddleware());

@@ -64,3 +64,30 @@ exports.deleteUserGame = async(gameId, userId) => {
         throw error;
     }
 }
+
+exports.updateUserGame = async(req, res) => {
+    try {
+
+        const { userId, gameId } = req.params;
+        const { result } = req.body;
+        const { date } = req.body;
+        console.log('date: ' , date);
+        console.log(gameId);
+
+        const user_game = await UserGame.update(
+            { result: result },
+            {
+                where: {
+                    user_id: userId,
+                    game_id: gameId
+                }
+            }
+        );
+
+        return res.status(200).json({ user_game });
+
+
+    } catch(error) {
+        return res.status(500).json({ message: 'server error' })
+    }
+}
