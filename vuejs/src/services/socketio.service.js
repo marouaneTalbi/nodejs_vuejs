@@ -45,8 +45,8 @@ class SocketioService {
         this.socket.emit('cardFlipped', { gameId: currentGameId, cardIndex: index });
     }
 
-    endTurn(currentGameId, userId) {
-        this.socket.emit('endTurn', { gameId: currentGameId, userId: userId});
+    endTurn(currentGameId, userId, cards) {
+        this.socket.emit('endTurn', { gameId: currentGameId, userId: userId, cards: cards});
     }
     
     onYourTurn(callback){

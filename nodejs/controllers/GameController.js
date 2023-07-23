@@ -94,3 +94,48 @@ exports.findGameByCode = async (code) => {
 
     }
 };
+
+const shuffle = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+exports.getCards = async(req, res) => {
+    try {
+        const cards = [
+                { image: "1.jpeg", flipped: false },
+                { image: "1.jpeg", flipped: false },
+
+                { image: "2.jpeg", flipped: false },
+                { image: "2.jpeg", flipped: false },
+
+                { image: "3.jpeg", flipped: false },
+                { image: "3.jpeg", flipped: false },
+
+                { image: "4.jpeg", flipped: false },
+                { image: "4.jpeg", flipped: false },
+
+                { image: "5.jpeg", flipped: false },
+                { image: "5.jpeg", flipped: false },
+
+                { image: "6.jpeg", flipped: false },
+                { image: "6.jpeg", flipped: false },
+
+                { image: "7.jpeg", flipped: false },
+                { image: "7.jpeg", flipped: false },
+
+                { image: "8.jpeg", flipped: false },
+                { image: "8.jpeg", flipped: false }
+        ]
+
+        const shuffledCards = shuffle(cards);
+
+        return shuffledCards
+        
+    } catch(error) {
+        throw error;
+    }
+}
