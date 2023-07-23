@@ -20,6 +20,8 @@ import ForgotPassword from "@/views/security/forgotPassword.vue";
 import InitPassword from "@/views/security/initPassword.vue";
 
 
+import AccessDenied from '../views/security/access-denied.vue'
+import NotFound from '../views/security/not-found.vue'
 
 
 const router = createRouter({
@@ -65,14 +67,13 @@ const router = createRouter({
       path: '/stats',
       name: 'stats',
       component: Stats,
-      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin'] }
+      meta: { requiresAuth: true, requiredRole: 'gamer'}
     },
     {
       path: '/billing',
       name: 'billing',
       component: Billing,
-      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin']}
-
+      meta: { requiresAuth: true, requiredRole: 'gamer'}
     },
     {
       path: '/profile',
@@ -111,6 +112,17 @@ const router = createRouter({
       component: SkinsToBuY,
       meta: { requiresAuth: true, requiredRoles:['gamer', 'admin', 'gamer']}
     },
+    {
+      path: '/access-denied',
+      name: 'access-denied',
+      component: AccessDenied,
+      meta: { requiresAuth: false, requiredRole: 'guest'}
+    },
+    { 
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: NotFound 
+    },  
     {
       path: '/about',
       name: 'about',
