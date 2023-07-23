@@ -4,17 +4,11 @@ const UserGameController = require('../controllers/UserGame/UserGameController')
 module.exports = function (socket) {
 
     let players = []
-    let gamesPlayers = {};
     socket.on('joinWaitingRoom', async ({gamemode, userId, code}) => {
 
-
         try {
-
             let game;
 
-   
-           
-            
             if(code != null && gamemode == "private") {
 
                 game = await GameController.findGameByCode(code);
@@ -42,10 +36,11 @@ module.exports = function (socket) {
             if (playersCount === 2) {
 
                 players = await  UserGameController.PlayersOfGame(socket.gameId)
+                let cards = await GameController.getCards()
 
-                socket.emit('yourTurn', players[1] );
+                socket.emit('yourTurn',{player: players[1], cards: cards} );
             
-                socket.to(game.id).emit('waitingForPlayers', playersCount);
+                socket.to(game.id).emit('waitingForPlayers',{ playersCount:playersCount, cards:cards});
 
                 await GameController.updateGame(game.id, {
                     status: 'progress'
@@ -81,20 +76,16 @@ module.exports = function (socket) {
     });
 
     socket.on('endTurn', (data) => {
-        const playerId = data.userId;
         let turnId;
         UserGameController.PlayersOfGame(socket.gameId).then((c) => {
-
             if(data.userId == c[0] ){
                 turnId = c[1]
             } else if( data.userId == c[1]) {
                 turnId = c[0]
             }
-
-            socket.to(socket.gameId).emit('yourTurn', turnId);
+            socket.to(socket.gameId).emit('yourTurn', {player: turnId, cards: data.cards });
         })
     });
-
 
 
     socket.on('disconnect', async () => {

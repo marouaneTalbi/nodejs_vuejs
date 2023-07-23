@@ -11,15 +11,6 @@
         </section>
 
         <section  class="waiting-screen" v-if="!waitingForOpponent"  >
-            <!-- <div style="background-color: red; height: 500px; width: 700px;" id="testdiv">
-                <input type="text" name="" id="">
-            </div>
-            <div class="color-buttons">
-                <button @click="setColor('red')">Rouge</button>
-                <button @click="setColor('blue')">Bleu</button>
-                <button @click="setColor('green')">Vert</button>
-                <button @click="setColor('yellow')">Jaune</button>
-            </div> -->
             <div class="memory-game">
                 <div class="memory-board">
                 <div v-for="(card, index) in cards" :key="index"
@@ -28,13 +19,10 @@
                     @click="flipCard(index)">
                     
                     <div class="card-face front"></div>
-                    <div class="card-face back" :style="{ backgroundImage:`url(${card.image})`}"></div>
+                    <div class="card-face back" :style="{ backgroundImage:`url(../../public/img/${card.image})`}"></div>
                 </div>
                 </div>
             </div>
-
-
-
         </section>
 
         <Modal v-if="userLeft" @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive">
@@ -66,38 +54,12 @@ export default {
             userId: null,
             waitingForOpponent: false,
             userLeft: false,
-            flippedCards: [], // Pour suivre les deux dernières cartes retournées
+            flippedCards: [],
             isComparing: false,
             isMyTurn: false,
             currentPlayer:null,
             game: {},
-                  cards: [
-                    { image: "../../public/img/1.jpeg", flipped: false },
-                    { image: "../../public/img/1.jpeg", flipped: false },
-
-                    { image: "../../public/img/2.jpeg", flipped: false },
-                    { image: "../../public/img/2.jpeg", flipped: false },
-
-                    { image: "../../public/img/3.jpeg", flipped: false },
-                    { image: "../../public/img/3.jpeg", flipped: false },
-
-                    { image: "../../public/img/4.jpeg", flipped: false },
-                    { image: "../../public/img/4.jpeg", flipped: false },
-
-                    { image: "../../public/img/5.jpeg", flipped: false },
-                    { image: "../../public/img/5.jpeg", flipped: false },
-
-                    { image: "../../public/img/6.jpeg", flipped: false },
-                    { image: "../../public/img/6.jpeg", flipped: false },
-
-                    { image: "../../public/img/7.jpeg", flipped: false },
-                    { image: "../../public/img/7.jpeg", flipped: false },
-
-                    { image: "../../public/img/8.jpeg", flipped: false },
-                    { image: "../../public/img/8.jpeg", flipped: false },
-
-                ],
-
+            cards: [],
         };
     },
     beforeRouteLeave() {
@@ -120,13 +82,13 @@ export default {
     mounted() {
         const gameId = this.$route.params.id;
         this.getGame(gameId);
-
+        
         SocketioService.onYourTurn((c) => {
-            console.log(c)
-            this.currentPlayer = c
-            if(c === this.getCurrentUser()) {
+            this.currentPlayer = c.player
+            if(c && c.player === this.getCurrentUser()) {
+                this.cards = c.cards
                 this.isMyTurn = true;
-            }
+            } 
         });
     },
   
@@ -140,11 +102,10 @@ export default {
       
 
         SocketioService.waitingForPlayers((playersCount) => {
-            console.log('gello')
             if (playersCount < 2) {
                 this.waitingForOpponent = true;
-                console.log('pas full')
             } else {
+                this.cards = playersCount.cards     
                 this.waitingForOpponent = false;
             }
         });
@@ -170,7 +131,6 @@ export default {
         changeDivColor(color) {
             const div = document.getElementById('testdiv');
             if (div) {
-                console.log(div)
                 div.style.backgroundColor = color;
             }
         },
@@ -214,7 +174,7 @@ export default {
             this.isMyTurn = false;
             const gameId = this.$route.params.id;
             console.log(this.currentPlayer, currentUserId)
-            SocketioService.endTurn(gameId,this.currentPlayer);
+            SocketioService.endTurn(gameId, this.currentPlayer, this.cards);
         },
 
         async setColor(color) {
