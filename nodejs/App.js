@@ -5,6 +5,7 @@ const app = express();
 const route = require('./routes/userRoute');
 const skinRoute = require('./routes/skinRoute');
 const gameRoute = require('./routes/gameRoute');
+const gradeRoute = require('./routes/gradeRoute');
 const userGameRoute = require('./routes/userGameRoute');
 
 const User = require("./controllers/UserController")
@@ -69,6 +70,7 @@ app.use(helmet());
 app.use('/', route);
 app.use('/', skinRoute);
 app.use('/', gameRoute);
+app.use('/', gradeRoute)
 app.use('/', userGameRoute);
 // CSP configuration
 
