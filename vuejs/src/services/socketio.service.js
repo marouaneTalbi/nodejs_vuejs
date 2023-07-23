@@ -20,7 +20,46 @@ class SocketioService {
           callback(error);
         });
       }
+
+    changedColor(callback) {
+        this.socket.on('colorChanged', (color) => {
+            console.log(color)
+            callback(color);
+        });
+    }
+
+    changeColor(color) {
+        this.socket.emit('changeColor', color);
+    }
+
+    ////////////////////////
+
+    opponentCardFlipped(callback) {
+        this.socket.on('opponentCardFlipped',(index) => {
+            callback(index);
+        });
+    }
+
+
+    flipedCard(currentGameId, index) {
+        this.socket.emit('cardFlipped', { gameId: currentGameId, cardIndex: index });
+    }
+
+    endTurn(currentGameId, userId) {
+        this.socket.emit('endTurn', { gameId: currentGameId, userId: userId});
+    }
     
+    onYourTurn(callback){
+        this.socket.on('yourTurn',(d) => {
+            callback(d);
+        });
+    }
+
+
+
+    ////////////////////////
+
+
     waitingForPlayers(callback) {
         this.socket.on('waitingForPlayers', (playersCount) => {
             callback(playersCount);
