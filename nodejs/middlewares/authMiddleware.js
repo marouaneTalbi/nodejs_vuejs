@@ -14,6 +14,8 @@ module.exports = (roles = []) => {
             const user = jwt.verify(token, 'secretKey');
             req.user = user;
             if (roles.length > 0 && !roles.includes(user.role)) {
+                console.log('test')
+                console.log(roles)
                 return next(new UnauthorizedError());
             }
             next();

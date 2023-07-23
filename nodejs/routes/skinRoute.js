@@ -1,8 +1,9 @@
 const express = require('express');
 const skinRoute = express.Router();
 const SkinController = require('../controllers/skin/SkinController');
+const authMiddleware = require("../middlewares/authMiddleware");
 
-
+skinRoute.use(authMiddleware());
 skinRoute.get('/skin/:id', SkinController.getSkinById)
 skinRoute.get('/skins', SkinController.getAllSkins)
 skinRoute.post('/skin/create', SkinController.createSkin)

@@ -59,8 +59,9 @@ export default {
         { route: '/profile', label: 'Profile', requiredRoles: ['admin']},
         { route: '/account', label: 'Account', requiredRoles: ['gamer'] },
         { route: '/skins', label: 'Skins', requiredRoles: ['admin', 'gamer'] },
-        { route: '/skins_to_buy', label: 'Buy', requiredRoles: ['admin', 'gamer'] }
-
+        { route: '/admin/grades', label: 'Grades', requiredRoles: ['admin'] },
+        { route: '/skins_to_buy', label: 'Buy', requiredRoles: ['admin', 'gamer'] },
+        { route: '/grade', label: 'Grade', requiredRoles: ['gamer'] },
       ]
     };
   },
@@ -106,15 +107,17 @@ export default {
     async getUserInfo() {
       try {
         const token = Cookies.get('token');
-        const [header, payload, signature] = token.split('.');
-        const decodedPayload = JSON.parse(atob(payload));
-        const userId = decodedPayload.id;
-        const response = await axios.get(`${serverURI}/user/${userId}/postgres`, {
-          headers: {
-            Authorization: 'Bearer ' + token
-          }
-        });
-        this.userRoles = response.data.role;
+        if (token){
+          const [header, payload, signature] = token.split('.');
+          const decodedPayload = JSON.parse(atob(payload));
+          const userId = decodedPayload.id;
+          const response = await axios.get(`${serverURI}/user/${userId}/postgres`, {
+            headers: {
+              Authorization: 'Bearer ' + token
+            }
+          });
+          this.userRoles = response.data.role;
+        }
       } catch (error) {
         console.error(error);
       }

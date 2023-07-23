@@ -8,6 +8,7 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const mailSender = require('../SMTP/mailsender');
 const Skin = require('../models/skin/SkinModel');
+const authMiddleware = require("../middlewares/authMiddleware");
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -107,8 +108,6 @@ exports.login = async (req, res) => {
         }
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (isPasswordValid) {
-
-          // req.session.userId = user.id;
           const token = jwt.sign({ id: user.id , role: user.role }, 'secretKey');
           res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
           res.json({ token });

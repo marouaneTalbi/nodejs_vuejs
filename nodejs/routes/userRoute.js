@@ -5,7 +5,6 @@ const route = express.Router();
 const authMiddleware = require('../middlewares/authMiddleware');
 
 // Public routes
-
 route.post('/login', UserController.login)
 route.post('/register', UserController.register)
 route.get('/current-user', UserController.getCurrentUser);
@@ -25,12 +24,11 @@ route.put('/user/:id/change-password', UserController.changePassword);
 
 
 // Routes protected by authentication and role Admin
-route.use(authMiddleware(['gamer']));
+route.use(authMiddleware(['admin']));
 route.get('/user/:id', AdminController.getUser)
 route.get('/users', AdminController.getUsers)
 route.delete('/user/:id', AdminController.deleteUser)
 route.patch('/user/:id', AdminController.updateUser)
-
 
 module.exports = route;
 
