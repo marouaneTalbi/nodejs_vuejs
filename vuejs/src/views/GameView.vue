@@ -17,9 +17,8 @@
                     class="memory-card"
                     :class="{ flipped: card.flipped }"
                     @click="flipCard(index)">
-                    
                     <div class="card-face front"></div>
-                    <div class="card-face back" :style="{ backgroundImage:`url(../../public/img/${card.image})`}"></div>
+                    <div class="card-face back" :style="{ backgroundImage:`url('${getPictureUrl(card.image)}')`}"></div>
                 </div>
                 </div>
             </div>
@@ -128,7 +127,9 @@ export default {
                 return this.userId 
             }
         },
-     
+        getPictureUrl(picture) {
+            return `${serverURI}/pictures/cards/${picture}`;
+        },
         changeDivColor(color) {
             const div = document.getElementById('testdiv');
             if (div) {
