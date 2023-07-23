@@ -48,6 +48,7 @@ import Header from '../components/Header.vue';
 import SocketioService from '../services/socketio.service';
 import { fetchData } from '../api/api';
 import Cookies from 'js-cookie';
+
 import Modal from '../components/Modal.vue';
 import { ref } from 'vue';
 import { toast } from 'vue3-toastify';
@@ -122,6 +123,7 @@ export default {
         this.userId = decodedPayload.id;
       }
     },
+
 
     openModal() {
       this.modalActive = true;

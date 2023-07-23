@@ -16,8 +16,9 @@
         </Modal>
 
 
-        <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive" v-if="skin">
-            <div class="modal-content" v-if="currentModal === 'skins'" >
+
+        <Modal @close="togglePopupModal" @confirm="handleConfirm" :modalActive="modalPopupActive" >
+            <div class="modal-content"  v-if="currentPopupModal === 'skins'">
                 <div class="card-list">
                     <div v-for="skin in skins" :key="skin.id" class="card">
                         <div class="card-image">
@@ -30,7 +31,7 @@
                     </div>
                 </div>
             </div>
-        </Modal> 
+        </Modal>  
 
         <div class="container">
             <div class="block">
@@ -61,17 +62,17 @@
                         <div class="text">
                             <span class="pseudo-title">Creation date</span>
                             <br />
-                            <span class="pseudo">14/07/21</span>
+                            <span class="pseudo">{{ user.createdat ? formatDate(user.createdat) : '14/07/21' }}</span>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" >
                         <div class="text">
                             <span class="pseudo-title">Coins</span>
                             <br />
-                            <span class="pseudo">{{ user?.coins }}</span>
+                            <span class="pseudo">{{ user?.coins  ? user?.coins  : 0}}</span>
                         </div>
                     </div>
-                    <div class="row" v-if="skin">
+                    <div class="row" v-if="skin && skin.title != undefined">
                         <div class="text">
                             <span class="pseudo-title">Skin</span>
                             <br />
@@ -93,7 +94,7 @@
                         <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 12-6-6m6 6-6 6m6-6H5"></path></svg>
                     </div>
 
-                    <div class="footer" @click="openModal('skins')"  v-if="skin">
+                    <div class="footer" @click="openModal('skins')"  v-if="skin && skin.title != undefined">
                         Voir mes skins
                         <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 12-6-6m6 6-6 6m6-6H5"></path></svg>
                     </div>
@@ -128,8 +129,13 @@ export default {
         const toggleModal = () => {
             modalActive.value = !modalActive.value;
         }
+        const modalPopupActive = ref(false);
+        const togglePopupModal = () => {
+            modalPopupActive.value = !modalPopupActive.value;
+        }
 
-        return { modalActive, toggleModal, currentModal: null, pseudo }
+
+        return { modalActive, toggleModal, currentModal: null, pseudo, modalPopupActive, togglePopupModal, currentPopupModal: null}
     },
     data() {
         return {
@@ -148,7 +154,6 @@ export default {
         getUser(userId) {
             fetchData('/user/' + userId)
             .then(response => {
-                console.log(response)
                 this.user = response.data
                 this.pseudo = response.data.pseudo;
             })
@@ -158,11 +163,18 @@ export default {
         getPictureUrl(picture) {
             return `${serverURI}/pictures/skins/${picture}`;
         },
-
+        formatDate(dateString) {
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0'); 
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        },
         getUserSkins(userId) {
             fetchData('/user/skins/' + userId)
             .then(response => {
                 this.skins = response.data
+
             })
             .catch(error => {
             });
@@ -231,16 +243,22 @@ export default {
             })
         },
         openModal(type) {
-            this.modalActive = true;
-            this.currentModal = type;
+      
+            if(type == 'skins') {
+                this.modalPopupActive = true
+                this.currentPopupModal = type
+            } else {
+                this.modalActive = true;
+                this.currentModal = type;
+            }
         },
         handleConfirm() {
             const userId = this.$route.params.id;
 
             if(this.currentModal == 'delete') {
-                console.log(userId)
-                // this.deleteUser(userId);
-                // this.$router.push('/admin');
+                // console.log(userId)
+                this.deleteUser(userId);
+                this.$router.push('/admin');
             }
 
             if(this.currentModal == 'edit') {

@@ -1,7 +1,7 @@
 <template>
     <section class="user">
         <Header />
-        <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive">
+        <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive" :showConfirmButton="true">
             <div class="modal-content" v-if="currentModal === 'delete'">
                 <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 15V7m0 8 5.504 3.145A1 1 0 0 0 20 17.277V4.723a1 1 0 0 0-1.496-.868L13 7m0 8h-3m3-8H7a4 4 0 0 0-4 4v0a4 4 0 0 0 4 4v0m0 0v4.5A1.5 1.5 0 0 0 8.5 21v0a1.5 1.5 0 0 0 1.5-1.5V15m-3 0h3"></path></svg>
                 <h2>Supprimer un Skin</h2>
@@ -67,6 +67,14 @@
                             <span class="pseudo">{{ skin.money_type }}</span>
                         </div>
                         <button @click="openModal('editMoneyType')">Edit</button>
+                    </div>
+                    <div class="row">
+                        <div class="text">
+                            <span class="pseudo-title">Coins</span>
+                            <br />
+                            <span class="pseudo">{{ skin.coins_price }}</span>
+                        </div>
+                        <button @click="openModal('editCoins')">Edit</button>
                     </div>
                     <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
                         <div class="text" >
@@ -216,6 +224,11 @@ export default {
             } else if (this.currentModal === 'editPicture') {
                 const updatedData = {
                 picture: this.picture
+                };
+                this.updateSkin(skinId, updatedData);
+            }else if (this.currentModal === 'editCoins') {
+                const updatedData = {
+                coins_price: this.coins_price
                 };
                 this.updateSkin(skinId, updatedData);
             }

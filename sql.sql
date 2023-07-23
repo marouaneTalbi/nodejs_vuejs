@@ -1,11 +1,13 @@
 -- Création de la table skin
 CREATE TABLE skin (
-  id INT PRIMARY KEY,
-  title VARCHAR(255),
-  picture VARCHAR(255),
-  price DECIMAL(10,2),
-  mony_type VARCHAR(255)
+    id SERIAL PRIMARY KEY,
+    title TEXT,
+    picture TEXT,
+    price DECIMAL,
+    coins_price DECIMAL,
+    money_type TEXT
 );
+
 
 -- Créer une séquence pour la colonne id
 CREATE SEQUENCE user_id_seq;
@@ -20,10 +22,13 @@ CREATE TABLE _user (
   picture VARCHAR(255),
   coins INT,
   ratio DECIMAL(10,2),
+  role VARCHAR(255),
+  verificationcode INT,
   token VARCHAR,
   isconfirmed BOOLEAN DEFAULT false,
   points INT,
   skins_fk_id INT,
+  createdat TIMESTAMP
   FOREIGN KEY (skins_fk_id) REFERENCES skin(id)
 );
 
@@ -85,6 +90,9 @@ CREATE TABLE user_game (
 
 -- Création de la relation entre user et grade
 ALTER TABLE _user ADD COLUMN grade_id INT;
+ALTER TABLE _user ADD COLUMN verificationcode  INT;
+ALTER TABLE _user ADD COLUMN role  VARCHAR;
+
 ALTER TABLE _user ADD FOREIGN KEY (grade_id) REFERENCES grade(id);
 
 -- Création de la relation entre user et payment

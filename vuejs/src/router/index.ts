@@ -22,6 +22,8 @@ import AdminGrades from "@/views/AdminGrades.vue";
 import AdminGrade from "@/views/AdminGrade.vue";
 import UserGrade from "@/views/UserGrade.vue";
 
+import AccessDenied from '../views/security/access-denied.vue'
+import NotFound from '../views/security/not-found.vue'
 
 
 const router = createRouter({
@@ -50,7 +52,6 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
       meta: { requiresAuth: false, requiredRoles: ['gamer', 'admin'] }
-
     },
     {
       path: '/gamemode',
@@ -68,20 +69,19 @@ const router = createRouter({
       path: '/stats',
       name: 'stats',
       component: Stats,
-      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin'] }
+      meta: { requiresAuth: true, requiredRole: 'gamer'}
     },
     {
       path: '/billing',
       name: 'billing',
       component: Billing,
-      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin']}
-
+      meta: { requiresAuth: true, requiredRole: 'gamer'}
     },
     {
       path: '/profile',
       name: 'profile',
-      component: Profile,
-      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin']}
+      component: Account,
+      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin'] }
     },
     {
       path: '/user/:id',
@@ -114,6 +114,17 @@ const router = createRouter({
       component: SkinsToBuY,
       meta: { requiresAuth: true, requiredRoles:['gamer', 'admin', 'gamer']}
     },
+    {
+      path: '/access-denied',
+      name: 'access-denied',
+      component: AccessDenied,
+      meta: { requiresAuth: false, requiredRole: 'guest'}
+    },
+    { 
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: NotFound 
+    },  
     {
       path: '/about',
       name: 'about',
@@ -163,7 +174,7 @@ function getUserRole() {
   const token = Cookies.get('token');
   if (token) {
     try {
-      const decodedToken = jwtDecode(token);
+      const decodedToken:any = jwtDecode(token);
       if (decodedToken && decodedToken.role) {
         return decodedToken.role;
       }
@@ -177,14 +188,13 @@ function getUserRole() {
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     const token = Cookies.get('token');
-    console.log(token)
     if (!token) {
       next('/login');
     } else {
       const userRole = getUserRole();
-      const requiredRoles = to.meta.requiredRoles;
+      const requiredRoles:any = to.meta.requiredRoles;
 
-      if (requiredRoles.some((role) => userRole === role)) {
+      if (requiredRoles.some((role:any) => userRole === role)) {
 
         next();
       } else {
