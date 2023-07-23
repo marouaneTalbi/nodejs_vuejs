@@ -17,9 +17,8 @@
                     class="memory-card"
                     :class="{ flipped: card.flipped }"
                     @click="flipCard(index)">
-                    
                     <div class="card-face front"></div>
-                    <div class="card-face back" :style="{ backgroundImage:`url(../../public/img/${card.image})`}"></div>
+                    <div class="card-face back" :style="{ backgroundImage:`url('${getPictureUrl(card.image)}')`}"></div>
                 </div>
                 </div>
             </div>
@@ -41,7 +40,7 @@ import SocketioService from '../services/socketio.service';
 import Modal from '../components/Modal.vue';
 import { ref } from 'vue';
 import Cookies from 'js-cookie';
-import { fetchData } from '../api/api'
+import { fetchData, serverURI } from '../api/api'
 
 export default {
     components: {
@@ -127,7 +126,9 @@ export default {
                 return this.userId 
             }
         },
-     
+        getPictureUrl(picture) {
+            return `${serverURI}/pictures/cards/${picture}`;
+        },
         changeDivColor(color) {
             const div = document.getElementById('testdiv');
             if (div) {
