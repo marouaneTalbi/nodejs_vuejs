@@ -31,6 +31,7 @@
                 <p>Votre adversaire a quitté la partie. Vous avez remporté la victoire !</p>
             </div>
         </Modal>
+        <button @click="updateUserGame">click</button>
     </section>
 </template>
 
@@ -40,7 +41,7 @@ import SocketioService from '../services/socketio.service';
 import Modal from '../components/Modal.vue';
 import { ref } from 'vue';
 import Cookies from 'js-cookie';
-import { fetchData, serverURI } from '../api/api'
+import { fetchData, patchData, serverURI } from '../api/api';
 
 export default {
     components: {
@@ -198,6 +199,18 @@ export default {
         },
         openModal() {
             this.modalActive = true;
+        },
+        updateUserGame() {
+            patchData('/user/' + this.userId + '/game/' + this.game.id, {
+                result: 'loose',
+                date: new Date(),
+            })
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                console.error(error)
+            })
         },
         copyToClipboard() {
             const code = this.game.code;

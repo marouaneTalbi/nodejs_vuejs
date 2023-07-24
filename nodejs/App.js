@@ -5,6 +5,8 @@ const app = express();
 const route = require('./routes/userRoute');
 const skinRoute = require('./routes/skinRoute');
 const gameRoute = require('./routes/gameRoute');
+const gradeRoute = require('./routes/gradeRoute');
+const userGameRoute = require('./routes/userGameRoute');
 
 const User = require("./controllers/UserController")
 const helmet = require('helmet');
@@ -50,8 +52,7 @@ const server = https.createServer(options, app);
 // const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
     cors: {
-
-        origins: ['https://challenge.ovh:80']
+        origins: ['http://localhost:8080']
     }
 });
 
@@ -69,6 +70,8 @@ app.use(helmet());
 app.use('/', route);
 app.use('/', skinRoute);
 app.use('/', gameRoute);
+app.use('/', gradeRoute)
+app.use('/', userGameRoute);
 // CSP configuration
 
 

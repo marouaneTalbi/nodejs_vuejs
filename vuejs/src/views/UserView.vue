@@ -39,7 +39,7 @@
                     <div class="img"></div>
                     <div class="text">
                         <span class="pseudo">{{ user.pseudo }}</span>
-                        <span>Online</span>
+                        <!-- <span>Online</span> -->
                     </div>
                 </div>
                 <div class="card">

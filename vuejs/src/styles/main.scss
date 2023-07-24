@@ -10,7 +10,11 @@
 @import './layout/Header';
 @import './views/Gamemode';
 @import './views/Game';
+@import './views/AccesDenied';
 
 * {
     font-family: 'Inter';
+}
+body {
+    place-items: initial !important;
 }

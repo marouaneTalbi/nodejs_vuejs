@@ -131,7 +131,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Header from '../../components/Header.vue';
-import { serverURI } from '../../api/api';
+import {postData, serverURI} from '../../api/api';
 
 export default {
   components: {

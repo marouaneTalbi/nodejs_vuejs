@@ -18,8 +18,12 @@ import SkinsToBuY from '../views/SkinsToBuyView.vue'
 import Confirm from "@/views/security/confirm.vue";
 import ForgotPassword from "@/views/security/forgotPassword.vue";
 import InitPassword from "@/views/security/initPassword.vue";
+import AdminGrades from "@/views/AdminGrades.vue";
+import AdminGrade from "@/views/AdminGrade.vue";
+import UserGrade from "@/views/UserGrade.vue";
 
-
+import AccessDenied from '../views/security/access-denied.vue'
+import NotFound from '../views/security/not-found.vue'
 
 
 const router = createRouter({
@@ -65,14 +69,13 @@ const router = createRouter({
       path: '/stats',
       name: 'stats',
       component: Stats,
-      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin'] }
+      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin']}
     },
     {
       path: '/billing',
       name: 'billing',
       component: Billing,
-      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin']}
-
+      meta: { requiresAuth: true, requiredRole: 'gamer'}
     },
     {
       path: '/profile',
@@ -112,6 +115,17 @@ const router = createRouter({
       meta: { requiresAuth: true, requiredRoles:['gamer', 'admin', 'gamer']}
     },
     {
+      path: '/access-denied',
+      name: 'access-denied',
+      component: AccessDenied,
+      meta: { requiresAuth: false, requiredRole: 'guest'}
+    },
+    { 
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: NotFound 
+    },  
+    {
       path: '/about',
       name: 'about',
       component: () => import('../views/AboutView.vue'),
@@ -134,6 +148,24 @@ const router = createRouter({
       name: 'initPassword',
       component: InitPassword,
       meta: { requiresAuth: false, requiredRoles: []}
+    },
+    {
+      path: '/admin/grades',
+      name: 'AdminGrades',
+      component: AdminGrades,
+      meta: { requiresAuth: true, requiredRoles: ['admin']}
+    },
+    {
+      path: '/admin/grade/:id',
+      name: 'AdminGrade',
+      component: AdminGrade,
+      meta: { requiresAuth: true, requiredRoles: ['admin']}
+    },
+    {
+      path: '/grade',
+      name: 'UserGrade',
+      component: UserGrade,
+      meta: { requiresAuth: true, requiredRoles: ['gamer']}
     }
   ]
 })

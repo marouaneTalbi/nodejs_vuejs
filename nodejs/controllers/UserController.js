@@ -1,5 +1,6 @@
 const User = require('../models/userModel');
 const UserMongo = require('../models/userModelMongo');
+const UserGameMongo = require('../models/user_game/userGameModelMongo');
 const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
@@ -8,6 +9,8 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const mailSender = require('../SMTP/mailsender');
 const Skin = require('../models/skin/SkinModel');
+const authMiddleware = require("../middlewares/authMiddleware");
+const UserService = require('../services/userService');
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -107,8 +110,6 @@ exports.login = async (req, res) => {
         }
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (isPasswordValid) {
-
-          // req.session.userId = user.id;
           const token = jwt.sign({ id: user.id , role: user.role }, 'secretKey');
           res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
           res.json({ token });
@@ -327,5 +328,33 @@ exports.initPassword = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ message: 'Une erreur s\'est produite lors de le recuperation du mdp' });
+  }
+};
+
+exports.getUserStats = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    console.log('user id controoler : ', userId);
+    const stats = await UserService.getUserStats(userId);
+
+    res.json({ stats });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+}
+
+exports.getUserGamesHistory = async (req, res) => {
+  try {
+
+    const userId = req.params.id;
+    const userGamesHistory = await UserGameMongo.find({ user_id: userId });
+    console.log('userGamesHistory: ', userGamesHistory);
+    res.status(200).json(userGamesHistory);
+
+  } catch (error) {
+
+    console.error('Erreur lors de la récupération de l\'historique des parties de l\'utilisateur:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
+
   }
 };
