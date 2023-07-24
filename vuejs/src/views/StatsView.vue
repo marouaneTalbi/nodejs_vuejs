@@ -29,6 +29,7 @@
                         <div class="header">
                             <div v-if="game.result == 'loose'" class="result result--lose">Défaite</div>
                             <div v-if="game.result == 'win'" class="result">Victoire</div>
+                            <div v-if="game.result == 'equality'" class="result result--equality">Egalité</div>
                             <span>+ 100 ELO</span>
                         </div>
                         <div>
