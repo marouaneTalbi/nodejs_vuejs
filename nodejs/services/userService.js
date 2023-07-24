@@ -49,8 +49,18 @@ async function getUserStats(userId) {
                 }
             }
         ]);
+
+        if (result.length === 0) {
+            return {
+                totalVictories: 0,
+                totalDefeats: 0,
+                totalGames: 0,
+                winRate: 0,
+                loseRate: 0,
+            };
+        }
         
-        return result;
+        return result[0];
     } catch(error) {
         throw error;
     }
