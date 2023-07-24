@@ -1,12 +1,16 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const UserMongo = require('./userModelMongo')
+const UserMongo = require('./userModelMongo');
+const Skin = require('./skin/SkinModel');
+const UserSkin = require('./user_skin/user_skin');
+
 const sequelize = new Sequelize({
   dialect: 'postgres',
-  host: 'localhost',
+  host: 'localhost',            
   port: 5432,
   database: 'mydatabase',
   username: 'myuser',
-  password: 'mypassword'
+  password: 'mypassword',
+  timestamps:false
 });
 
 const User = sequelize.define('_user', {
@@ -30,7 +34,8 @@ const User = sequelize.define('_user', {
   },
   picture: {
     type: DataTypes.STRING(255),
-    allowNull: true
+    allowNull: false,
+    defaultValue: 'picture.png',
   },
   coins: {
     type: DataTypes.INTEGER,
@@ -45,7 +50,7 @@ const User = sequelize.define('_user', {
     allowNull: true,
   },
   isconfirmed: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.BOOLEAN,
     allowNull: true
   },
   points: {
@@ -59,11 +64,33 @@ const User = sequelize.define('_user', {
       model: 'Skin',
       key: 'id'
     }
+  },
+  createdat: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
+  },
+  role: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+    defaultValue: 'gamer',
+  },
+  verificationcode: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  forgot_pwd: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
   }
 }, {
   tableName: '_user',
-  timestamps: false
+  timestamps: false,
+  subQuery: false
 });
+
+Skin.belongsToMany(User, { through: 'user_skin', foreignKey: 'skin_id' });
+User.belongsToMany(Skin, { through: 'user_skin', foreignKey: 'user_id' });
 
 User.afterCreate(async (user, options) => {
   try {
@@ -71,7 +98,12 @@ User.afterCreate(async (user, options) => {
       _id: user.id, 
       pseudo: user.pseudo, 
       mail: user.mail, 
-      password: user.password
+      createdat: user.createdat,
+      coins: user.coins,
+      role: user.role,
+      picture: user.picture,
+      ratio: user.ratio,
+      password: user.password,
     })
     console.log('User creation in MongoDB successful');
   } catch (error) {
@@ -93,5 +125,4 @@ User.afterUpdate(async (user, options) => {
     console.error('An error occurred after user deletion in MongoDB:', error);
   }
 })
-
 module.exports = User;

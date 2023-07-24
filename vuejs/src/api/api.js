@@ -1,13 +1,26 @@
 import axios from 'axios';    
+import Cookies from 'js-cookie';
 
-const serverURI = 'http://localhost:3000';
+// prod
+// export const serverURI = 'https://challenge.ovh:3000';
+
+export const serverURI = 'http://localhost:3000';
+
+
+axios.interceptors.request.use((config) => {
+    const token = Cookies.get('token');
+    if (token) {
+        config.headers.Authorization = 'Bearer ' + token;
+    }
+    return config;
+});
 
 export function fetchData(route) {
     return axios.get((serverURI + route));
 }
 
-export function postData(url, data) {
-    return axios.post(url, data);
+export function postData(route, data) {
+    return axios.post(serverURI + route, data);
 }
 
 export function deleteData(route, data) {

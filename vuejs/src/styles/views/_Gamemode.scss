@@ -1,0 +1,149 @@
+.gamemode {
+    width: 100vw;
+    height: 100vh;
+    background-color: #17181F;
+    display: flex;
+    flex-direction: column;
+
+    & .modal-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 20px;
+        z-index: 10;
+
+        & button {
+            width: 60%;
+            border-radius: 10px;
+            padding: 10px;
+            font-weight: 600;
+            background-color: hsla(160, 100%, 37%, 1);
+        }
+
+        & hr {
+            width: 80%;
+            opacity: 0.1;
+        }
+
+        & form {
+            width: 60%;
+            display: flex;
+            flex-direction: row;
+            gap: 5px;
+
+            & button {
+                margin: 0;
+                padding: 2px 8px;
+                width: max-content;
+                background-color: hsla(160, 100%, 37%, 1);
+
+                & svg {
+                    color: white;
+                    width: 25px;
+                    height: 25px;
+                    margin-top: 2px;
+                }
+            }
+
+            & input {
+                width: 100%;
+                outline: none;
+                background-color: transparent;
+                padding: 10px;
+                border-radius: 10px;
+                border: #555561 2px solid;
+                color: white;
+                font-weight: 500;
+            }
+        }
+        
+        & svg {
+            width: 50px;
+            height: 50px;
+            color: #34aeeb;
+        }
+
+        & h2 {
+            color: white;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        & p {
+            text-align: center;
+            color: #A0AEC0;
+        }
+    }
+
+    & h3 {
+        text-align: center;
+        color: white;
+        font-size: 50px;
+        font-weight: 800;
+        margin: 20px 0 40px 0;
+    }
+
+    & .card-container {
+        display: flex;
+        justify-content: space-around;
+        flex-direction: row;
+        flex-wrap: wrap;
+        z-index: 5;
+
+        & .card {
+            width: 285px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+
+            & img {
+                cursor: pointer;
+                position: absolute;
+                top: 0;
+                transition-duration: .3s;
+
+                &:hover {
+                    transform: scale(1.1);
+                }
+            }
+
+            & .content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-direction: column;
+
+                & h4 {
+                    text-align: center;
+                    font-size: 30px;
+                    color: white;
+                    font-weight: 800;
+                    margin-bottom: 20px;
+                }
+    
+                & p {
+                    text-align: center;
+                    color: white;
+                    font-weight: 300;
+                    font-size: 15px;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 980px) {
+    .gamemode {
+        height: max-content;
+        padding-bottom: 40px;
+
+        & .card-container {
+            flex-direction: column !important;
+            align-items: center;
+        }
+    }
+}

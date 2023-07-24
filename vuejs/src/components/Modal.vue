@@ -6,7 +6,7 @@
                     <slot />
                     <div class="button-container">
                         <button class="button" @click="close" type="button">Cancel</button>
-                        <button class="button button--valid" @click="confirm">Confirmer</button>
+                        <button v-if="showConfirmButton" class="button button--valid" @click="confirm">Confirmer</button>
                     </div>
                 </div>
             </transition>
@@ -16,7 +16,7 @@
 
 <script lang="ts">
 export default {
-    props: ['modalActive'],
+    props: ['modalActive', 'showConfirmButton'],
     setup(props, {emit}) {
 
         const close = () => {

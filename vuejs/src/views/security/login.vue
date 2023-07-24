@@ -1,7 +1,8 @@
 <template>
   <div class="login-form" :class="{ 'form-error': errorMessage, 'form-shake': animateForm }">
-    <h2>Login</h2>
+    <Header />
     <form @submit.prevent="login">
+      <h2>Login</h2>
       <div class="form-group">
         <label for="email">Email:</label>
         <input type="email" id="email" v-model="email" required>
@@ -11,18 +12,31 @@
         <input type="password" id="password" v-model="password" required>
       </div>
       <button type="submit">Login</button>
+      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
     </form>
-    <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+
     <div class="register-link">
-      Don't have an account? <router-link to="/register">Register</router-link>
+      Don't have an account? <router-link to="/register">Register</router-link><br>
+      <router-link to="/forgot-password">Forgot Password ?</router-link>
     </div>
+  </div>
+  <div class="des-container bg-img-container">
+  </div>
+  <div class="crayon-container bg-img-container">
+  </div>
+  <div class="dollars-container bg-img-container">
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import Cookies from 'js-cookie';
+import {postData, serverURI} from '../../api/api';
 
 export default {
+  components: {
+    Header,
+  },
   data() {
     return {
       email: '',
@@ -34,16 +48,25 @@ export default {
   methods: {
     async login() {
       try {
-        const response = await axios.post('http://localhost:3000/login', {
-          mail: this.email,
-          password: this.password
-        });
+        const response = await postData('/login', {mail: this.email, password: this.password});
         const token = response.data.token;
-        this.$router.push('/home');
+        Cookies.set('token', token, { secure: true, expires: 7 });
+        this.$router.push('/gamemode');
         console.log(response);
       } catch (error) {
         console.error(error);
-        this.errorMessage = 'Invalid credentials';
+        if (error.response.status === 401) {
+          const errorMessage = error.response.data.message;
+          if (errorMessage === 'Utilisateur non confirmé') {
+            this.errorMessage = 'Account not confirmed, check your emails';
+          }
+          else{
+            this.errorMessage = 'Invalid credentials';
+          }
+        }
+        else{
+          this.errorMessage = 'Invalid credentials';
+        }
         this.animateForm = true;
         setTimeout(() => {
           this.animateForm = false;
@@ -52,86 +75,8 @@ export default {
     }
   }
 };
+
+import './../../styles/global.css';
+import './../../styles/login.css';
+import Header from "@/components/Header.vue";
 </script>
-
-<style scoped>
-.login-form {
-  max-width: 300px;
-  margin: 0 auto;
-  border: 1px solid rgb(190, 183, 183);
-  padding: 30px;
-  border-radius: 40px;
-  transition: transform 0.3s;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-input[type="email"],
-input[type="password"] {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-button {
-  padding: 8px 16px;
-  background-color: #4CAF50;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.error-message {
-  color: red;
-  margin-top: 10px;
-}
-
-.form-error {
-  border-color: red;
-}
-
-.form-shake {
-  animation: formShake 0.3s;
-}
-
-@keyframes formShake {
-  0% {
-    transform: translateX(0);
-  }
-  20% {
-    transform: translateX(-10px);
-  }
-  40% {
-    transform: translateX(10px);
-  }
-  60% {
-    transform: translateX(-10px);
-  }
-  80% {
-    transform: translateX(10px);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
-.register-link {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.register-link a {
-  color: #4CAF50;
-  text-decoration: underline;
-  cursor: pointer;
-}
-</style>

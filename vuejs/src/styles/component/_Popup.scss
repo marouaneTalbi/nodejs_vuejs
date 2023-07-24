@@ -1,0 +1,77 @@
+.popup {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.7);
+
+    & .popup-inner {
+        position: relative;
+        max-width: 640px;
+        width: 80%;
+        border-radius: 20px;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0, 2px, 4px, -1px rgba(0,0,0,0.06);
+        background-color: #252530;
+        padding: 20px;
+
+        & .button-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+            gap: 20px;
+
+            & .button {
+                all: unset;
+                height: max-content;
+                border-radius: 15px;
+                background-color: rgba(255, 255, 255, 0.1);
+                outline: none;
+                font-size: 20;
+                font-weight: 700;
+                color: white;
+                padding: 10px 20px;
+                cursor: pointer;
+                transition-duration: .3s;
+                width: max-content;
+
+                &:hover {
+                    transform: scale(1.1);
+                }
+
+                &--valid {
+                    background-color: hsla(160, 100%, 37%, 1);
+                }
+            }
+        }
+    }
+}
+
+//ANIMATIONS//
+.popup-animation-enter-active,
+.popup-antimation-leave-active {
+    transition: opacity 0.3s cubic-bezier(0.52, 0.02, 0.19, 1.02);
+}
+
+.popup-animation-enter-from,
+.popup-animation-leave-to {
+    opacity: 0;
+}
+
+.popup-animation-inner-enter-active {
+    transition: all 0.3s cubic-bezier(0.52, 0.02, 0.19, 1.02) 0.15s;
+}
+.popup-animation-inner-leave-active {
+    transition: all 0.3s cubic-bezier(0.52, 0.02, 0.19, 1.02);
+}
+
+.popup-animation-inner-enter-from {
+    opacity: 0;
+    transform: scale(0.8);
+}
+.popup-animation-inner-leave-to {
+    transform: scale(0.8);
+}

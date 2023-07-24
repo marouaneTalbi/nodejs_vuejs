@@ -11,6 +11,8 @@
             <th>AUTHOR</th>
             <th v-if="showStatus">STATUS</th>
             <th v-if="showCreationDate">CREATION DATE</th>
+            <th>ROLE</th>
+            <th>COINS</th>
             <th>ACTION</th>
           </tr>
           <tr v-for="user in users" :key="user._id" class="user-row">
@@ -20,7 +22,10 @@
                 <span class="mail">{{ user.mail }}</span>
             </td>
             <td style="text-align: center;" class="status" v-if="showStatus">Online</td>
-            <td style="text-align: center;" class="date" v-if="showCreationDate">{{ formatDate(user.createdat) }}</td>
+            <td style="text-align: center;" class="date" v-if="showCreationDate">{{user.createdat ? formatDate(user.createdat) : '14/07/2021' }}</td>
+            <td style="text-align: center;" class="date" >{{ user.role ? user.role: 'gamer' }}</td>
+            <td style="text-align: center;" class="date" >{{ user.coins ? user.coins: '00' }}</td>
+
             <td style="text-align: right;" class="action">
               <router-link :to="{ name: 'user', params: { id: user._id } }">View</router-link>
               <!-- <router-link :to="{ name: 'user', params: { slug: generateSlug(user.pseudo) } }">View</router-link> -->
@@ -79,8 +84,10 @@ export default {
     },
     formatDate(dateString) {
       const date = new Date(dateString);
-      const formattedDate = date.toISOString().split('T')[0];
-      return formattedDate;
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0'); 
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
     },
   }
 };

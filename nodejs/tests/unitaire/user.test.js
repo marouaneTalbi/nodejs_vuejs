@@ -1,16 +1,33 @@
-const { getUsers, getUser } = require('../../controllers/AdminController');
+const { getUsers } = require('../../controllers/AdminController');
 const UserMongo = require('../../models/userModelMongo');
-const request = require("supertest"); // Importez supertest correctement
 
 describe('getUsers', () => {
-    it('return users list', async() => {
+    it('should fetch users successfully', async () => {
         const mockUsers = [
             { name: 'User 1' },
             { name: 'User 2' },
             { name: 'User 3' }
         ];
 
+        // Mock du modèle UserMongo.find() pour renvoyer les utilisateurs fictifs
         UserMongo.find = jest.fn().mockResolvedValue(mockUsers);
+
+        const mockResponse = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        };
+    
+        await getUsers({}, mockResponse);
+
+        expect(mockResponse.status).toHaveBeenCalledWith(200);
+        expect(mockResponse.json).toHaveBeenCalledWith(mockUsers);
+    });
+
+    it('should handle errors', async () => {
+        const mockError = new Error('Something went wrong');
+
+        // Mock du modèle UserMongo.find() pour rejeter une erreur
+        UserMongo.find = jest.fn().mockRejectedValue(mockError);
 
         const mockResponse = {
             status: jest.fn().mockReturnThis(),
@@ -19,27 +36,8 @@ describe('getUsers', () => {
 
         await getUsers({}, mockResponse);
 
-        expect(mockResponse.status).toHaveBeenCalledWith(200);
-        expect(mockResponse.json).toHaveBeenCalledWith(mockUsers);
-    })
-})
+        expect(mockResponse.status).toHaveBeenCalledWith(500);
+        expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Une erreur s\'est produite lors de la récupération des utilisateurs' });
+    });
+});
 
-describe('getUser', () => {
-    it('return user', async() => {
-        const mockUser = [
-            { name: 'User 1' },
-        ];
-
-        UserMongo.find = jest.fn().mockResolvedValue(mockUser);
-
-        const mockResponse = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn()
-        };
-
-        await getUser({}, mockResponse);
-
-        expect(mockResponse.status).toHaveBeenCalledWith(200);
-        expect(mockResponse.json).toHaveBeenCalledWith(mockUsers);
-    })
-})
