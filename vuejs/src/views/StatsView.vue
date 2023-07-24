@@ -75,9 +75,7 @@ export default {
         getUserStats(userId) {
             fetchData('/user/' + userId + '/stats')
             .then(response => {
-                this.stats = response.data.stats
-                console.log(response.data.stats)
-                console.log('stats : ', this.stats)
+                this.stats = response.data.stats[0]
             })
             .catch(error => {
             });
@@ -86,7 +84,6 @@ export default {
             fetchData('/user/' + userId + '/games-history')
             .then(response => {
                 this.gamesHistory = response.data
-                console.log(this.gamesHistory)
             })
             .catch(error => {
             });
