@@ -142,6 +142,7 @@ export default {
             const gameId = this.$route.params.id;
             if (!this.isMyTurn || this.flippedCards.length === 2) return;
             SocketioService.flipedCard(gameId, index)
+
             this.showCard(index)
         },
 
@@ -149,24 +150,35 @@ export default {
             if (this.isComparing || this.cards[index].flipped) return;
                 this.cards[index].flipped = true;
                 this.flippedCards.push(index);
-
-                if (this.flippedCards.length === 2) {
+                if (this.flippedCards.length >= 2) {
                     this.isComparing = true;
 
                 if (this.cards[this.flippedCards[0]].image !== this.cards[this.flippedCards[1]].image) {
-                    setTimeout(() => {
-                    this.cards[this.flippedCards[0]].flipped = false;
-                    this.cards[this.flippedCards[1]].flipped = false;
-                    this.flippedCards = [];
-                    this.isComparing = false;
+                  let cardsDiv = document.getElementsByClassName('memory-card');
+                  const cardArray = Array.from(cardsDiv);
+                  cardArray.forEach((element) => {
+                    element.style.pointerEvents = 'none';
+                  });
 
-                    this.endTurn();
-                    }, 1000); 
+                  setTimeout(() => {
+                  this.cards[this.flippedCards[0]].flipped = false;
+                  this.cards[this.flippedCards[1]].flipped = false;
+                  this.flippedCards = [];
+                  this.isComparing = false;
+                  cardArray.forEach((element) => {
+                    element.style.pointerEvents = 'initial';
+                  });
+                  this.endTurn();
+                  }, 2000);
                 } else {
+                  console.log("les cartes");
+                  console.log(this.cards);
+                  console.log(this.flippedCards);
+                    console.log("cest bon");
                     this.flippedCards = [];
                     this.isComparing = false;
-
-                    this.endTurn();
+                    return;
+                    //this.endTurn();
                 }
             }
         },
@@ -175,7 +187,6 @@ export default {
             let currentUserId = this.getCurrentUser()
             this.isMyTurn = false;
             const gameId = this.$route.params.id;
-            console.log(this.currentPlayer, currentUserId)
             SocketioService.endTurn(gameId, this.currentPlayer, this.cards);
         },
 
@@ -188,7 +199,6 @@ export default {
             fetchData('/game/' + gameId)
             .then(response => {
                 this.game = response.data;
-                console.log(this.game)
             })
             .catch(error => {
                 console.error(error)
@@ -293,6 +303,10 @@ button {
 
 button:hover {
     opacity: 0.8;
+}
+
+.disabled-cards {
+  pointer-events: none;
 }
 
 
