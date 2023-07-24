@@ -5,6 +5,7 @@ const { v4: uuidv4 } = require("uuid");
 exports.createGame = async(gamemode, userId) => {
     try {
         
+
         if(gamemode === "private") {
 
             code = uuidv4();
@@ -43,6 +44,7 @@ exports.createGame = async(gamemode, userId) => {
     }
 }
 
+
 exports.findGameById = async(req, res) => {
     try {
 
@@ -71,6 +73,7 @@ exports.updateGame = async(gameId, updatedData) => {
         }
     
         await game.update(updatedData);
+
 
         return game;
 

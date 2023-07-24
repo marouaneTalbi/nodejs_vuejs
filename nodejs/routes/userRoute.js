@@ -13,6 +13,8 @@ route.get('/user/:id/postgres', UserController.getUserById)
 route.post('/forgotPassword',  UserController.forgotPassword);
 route.post('/initPassword',  UserController.initPassword);
 route.put('/user/:id/verify-email', UserController.updateIsConfirmed);
+route.get('/user/:id/stats', UserController.getUserStats);
+route.get('/user/:id/games-history', UserController.getUserGamesHistory);
 
 // Routes protected by authentication middleware
 const gamerAuthMiddleware = authMiddleware();
@@ -21,6 +23,7 @@ route.get('/user/skin/:id',gamerAuthMiddleware, UserController.getUserSkin);
 route.post('/logout',gamerAuthMiddleware,  UserController.logout);
 route.put("/user/:id/updateuser",gamerAuthMiddleware, UserController.updateUser);
 route.put('/user/:id/change-password',gamerAuthMiddleware, UserController.changePassword);
+
 
 
 // Routes protected by authentication and role Admin
