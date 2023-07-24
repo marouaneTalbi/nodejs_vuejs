@@ -69,7 +69,7 @@ const router = createRouter({
       path: '/stats',
       name: 'stats',
       component: Stats,
-      meta: { requiresAuth: true, requiredRole: 'gamer'}
+      meta: { requiresAuth: true, requiredRoles: ['gamer', 'admin']}
     },
     {
       path: '/billing',
