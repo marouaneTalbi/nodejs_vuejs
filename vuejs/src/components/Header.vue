@@ -56,7 +56,7 @@ export default {
       userRoles: [],
       menuOptions: [
         { route: '/admin', label: 'Administration', requiredRoles: ['admin',] },
-        { route: '/stats', label: 'Stats', requiredRoles: ['admin',] },
+        { route: '/stats', label: 'Stats', requiredRoles: ['gamer', 'admin'] },
         { route: '/billing', label: 'Billing', requiredRoles: ['admin', 'gamer'] },
         { route: '/profile', label: 'Profile', requiredRoles: ['admin']},
         { route: '/account', label: 'Account', requiredRoles: ['gamer'] },
