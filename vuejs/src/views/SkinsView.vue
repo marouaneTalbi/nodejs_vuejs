@@ -1,7 +1,20 @@
- <template>
-  <section class="dashboard">
+<template>
+  <section class="skins">
     <Header />
+    <div>
+      <!-- <button @click="openModal('createSkin')" style="height: 30px; width: 100px; text-align: center;">Creer</button> -->
+    </div>
     <div class="container">
+      <ul v-for="skin in skins" :key="skin._id">
+        <li class="card">
+          <img :src="getPictureUrl(skin.picture)" alt="" style="height: 100px; width: 100px; object-fit: contain;">
+          <div class="infos">
+            <h4>{{ skin.title }}</h4>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <!-- <div class="container">
       <div class="user-list" >
         <div style="display:flex; align-items: center; justify-content: space-between;">
           <h5>skins</h5>
@@ -31,7 +44,7 @@
           </tr>
         </table>
       </div>      
-    </div>
+    </div> -->
     <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive" >
       <div class="modal-content" v-if="currentModal === 'createSkin'">
         <h2 style="color: white;">Créer le Skin</h2>

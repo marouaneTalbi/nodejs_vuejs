@@ -1,0 +1,26 @@
+.skins {
+    width: 100vw;
+    height: 100vh;
+    background-color: #17181F;
+    display: flex;
+    flex-direction: column;
+
+    & .container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-gap: 40px;
+
+        & .card {
+            width: max-content;
+            height: max-content;
+            & img {
+                background-color: #252530;
+                border-radius: 10px;
+                object-fit: cover;
+                padding: 40px;
+                height: 200px !important;
+                width: 200px !important;
+            }
+        }
+    }
+}
