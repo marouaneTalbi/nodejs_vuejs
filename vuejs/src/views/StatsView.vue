@@ -75,7 +75,7 @@ export default {
         getUserStats(userId) {
             fetchData('/user/' + userId + '/stats')
             .then(response => {
-                this.stats = response.data.stats[0]
+                this.stats = response.data.stats
             })
             .catch(error => {
             });
