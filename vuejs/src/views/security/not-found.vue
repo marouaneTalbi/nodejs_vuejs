@@ -5,7 +5,7 @@
             <h5>404</h5>
             <h4>Page Not Found</h4>
             <p>We're sorry, the page you requested could not be found.</p>
-            <p>Please go back to the <strong>profile page</strong></p>
+            <p>Please go back to the <router-link class="link" to="/profile">profile page</router-link></p>
         </div>
     </section>
 </template>
