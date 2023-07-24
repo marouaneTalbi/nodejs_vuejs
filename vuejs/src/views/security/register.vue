@@ -1,5 +1,6 @@
 <template>
-    <div class="register-form">
+  <Header />
+  <div class="register-form">
       <h2>Register</h2>
       <form @submit.prevent="register">
         <div class="form-group">
@@ -7,11 +8,46 @@
           <input type="email" id="email" v-model="email" required>
         </div>
         <div class="form-group">
-          <label for="password">Password:</label>
-          <input type="password" id="password" v-model="password" required>
-          <div v-if="passwordErrorMessage" class="error-message">{{ passwordErrorMessage }}</div>
+          <label class="label">Password</label>
+          <div >
+            <div class="control is-expanded" >
+              <div class="password-div">
+                <div>
+                  <input v-if="showPassword" type="text" class="input" style="width: 150%"  id="password" v-model="password" required />
+                  <input v-else type="password" class="input" style="width: 150%" id="password" v-model="password" required>
+                </div>
+                <div>
+                  <div class="control">
+                   <span class="button" type="button" @click="toggleShow">
+                    <span class="icon is-small is-right">
+                      <font-awesome-icon :icon="showPassword ? 'eye' : 'eye-slash'" />
+                    </span>
+                   </span>
+                  </div>
+                </div>
+              </div>
+              <label style="margin-top: 20px">Confirm Password</label>
+              <div class="password-div">
+                <div>
+                  <input v-if="showPassword2" type="text" class="input" style="width: 150%"  id="password2" v-model="password2" required />
+                  <input v-else type="password" class="input" style="width: 150%" id="password2" v-model="password2" required>
+                </div>
+                <div>
+                  <div class="control">
+                   <span class="button" type="button" @click="toggleShow2">
+                    <span class="icon is-small is-right">
+                      <font-awesome-icon :icon="showPassword2 ? 'eye' : 'eye-slash'" />
+                    </span>
+                   </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-if="passwordErrorMessage" class="error-message">{{ passwordErrorMessage }}</div>
+
+          </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" style="margin-top: -10px">
           <label for="pseudo">Pseudo:</label>
           <input type="text" id="pseudo" v-model="pseudo" required>
         </div>
@@ -33,18 +69,36 @@
   </template>
   
   <script>
-  import axios from 'axios';
   import {postData, serverURI} from '../../api/api';
+  import { library } from '@fortawesome/fontawesome-svg-core';
+  import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+  import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+  library.add(faEye, faEyeSlash);
   
   export default {
+    components: {
+      Header,
+      FontAwesomeIcon
+    },
     data() {
       return {
         email: '',
         password: '',
+        password2: '',
         pseudo: '',
+        showPassword: false,
+        showPassword2 : false,
         errorMessage: '',
         passwordErrorMessage: ''
       };
+    },
+    computed: {
+      buttonLabel() {
+        return (this.showPassword) ? "Hide" : "Show";
+      },
+      buttonLabel2() {
+        return (this.showPassword2) ? "Hide" : "Show";
+      }
     },
     methods: {
       async register() {
@@ -54,6 +108,10 @@
             this.passwordErrorMessage = 'Le mot de passe doit comporter au moins 6 caractères, une majuscule et un chiffre.';
             return;
           }
+          if (this.password !== this.password2) {
+            this.passwordErrorMessage = 'Les mots de passe ne correspondent pas.';
+            return;
+          }
           const response = await postData('/register', {mail: this.email, password: this.password, pseudo: this.pseudo});
           const token = response.data.token;
           this.$router.push('/login');
@@ -61,12 +119,46 @@
           console.error(error);
           this.errorMessage = error.response.data.message;
         }
+      },
+      toggleShow() {
+        this.showPassword = !this.showPassword;
+      },
+      toggleShow2() {
+        this.showPassword2 = !this.showPassword2;
       }
     }
   };
 
   import './../../styles/global.css';
   import './../../styles/register.css';
+  import Header from "@/components/Header.vue";
 
   </script>
-  
+<style>
+.eye-icon {
+  position: relative;
+  top: -30px;
+  left: -28px;
+  cursor: pointer;
+}
+.password-div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.password-div .control {
+  margin-right: 10px;
+}
+.password-div .icon {
+  display: flex;
+  align-items: center;
+}
+.password-div .icon.is-small.is-right {
+  color: grey;
+  cursor: pointer;
+}
+.password-div .icon.is-small.is-right.eye-slash {
+  color: black;
+  cursor: pointer;
+}
+</style>
