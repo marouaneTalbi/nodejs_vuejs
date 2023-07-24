@@ -9,10 +9,9 @@
           <colgroup span="4"></colgroup>
           <tr class="header">
             <th>AUTHOR</th>
-            <th v-if="showStatus">STATUS</th>
-            <th v-if="showCreationDate">CREATION DATE</th>
-            <th>ROLE</th>
-            <th>COINS</th>
+            <th v-if="showInfos">CREATION DATE</th>
+            <th v-if="showInfos">ROLE</th>
+            <th v-if="showInfos">COINS</th>
             <th>ACTION</th>
           </tr>
           <tr v-for="user in users" :key="user._id" class="user-row">
@@ -21,10 +20,9 @@
                 <span class="pseudo">{{ user.pseudo }}</span>
                 <span class="mail">{{ user.mail }}</span>
             </td>
-            <td style="text-align: center;" class="status" v-if="showStatus">Online</td>
-            <td style="text-align: center;" class="date" v-if="showCreationDate">{{user.createdat ? formatDate(user.createdat) : '14/07/2021' }}</td>
-            <td style="text-align: center;" class="date" >{{ user.role ? user.role: 'gamer' }}</td>
-            <td style="text-align: center;" class="date" >{{ user.coins ? user.coins: '00' }}</td>
+            <td style="text-align: center;" class="date" v-if="showInfos">{{user.createdat ? formatDate(user.createdat) : '14/07/2021' }}</td>
+            <td style="text-align: center;" class="date" v-if="showInfos">{{ user.role ? user.role: 'gamer' }}</td>
+            <td style="text-align: center;" class="date" v-if="showInfos">{{ user.coins ? user.coins: '00' }}</td>
 
             <td style="text-align: right;" class="action">
               <router-link :to="{ name: 'user', params: { id: user._id } }">View</router-link>
@@ -49,8 +47,7 @@ export default {
   data() {
     return {
       users: [],
-      showStatus: true,
-      showCreationDate: true
+      showInfos: true
     };
   },
   mounted() {
@@ -79,8 +76,7 @@ export default {
       return slugify(pseudo, options);
     },
     checkScreenWidth() {
-      this.showStatus = window.innerWidth >= 850;
-      this.showCreationDate = window.innerWidth >= 850; 
+      this.showInfos = window.innerWidth >= 850; 
     },
     formatDate(dateString) {
       const date = new Date(dateString);
