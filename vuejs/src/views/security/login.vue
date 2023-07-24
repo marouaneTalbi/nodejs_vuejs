@@ -8,8 +8,20 @@
         <input type="email" id="email" v-model="email" required>
       </div>
       <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password" required>
+        <label class="label">Password</label>
+        <div class="password-div">
+          <div class="control is-expanded" >
+            <input v-if="showPassword" type="text" class="input" style="width: 150%"  id="password" v-model="password" required />
+            <input v-else type="password" class="input" style="width: 150%" id="password" v-model="password" required>
+          </div>
+          <div class="control">
+            <span class="button" type="button" @click="toggleShow">
+              <span class="icon is-small is-right">
+                <font-awesome-icon :icon="showPassword ? 'eye' : 'eye-slash'" />
+              </span>
+            </span>
+          </div>
+        </div>
       </div>
       <button type="submit">Login</button>
       <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
@@ -20,30 +32,36 @@
       <router-link to="/forgot-password">Forgot Password ?</router-link>
     </div>
   </div>
-  <div class="des-container bg-img-container">
-  </div>
-  <div class="crayon-container bg-img-container">
-  </div>
-  <div class="dollars-container bg-img-container">
-  </div>
+  <div class="des-container bg-img-container"></div>
+  <div class="crayon-container bg-img-container"></div>
+  <div class="dollars-container bg-img-container"></div>
 </template>
 
 <script>
-import axios from 'axios';
 import Cookies from 'js-cookie';
 import {postData, serverURI} from '../../api/api';
-
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+library.add(faEye, faEyeSlash);
 export default {
   components: {
     Header,
+    FontAwesomeIcon
   },
   data() {
     return {
       email: '',
       password: '',
+      showPassword: false,
       errorMessage: '',
       animateForm: false
     };
+  },
+  computed: {
+    buttonLabel() {
+      return (this.showPassword) ? "Hide" : "Show";
+    }
   },
   methods: {
     async login() {
@@ -72,6 +90,9 @@ export default {
           this.animateForm = false;
         }, 1000);
       }
+    },
+    toggleShow() {
+      this.showPassword = !this.showPassword;
     }
   }
 };
@@ -80,3 +101,31 @@ import './../../styles/global.css';
 import './../../styles/login.css';
 import Header from "@/components/Header.vue";
 </script>
+<style>
+.eye-icon {
+  position: relative;
+  top: -30px;
+  left: -28px;
+  cursor: pointer;
+}
+.password-div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.password-div .control {
+  margin-right: 10px;
+}
+.password-div .icon {
+  display: flex;
+  align-items: center;
+}
+.password-div .icon.is-small.is-right {
+  color: grey;
+  cursor: pointer;
+}
+.password-div .icon.is-small.is-right.eye-slash {
+  color: black;
+  cursor: pointer;
+}
+</style>
