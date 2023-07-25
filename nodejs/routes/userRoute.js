@@ -18,11 +18,11 @@ route.get('/user/:id/games-history', UserController.getUserGamesHistory);
 
 // Routes protected by authentication middleware
 // const gamerAuthMiddleware = authMiddleware();
-route.get('/user/skins/:id',gamerAuthMiddleware, UserController.getUserSkins);
-route.get('/user/skin/:id',gamerAuthMiddleware, UserController.getUserSkin);
-route.post('/logout',gamerAuthMiddleware,  UserController.logout);
-route.put("/user/:id/updateuser",gamerAuthMiddleware, UserController.updateUser);
-route.put('/user/:id/change-password',gamerAuthMiddleware, UserController.changePassword);
+// route.get('/user/skins/:id',gamerAuthMiddleware, UserController.getUserSkins);
+// route.get('/user/skin/:id',gamerAuthMiddleware, UserController.getUserSkin);
+// route.post('/logout',gamerAuthMiddleware,  UserController.logout);
+// route.put("/user/:id/updateuser",gamerAuthMiddleware, UserController.updateUser);
+// route.put('/user/:id/change-password',gamerAuthMiddleware, UserController.changePassword);
 
 
 // Routes protected by authentication and role Admin
