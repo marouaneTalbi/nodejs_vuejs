@@ -1,5 +1,9 @@
 const UserMongo = require('../models/userModelMongo');
 const User = require('../models/userModel');
+const { v4: uuidv4 } = require('uuid');
+var base64ToImage = require('base64-to-image');
+const path = require('path');
+
 
 exports.getUsers = async (req, res) => {
     try {
@@ -25,11 +29,21 @@ exports.getUser = async (req, res) => {
     }
 }
 
+function saveUserImage(imageTitle, imageData) {
+    const fileName = uuidv4()+ '_' +imageTitle
+    const imageType = 'png';
+  
+    const imagePath = path.join(__dirname, '../pictures/skins/');
+    var optionalObj = {fileName: fileName, 'type':imageType};
+    base64ToImage(imageData, imagePath, optionalObj); 
+    return fileName+'.'+imageType;
+  }
+
 exports.updateUser = async (req, res) => {
     try {
         const { id } = req.params;
         const updates = req.body;
-        
+
         const user = await User.findByPk(id);
 
         if (!user) {
@@ -42,6 +56,32 @@ exports.updateUser = async (req, res) => {
 
         res.status(200).json(user);
     } catch (error) {
+        res.status(500).json({ message: 'Erreur lors de la mise à jour de l\'utilisateur' });
+    }
+};
+
+exports.updateUserPicture = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updates = req.body;
+
+        const user = await User.findByPk(id);
+
+
+        if(updates.picture) {
+            const pictureName = saveUserImage(user.psuedo, updates.picture)
+            await user.update({picture:pictureName});
+        } else {
+            return res.status(404).json({ message: 'Erreur lors du changement de photo' });
+        }
+
+        if (!user) {
+            return res.status(404).json({ message: 'Utilisateur non trouvé' });
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        console.log(error)
         res.status(500).json({ message: 'Erreur lors de la mise à jour de l\'utilisateur' });
     }
 };
