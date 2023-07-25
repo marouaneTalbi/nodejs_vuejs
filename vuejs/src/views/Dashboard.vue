@@ -1,6 +1,41 @@
 <template>
   <section class="dashboard">
     <Header />
+
+    <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive" >
+      <div class="modal-content">
+        <h2 style="color: white;">Créer le Skin</h2>
+        <form @submit.prevent="handleConfirm">
+          <div class="form-group">
+            <label for="title">Titre</label>
+            <input type="text" style="color:white" v-model="title" id="title" placeholder="Titre" required>
+          </div>
+          <div class="form-group">
+            <label for="price">Prix</label>
+            <input type="text" style="color:white" v-model="price" id="price" placeholder="Prix" required>
+            <p v-if="!isValidPrice" class="error-message">Veuillez entrer une valeur numérique pour le prix.</p>
+          </div>
+       
+          <div class="form-group" >
+            <label for="picture" >Photo</label>
+            <input type="file" style="color:white" id="picture" @change="handlePictureChange" placeholder="Photo" required>
+          </div>
+
+          <div class="form-group">
+            <label for="money_type">Type de monnaie</label>
+            <input type="text" style="color:white" v-model="money_type" id="money_type" placeholder="Type de monnaie" required>
+          </div>
+
+          <div class="form-group">
+            <label for="money_type">Coins</label>
+            <input type="text" style="color:white" v-model="coins_price" id="coins_price" placeholder="Coins" required>
+            <p v-if="!isValidPrice" class="error-message">Veuillez entrer une valeur numérique pour les Coins.</p>
+          </div>
+          <button type="submit">Créer</button>
+        </form>
+      </div>
+    </Modal>
+
     <div class="container">
       <!-- <h3>Administration <span>/ All</span></h3> -->
       <div class="user-list">
@@ -33,7 +68,10 @@
       </div>
       
       <div class="user-list">
-        <h5>Skins</h5>
+        <div class="header">
+          <h5>Skins</h5>
+          <button @click="openModal()">Créer</button>
+        </div>
         <table>
           <colgroup span="4"></colgroup>
           <tr class="header">
@@ -65,10 +103,13 @@
 <script>
 import { fetchData,serverURI } from '../api/api';
 import Header from '../components/Header.vue';
+import Modal from '../components/Modal.vue';
+import { ref } from 'vue';
 
 export default {
   components: {
     Header,
+    Modal,
   },
   data() {
     return {
@@ -76,6 +117,18 @@ export default {
       skins: [],
       showInfos: true
     };
+  },
+  setup() {
+    // MODAL
+    const modalActive = ref(false);
+    const toggleModal = () => {
+      modalActive.value = !modalActive.value;
+    }
+
+    const isValidPrice = ref(true);
+
+
+    return { modalActive, toggleModal, isValidPrice }
   },
   mounted() {
     this.getUsers();
@@ -95,6 +148,10 @@ export default {
       })
       .catch(error => {
       });
+    },
+    openModal(type) {
+      this.modalActive = true;
+      this.currentModal = type;
     },
     getPictureUrl(picture) {
       return `${serverURI}${picture}`;
