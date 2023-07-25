@@ -345,10 +345,10 @@ export default {
             this.modalActive = false;
         },
         openModal() {
-          console.log("openModal");
+            this.updateUserGame(this.getCurrentUser(),this.$route.params.id, {result: "win"});
+            console.log('current player : ', this.currentPlayer);
 
-            this.updateUserGame(this.$route.params.id,this.getCurrentUser(), {result: "win"});
-            this.updateUserGame(this.$route.params.id,this.currentPlayer, {result: "loose"});
+            this.updateUserGame(this.currentPlayer,this.$route.params.id, {result: "loose"});
             this.modalActive = true;
         },
         copyToClipboard() {
