@@ -101,10 +101,11 @@
 </template>
 
 <script>
-import { fetchData,serverURI } from '../api/api';
+import { fetchData,serverURI, postData } from '../api/api';
 import Header from '../components/Header.vue';
 import Modal from '../components/Modal.vue';
 import { ref } from 'vue';
+import { toast } from 'vue3-toastify';
 
 export default {
   components: {
@@ -115,7 +116,14 @@ export default {
     return {
       users: [],
       skins: [],
-      showInfos: true
+      showInfos: true,
+      base64: null,
+      title: '',
+      price: '',
+      money_type: '',
+      coins_price: '',
+      picture: null,
+      image: null,
     };
   },
   setup() {
@@ -149,6 +157,16 @@ export default {
       .catch(error => {
       });
     },
+    base64func (blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onerror = reject
+        reader.onload = () => {
+          resolve(reader.result)
+        }
+        reader.readAsDataURL(blob)
+      })
+    },
     openModal(type) {
       this.modalActive = true;
       this.currentModal = type;
@@ -174,6 +192,57 @@ export default {
       const month = String(date.getMonth() + 1).padStart(2, '0'); 
       const year = date.getFullYear();
       return `${day}/${month}/${year}`;
+    },
+    handleConfirm() {
+      if (this.title === '' || this.price === '') {
+        toast('Veuillez remplir tous les champs.', {
+          autoClose: 2000,
+          type: 'error',
+        });
+        return;
+      }
+      const newSkin = {
+        title: this.title,
+        price: this.price,
+        money_type: this.money_type,
+        picture: this.picture,
+        coins_price: this.coins_price 
+      };
+
+      if (isNaN(parseFloat(newSkin.price))) {
+        this.isValidPrice = false;
+        return;
+      }
+
+      this.isValidPrice = true;
+
+      this.createSkin(newSkin);
+      this.closeModal();
+    },
+    closeModal() {
+          this.modalActive = false;
+    },
+    handlePictureChange(event) {
+      const selectedFile = event.target.files[0];
+      this.base64func(selectedFile).then((f) => {
+        this.picture = f
+      })
+    },
+    createSkin(data) {
+      postData('/skin/create', data)
+      .then(response => {
+          toast('Le Skin a bien été Creer', {
+              autoClose: 2000,
+              type: 'success'
+          })
+          this.getSkins();
+      })
+      .catch(error => {
+          toast(error.message, {
+              autoClose: 2000,
+              type: 'error',
+          })
+      });
     },
   }
 };
