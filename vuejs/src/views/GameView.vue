@@ -17,7 +17,7 @@
                 <div v-for="(card, index) in cards" :key="index"
                     class="memory-card"
                     :class="{ flipped: card.flipped }"
-                    @click="flipCard(index)">
+                    @click="flipCard($event, index)">
                     <div class="card-face front"></div>
                     <div class="card-face back" :style="{ backgroundImage:`url('${getPictureUrl(card.image)}')`}"></div>
                 </div>
@@ -34,6 +34,14 @@
         </Modal>
         <button @click="updateUserGame">click</button>
     </section>
+  <!-- Cartes gagnées -->
+  <div class="winning-cards">
+
+  </div>
+
+  <div class="loosing-cards">
+
+  </div>
 </template>
 
 <script>
@@ -63,6 +71,8 @@ export default {
             currentPlayer:null,
             game: {},
             cards: [],
+            cardsElement: [],
+            secondCardsElement: [],
         };
     },
     beforeRouteLeave() {
@@ -140,7 +150,7 @@ export default {
         },
 
 
-        flipCard(index) {
+        flipCard(event, index) {
             const gameId = this.$route.params.id;
             if (!this.isMyTurn || this.flippedCards.length === 2) return;
             SocketioService.flipedCard(gameId, index)
@@ -148,16 +158,16 @@ export default {
             this.displayMessageTurn("A vous de jouer");
             this.removeTransparentDiv();
           }
-            this.showCard(index)
+            const clickedCard = event.target;
+            this.cardsElement.push(clickedCard);
+            this.showCard(index, event)
         },
 
-        showCard(index) {
+        showCard(index, event) {
           if (this.currentPlayer !== this.getCurrentUser()) {
-            console.log("opposant");
             this.createTransparentDiv();
           }
           if (this.currentPlayer === this.getCurrentUser()){
-            console.log("joueur");
             this.removeTransparentDiv();
           }
             if (this.isComparing || this.cards[index].flipped) return;
@@ -167,6 +177,7 @@ export default {
                     this.isComparing = true;
 
                 if (this.cards[this.flippedCards[0]].image !== this.cards[this.flippedCards[1]].image) {
+                  this.cardsElement = [];
                   if (this.currentPlayer === this.getCurrentUser()) {
                     this.createTransparentDiv();
                   }
@@ -179,6 +190,7 @@ export default {
                   setTimeout(() => {
                   this.cards[this.flippedCards[0]].flipped = false;
                   this.cards[this.flippedCards[1]].flipped = false;
+
                   this.flippedCards = [];
                   this.isComparing = false;
                   cardArray.forEach((element) => {
@@ -198,13 +210,24 @@ export default {
                   this.endTurn();
                   }, 2000);
                 } else {
-                  console.log("les cartes");
-                  console.log(this.cards);
-                  console.log(this.flippedCards);
-                    console.log("cest bon");
                     this.flippedCards = [];
                     this.isComparing = false;
-                  console.log("joueur joue encore");
+                  setTimeout(() => {
+                    this.cardsElement[0].style.display = "none";
+                    this.cardsElement[1].style.display = "none";
+                  }, 2000);
+                  if (this.currentPlayer === this.getCurrentUser()) {
+                    this.onWin(this.cardsElement[0].parentElement.cloneNode(true));
+                    this.onWin(this.cardsElement[1].parentElement.cloneNode(true), true);
+                  }
+
+                  if (this.currentPlayer !== this.getCurrentUser()) {
+                    console.log("for oppenent");
+                    console.log(this.cardsElement);
+                    this.onOppenentWin(this.cardsElement[0].parentElement.cloneNode(true));
+                    this.onOppenentWin(this.cardsElement[1].parentElement.cloneNode(true), true);
+                  }
+                  this.cardsElement = [];
                     return;
                     //this.endTurn();
                 }
@@ -224,10 +247,6 @@ export default {
         messageElement.innerText = message;
       },
 
-      delMessageTurn(message) {
-        const messageElement = document.getElementById('messageDiv');
-        messageElement.dis
-      },
 
       createTransparentDiv(){
         const transparentDiv = document.querySelector('.transparent-div');
@@ -256,6 +275,46 @@ export default {
           transparentDiv.remove();
           //})
         }
+      },
+
+      onWin(winningCardElement, secondCard = false) {
+        const winningCardsContainer = document.querySelector('.winning-cards');
+        console.log('winningCardElement');
+        console.log(winningCardElement);
+        // Ajouter la carte gagnée dans le conteneur des cartes gagnées
+        if(secondCard){
+          winningCardElement.setAttribute('class', 'memory-card flipped');
+        }
+        winningCardsContainer.appendChild(winningCardElement);
+
+        // Animation d'apparition de la carte gagnée depuis le haut
+        winningCardElement.style.animation = 'slideInFromTop 3s';
+        winningCardElement.style.animationFillMode = 'forwards';
+
+        // Animation de disparition de la carte du jeu en la faisant glisser vers le haut
+        winningCardElement.addEventListener('animationend', () => {
+          //winningCardElement.remove();
+        });
+      },
+
+      onOppenentWin(winningCardElement, secondCard = false) {
+        const loosingCardsContainer = document.querySelector('.loosing-cards');
+        console.log('loosingCardElement');
+        console.log(winningCardElement);
+        // Ajouter la carte gagnée dans le conteneur des cartes gagnées
+        if(secondCard){
+          winningCardElement.setAttribute('class', 'memory-card flipped');
+        }
+        loosingCardsContainer.appendChild(winningCardElement);
+
+        // Animation d'apparition de la carte gagnée depuis le haut
+        /*winningCardElement.style.animation = 'slideInFromTop 3s';
+        winningCardElement.style.animationFillMode = 'forwards';
+
+        // Animation de disparition de la carte du jeu en la faisant glisser vers le haut
+        winningCardElement.addEventListener('animationend', () => {
+          //winningCardElement.remove();
+        });*/
       },
 
         endTurn() {
@@ -421,6 +480,48 @@ button:hover {
 
 .hidden {
   display: none;
+}
+
+.winning-cards {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.winning-cards > div:not(:first-child) {
+  margin-left: -60px;
+}
+
+.loosing-cards {
+  position: absolute;
+  top: 130px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToTop {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
 }
 
 
