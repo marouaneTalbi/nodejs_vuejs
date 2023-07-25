@@ -1,6 +1,117 @@
 <template>
   <section class="user">
     <Header />
+    <div class="container">
+      <div class="block" v-if="user">
+        <div class="user-profile" >
+          <div class="image" @click="openModal('photo')" 
+            @mouseover="showOverlay"
+            @mouseleave="hideOverlay">
+            <div v-if="showOverlay" class="overlay">CHANGER</div>
+              <div style="height: 100%; width: 100%;background-size: contain;">
+                <img v-if="!user.picture || user.picture === 'picture.png'" 
+                  style="
+                  height: 100%;
+                  width: 100%;
+                  border-radius: 100px;
+                  background-size: contain;"
+                  :src="getPictureUrl('user.png')"
+                   alt="">
+                <img v-if="user.picture && user.picture !== 'picture.png'"
+                  style="height: 100%;
+                  width: 100%;
+                  border-radius: 100px;
+                  background-size: contain;"
+                  :src="getPictureUrl(user.picture)"
+                alt="">
+            </div>
+
+          </div>
+        </div>
+        <div class="card">
+          <div class="row">
+            <div class="text">
+              <span class="pseudo-title">Pseudo</span>
+              <br />
+              <span class="pseudo">{{ user.pseudo }}</span>
+            </div>
+            <button @click="openModal('editPseudo')">Edit</button>
+          </div>
+          <div class="row">
+            <div class="text">
+              <span class="pseudo-title">Email</span>
+              <br />
+              <span class="pseudo">{{ user.mail }}</span>
+            </div>
+            <button @click="openModal('editEmail')">Edit</button>
+          </div>
+          <div class="row">
+            <div class="text">
+              <span class="pseudo-title">Creation date</span>
+              <br />
+              <span class="pseudo">{{ formatDate(user.createdat) }}</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="text">
+              <span class="pseudo-title">Role</span>
+              <br />
+              <span class="pseudo">{{ user.role }}</span>
+            </div>
+          </div>
+          <div>
+            <button style="background-color: green" @click="openModal('editPassword')">Update Password</button>
+          </div>
+        </div>
+          <div class="row" v-if="skin && skin.title != undefined">
+              <div class="text">
+                  <span class="pseudo-title">Skin</span>
+                  <br />
+                  <span class="pseudo">{{ skin?.title }}</span>
+              </div>
+              <button @click="openModal('skins')">Edit</button>
+          </div>
+          <div class="row">
+            <div class="text">
+            </div>
+          </div>
+        </div>
+        <Popup @close="paymentToggleModal"  :popupActive="paymentModalActive" >
+          <div class="popupButtons">
+            <div v-if="popUpImage" style="display: flex; justify-content: center; flex-direction: column; align-items: center; padding: 10px;">
+              <form @submit.prevent="handleConfirm" style="display: flex; justify-content: center; flex-direction: column; align-items: center;">
+                <img 
+                    v-if="user.picture && user.picture !== 'picture.png'"
+                    :src="getPictureUrl(user.picture)"
+                    alt="" 
+                    style="height: 200px; width: 200px; object-fit: contain;">
+                  <img 
+                    v-if="!user.picture || user.picture === 'picture.png'"
+                    :src="'../../../public/img/user.png'" 
+                    alt="" 
+                    style="height: 200px; width: 200px; object-fit: contain;">
+                  <input type="file" style="color:white" id="picture" @change="handlePictureChange" placeholder="Photo" required>
+              </form>
+              <button class="buy-button" @click="changePhoto()" style="margin-top: 2%;">changer</button>
+            </div>
+            <div v-if="popUpSkins ">
+              <div class="modal-content">
+                <div class="card-list-skin">
+                    <div v-for="skin in skins" :key="skin.id" class="card-skin">
+                        <div class="card-image-skin">
+                            <img :src="getPictureUrl(skin.picture)" alt="" style=" object-fit: contain;">
+                        </div>
+                        <div class="card-content-skin">
+                        <h3>{{ skin.title }}</h3>
+                        <button @click="assignSkin(skin)">choisir</button>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Popup>
+    </div>
     <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive" :showConfirmButton="true">
       <div class="modal-content" v-if="currentModal === 'editEmail'">
             <h2 class="pseudo-title" >Update Informations</h2>
@@ -43,57 +154,42 @@
           </form>
         </div>
     </Modal>
-    <div class="container">
-      <div class="block" v-if="user">
-        <div class="user-profile">
-          <div class="img"></div>
-          <div class="text">
-            <span class="pseudo">{{ user.picture }}</span>
-            <span>Online</span>
-          </div>
-        </div>
-        <div class="card">
-          <div class="row">
-            <div class="text">
-              <span class="pseudo-title">Pseudo</span>
-              <br />
-              <span class="pseudo">{{ user.pseudo }}</span>
-            </div>
-            <button @click="openModal('editPseudo')">Edit</button>
-          </div>
-          <div class="row">
-            <div class="text">
-              <span class="pseudo-title">Email</span>
-              <br />
-              <span class="pseudo">{{ user.mail }}</span>
-            </div>
-            <button @click="openModal('editEmail')">Edit</button>
-          </div>
-          <div class="row">
-            <div class="text">
-              <span class="pseudo-title">Creation date</span>
-              <br />
-              <span class="pseudo">{{ user.createdat }}</span>
-            </div>
-          </div>
-          <div class="row">
-            <div class="text">
-              <span class="pseudo-title">Role</span>
-              <br />
-              <span class="pseudo">{{ user.role }}</span>
-            </div>
-          </div>
-          <div>
-            <button style="background-color: green" @click="openModal('editPassword')">Update Password</button>
-          </div>
-        </div>
-      </div>
-    </div>
+ 
   </section>
 </template>
 
 
 <style scoped>
+.image { position: relative }
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 100px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: wheat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    border-radius: 100px;
+}
+
+.image:hover .overlay {
+    opacity: 1;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.overlay svg {
+    color: white;
+    height: 70px;
+    width: 70px;
+}
 .maj{
   background-color: green !important;
   margin-top: 10px !important;
@@ -112,32 +208,85 @@
   justify-content: center;
   height: 200px;
 }
-
+.image{
+  width: 160px ;
+  height: 160px ;
+  border-radius: 100px;
+  background-size: cover;
+  background-color: red;
+  display: flex;
+  justify-content: center;
+}
 .card-image img {
   max-width: 100%;
   max-height: 100%;
 }
 
-.card-content {
+
+.card-list-skin {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card-skin {
+  background-color: #f0f0f05c;
+  border-radius: 8px;
+  padding: 4px;
+  /* width: 20%; */
+  margin: 10px;
+}
+
+.card-image-skin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+}
+
+.card-image-skin img {
+  max-width: 150px;
+  max-height: 100%;
+}
+
+.card-content-skin {
   text-align: center;
 }
 </style>
 
 <script>
-
+import { ref } from 'vue';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Header from '../../components/Header.vue';
-import {deleteData, postData, serverURI} from '../../api/api';
 import Modal from "@/components/Modal.vue";
-import {ref} from "vue";
-import {toast} from "vue3-toastify";
+import {fetchData, postData, serverURI, patchData, putData} from '../../api/api';
+import Popup from '../../components/Popup.vue';
+import { toast } from 'vue3-toastify';
+import { reactive } from "vue";
 
 export default {
   components: {
     Header,
     Modal,
+    Popup,
   },
+  setup() {
+    const state = reactive({
+      showOverlay: false,
+    });
+    const showOverlay = () => {
+      state.showOverlay = true;
+    };
+    const hideOverlay = () => {
+      state.showOverlay = false;
+    };
+    const paymentModalActive = ref(false);
+    const paymentToggleModal = () => {
+      paymentModalActive.value = !paymentModalActive.value;
+    };
+    return { paymentModalActive, paymentToggleModal, currentPaymentModal: null,showOverlay, hideOverlay, state };
+    },
   data() {
     return {
       user: null,
@@ -146,8 +295,11 @@ export default {
         mail: ''
       },
       showEmailVerification: false,
+      popUpImage : false,
+      popUpSkins: false,
       emailVerificationcode: '',
       verificationMessage: '',
+      picture:'',
       passwordData: {
         oldPassword: '',
         newPassword: '',
@@ -156,7 +308,9 @@ export default {
       passwordChangeMessage: '',
       passwordChangeError: false,
       infoChangeMessage: '',
-      infoChangeError: false
+      infoChangeError: false,
+      skin: {},
+      skins:[]
     };
   },
   setup() {
@@ -176,8 +330,118 @@ export default {
   },
   mounted() {
     this.getUserInfo();
+    this.getUserSkins();
+    this.getUserSkin();
+
   },
   methods: {
+    currentUserId(){
+      const token = Cookies.get('token');
+      const [header, payload, signature] = token.split('.');
+      const decodedPayload = JSON.parse(atob(payload));
+      const userId = decodedPayload.id;
+      return userId;
+    },
+    getUserSkins() {
+      const userId = this.currentUserId();
+      fetchData('/user/skins/' + userId)
+      .then(response => {
+        this.skins = response.data
+      })
+      .catch(error => {
+        toast(error.message, {
+          autoClose: 2000,
+          type: 'error',
+        })
+      });
+    },
+    assignUserSkin(data) {
+      postData('/skin/assign', data)
+      .then(response => {
+
+        this.skin = response.data.skin
+        console.log(response.data.skin)
+          toast('Skin vous a bien été affecter', {
+              autoClose: 2000,
+              type: 'success'
+          })
+      })
+      .catch(error => {
+          toast(error.message, {
+              autoClose: 2000,
+              type: 'error',
+          })
+      });
+      this.closePoPupModal() 
+    },
+    assignSkin(skin){
+      const newSkin = {
+          userId: this.user.id,
+          skinId: skin.id,
+      };
+      this.assignUserSkin(newSkin, this.user.id)
+    },
+    getUserSkin(){
+        const userId = this.currentUserId();
+        fetchData('/user/skin/' + userId)
+        .then(response => {
+            this.closeModal()
+            this.skin = response.data
+        })
+    },
+
+    //////
+    getPictureUrl(picture) {
+      return `${serverURI}/pictures/skins/${picture}`;
+    },
+    openModal(type){
+      if(type == 'photo') {
+        this.popUpImage = true
+      } else {
+        this.getUserSkins()
+        this.popUpSkins = true
+      }
+        this.paymentModalActive = true;
+    },
+    updateUserImage(userId, data){
+      console.log(userId)
+      patchData('/user/'+userId+'/pic', data)
+      .then(response => {
+          toast('La photo a bien été modifié', {
+              autoClose: 2000,
+              type: 'success'
+          })
+          console.log(response)
+          this.user.picture = response.data.picture 
+      })
+      .catch(error => {
+          toast(error.message, {
+              autoClose: 2000,
+              type: 'error',
+          })
+      })
+    },
+
+    changePhoto(picture){
+      const updatedPicture = {picture: this.picture};
+      this.updateUserImage(this.user.id, updatedPicture)
+    },
+    handlePictureChange(event) {
+      const selectedFile = event.target.files[0];
+      this.base64func(selectedFile).then((f) => {
+          this.picture = f
+      })
+    },
+    base64func (blob) {
+      return new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onerror = reject
+          reader.onload = () => {
+          resolve(reader.result)
+          }
+          reader.readAsDataURL(blob)
+      })
+      },
     async getUserInfo() {
       try {
         const token = Cookies.get('token');
@@ -190,12 +454,20 @@ export default {
           }
         });
         this.user = response.data;
+        return this.user
       } catch (error) {
         console.error(error);
       }
     },
     getUserImageUrl(picture) {
       return `${serverURI}/pictures/${picture}`;
+    },
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0'); 
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
     },
     async updateUserInfo() {
       try {
@@ -221,7 +493,10 @@ export default {
         this.infoChangeError = true;
       }
     },
-    async verifyEmail() {
+    closePoPupModal() {
+      this.paymentModalActive = false;
+    },
+    async verifyEmail(){
       try {
         const token = Cookies.get('token');
         const [header, payload, signature] = token.split('.');
@@ -299,10 +574,12 @@ export default {
   margin: 20px;
 }
 
+
 .user-info {
   background-color: #f5f5f5;
   padding: 10px;
   border-radius: 5px;
 }
+
 </style>
 

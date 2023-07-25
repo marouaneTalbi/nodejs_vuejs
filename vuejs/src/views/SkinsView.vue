@@ -8,6 +8,17 @@
         <h2>Paiement</h2>
         <button class="buy-button" @click="buySkin()">Payer par carte</button>
         <button class="buy-button buy-button--coins" @click="buyByCoins()">Payer avec Les Coins</button>
+          <div class="form-group">
+            <label for="money_type">Type de monnaie</label>
+            <input type="text" style="color:white" v-model="money_type" id="money_type" placeholder="Type de monnaie" required>
+          </div>
+
+          <div class="form-group">
+            <label for="money_type">Coins</label>
+            <input type="text" style="color:white" v-model="coins_price" id="coins_price" placeholder="Coins" required>
+            <p v-if="!isValidPrice" class="error-message">Veuillez entrer une valeur numérique pour les Coins.</p>
+          </div>
+          <button type="submit">Créer</button>
       </div>
     </Modal>
 

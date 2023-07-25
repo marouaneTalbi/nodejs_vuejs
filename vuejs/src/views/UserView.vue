@@ -15,8 +15,6 @@
             </div>
         </Modal>
 
-
-
         <Modal @close="togglePopupModal" @confirm="handleConfirm" :modalActive="modalPopupActive" >
             <div class="modal-content"  v-if="currentPopupModal === 'skins'">
                 <div class="card-list">
