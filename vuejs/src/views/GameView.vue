@@ -17,11 +17,7 @@
                 <div v-for="(card, index) in cards" :key="index"
                     class="memory-card"
                     :class="{ flipped: card.flipped }"
-<<<<<<< HEAD
-                    @click="flipCard(index)">
-=======
                     @click="flipCard($event, index)">
->>>>>>> develop
                     <div class="card-face front"></div>
                     <div class="card-face back" :style="{ backgroundImage:`url('${getPictureUrl(card.image)}')`}"></div>
                 </div>
@@ -53,14 +49,11 @@ import SocketioService from '../services/socketio.service';
 import Modal from '../components/Modal.vue';
 import { ref } from 'vue';
 import Cookies from 'js-cookie';
-<<<<<<< HEAD
-import { fetchData, patchData, serverURI } from '../api/api';
-=======
+
 import {fetchData, patchData, serverURI} from '../api/api'
 import {toast} from "vue3-toastify";
 
 let ActualUser = null;
->>>>>>> develop
 
 export default {
     components: {
@@ -79,12 +72,9 @@ export default {
             currentPlayer:null,
             game: {},
             cards: [],
-<<<<<<< HEAD
-=======
             cardsElement: [],
             countCardJ1: 0,
             countCardJ2: 0,
->>>>>>> develop
         };
     },
     beforeRouteLeave() {
@@ -335,10 +325,6 @@ export default {
             let currentUserId = this.getCurrentUser()
             this.isMyTurn = false;
             const gameId = this.$route.params.id;
-<<<<<<< HEAD
-            console.log(this.currentPlayer, currentUserId)
-=======
->>>>>>> develop
             SocketioService.endTurn(gameId, this.currentPlayer, this.cards);
         },
 
