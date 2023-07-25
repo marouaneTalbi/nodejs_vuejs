@@ -1,6 +1,7 @@
 <template>
     <section class="game">
         <Header />
+      <div id="messageDiv" class="message hidden">A vous de jouer !</div>
         <section v-if="waitingForOpponent" class="waiting-screen">
             <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><g clip-path="url(#a)"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.071 7.586-.828.828A2 2 0 0 1 11.828 9h-1.414c-.375 0-.735.149-1 .414v0a1.414 1.414 0 0 0 0 2l1.829 1.829a2 2 0 0 0 2.828 0l1.414-1.415.964 2.121a1.346 1.346 0 0 0 2.178.395v0c.252-.252.394-.595.394-.952v-4.27a2 2 0 0 1 .586-1.415l2.242-2.243c.472-.47 1.132-1.697 0-2.828-1.131-1.131-2.357-.471-2.828 0l-1.768 1.768m-3.182 3.182-2.02-.674a1.448 1.448 0 0 1-.566-2.397v0a1.448 1.448 0 0 1 1.12-.421l4.648.31m-3.182 3.182 3.182-3.182M2 14.905c.705-1.234 1.825-2.32 3-3.204M2 22.404c1.072-3.002 3.055-5.564 5.023-7.5m.477 6.5c.721-1.442 1.96-3.077 3.087-4.405"></path></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h24v24H0z"></path></clipPath></defs></svg>
             <p v-if="waitingForOpponent">Adversaire en attente...</p>
@@ -43,6 +44,8 @@ import { ref } from 'vue';
 import Cookies from 'js-cookie';
 import { fetchData, patchData } from '../api/api';
 
+let ActualUser = null;
+
 export default {
     components: {
         Header,
@@ -79,7 +82,7 @@ export default {
         return { modalActive, toggleModal }
     },
 
-    mounted() {
+      mounted() {
         const gameId = this.$route.params.id;
         this.getGame(gameId);
         
@@ -91,7 +94,7 @@ export default {
             } 
         });
     },
-  
+
     created() {
         this.getCurrentUser();
 
@@ -99,7 +102,6 @@ export default {
             this.showCard(index)
         });
 
-      
 
         SocketioService.waitingForPlayers((playersCount) => {
             if (playersCount < 2) {
@@ -142,11 +144,22 @@ export default {
             const gameId = this.$route.params.id;
             if (!this.isMyTurn || this.flippedCards.length === 2) return;
             SocketioService.flipedCard(gameId, index)
-
+          if (this.currentPlayer === this.getCurrentUser()) {
+            this.displayMessageTurn("A vous de jouer");
+            this.removeTransparentDiv();
+          }
             this.showCard(index)
         },
 
         showCard(index) {
+          if (this.currentPlayer !== this.getCurrentUser()) {
+            console.log("opposant");
+            this.createTransparentDiv();
+          }
+          if (this.currentPlayer === this.getCurrentUser()){
+            console.log("joueur");
+            this.removeTransparentDiv();
+          }
             if (this.isComparing || this.cards[index].flipped) return;
                 this.cards[index].flipped = true;
                 this.flippedCards.push(index);
@@ -154,6 +167,9 @@ export default {
                     this.isComparing = true;
 
                 if (this.cards[this.flippedCards[0]].image !== this.cards[this.flippedCards[1]].image) {
+                  if (this.currentPlayer === this.getCurrentUser()) {
+                    this.createTransparentDiv();
+                  }
                   let cardsDiv = document.getElementsByClassName('memory-card');
                   const cardArray = Array.from(cardsDiv);
                   cardArray.forEach((element) => {
@@ -168,6 +184,17 @@ export default {
                   cardArray.forEach((element) => {
                     element.style.pointerEvents = 'initial';
                   });
+                    if (this.currentPlayer === this.getCurrentUser()) {
+                      console.log("opposant");
+                      this.createTransparentDiv();
+                    }
+                    if (this.currentPlayer !== this.getCurrentUser()){
+                      console.log("joueur");
+                      this.removeTransparentDiv();
+                    }
+                    if (this.currentPlayer !== this.getCurrentUser()) {
+                      this.showTurnMessage();
+                    }
                   this.endTurn();
                   }, 2000);
                 } else {
@@ -177,11 +204,59 @@ export default {
                     console.log("cest bon");
                     this.flippedCards = [];
                     this.isComparing = false;
+                  console.log("joueur joue encore");
                     return;
                     //this.endTurn();
                 }
             }
         },
+
+      showTurnMessage() {
+        const messageDiv = document.getElementById('messageDiv');
+        messageDiv.classList.remove('hidden');
+        setTimeout(() => {
+          messageDiv.classList.add('hidden');
+        }, 2000); // Supprimez le message après 2 secondes (ajustez cette valeur selon votre préférence)
+      },
+
+      displayMessageTurn(message) {
+        const messageElement = document.getElementById('messageDiv');
+        messageElement.innerText = message;
+      },
+
+      delMessageTurn(message) {
+        const messageElement = document.getElementById('messageDiv');
+        messageElement.dis
+      },
+
+      createTransparentDiv(){
+        const transparentDiv = document.querySelector('.transparent-div');
+        console.log(transparentDiv);
+        if (!transparentDiv) {
+          const transparentDiv = document.createElement('div');
+          transparentDiv.style.position = 'fixed';
+          transparentDiv.style.top = '0';
+          transparentDiv.style.left = '0';
+          transparentDiv.style.width = '100%';
+          transparentDiv.style.height = '100%';
+          transparentDiv.style.backgroundColor = 'transparent';
+          transparentDiv.style.zIndex = '9999'; // Assurez-vous qu'elle est au-dessus de tout autre contenu
+          transparentDiv.style.pointerEvents = 'auto'; // Capture tous les événements de clic
+          transparentDiv.className = "transparent-div";
+          document.body.appendChild(transparentDiv);
+        }
+      },
+
+      removeTransparentDiv() {
+        const transparentDiv = document.querySelector('.transparent-div');
+        console.log(transparentDiv);
+        if (transparentDiv) {
+          console.log("dans ifffff");
+          //transparentDiv.forEach((element) => {
+          transparentDiv.remove();
+          //})
+        }
+      },
 
         endTurn() {
             let currentUserId = this.getCurrentUser()
@@ -309,7 +384,44 @@ button:hover {
   pointer-events: none;
 }
 
+#messageDiv {
+  font-size: 24px;
+  font-weight: bold;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 10px;
+}
 
+#messageDiv {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 18px;
+  animation: fadeInOut 2s ease-in-out;
+  z-index: 2;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.hidden {
+  display: none;
+}
 
 
 </style>
