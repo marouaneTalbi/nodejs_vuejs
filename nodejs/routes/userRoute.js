@@ -23,6 +23,7 @@ route.get('/user/skin/:id',gamerAuthMiddleware, UserController.getUserSkin);
 route.post('/logout',gamerAuthMiddleware,  UserController.logout);
 route.put("/user/:id/updateuser",gamerAuthMiddleware, UserController.updateUser);
 route.put('/user/:id/change-password',gamerAuthMiddleware, UserController.changePassword);
+route.patch('/user/:id/pic', AdminController.updateUserPicture)
 
 
 // Routes protected by authentication and role Admin
@@ -32,7 +33,6 @@ route.get('/user/:id', AdminController.getUser)
 route.get('/users', AdminController.getUsers)
 route.delete('/user/:id', AdminController.deleteUser)
 route.patch('/user/:id', AdminController.updateUser)
-route.patch('/user/:id/pic', AdminController.updateUserPicture)
 
 module.exports = route;
 
