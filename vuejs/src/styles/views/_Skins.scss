@@ -4,23 +4,176 @@
     background-color: #17181F;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
 
-    & .container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        grid-gap: 40px;
+    & .modal-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 20px;
+        
+        & svg {
+            width: 50px;
+            height: 50px;
+            color: white;
+        }
 
-        & .card {
-            width: max-content;
-            height: max-content;
-            & img {
-                background-color: #252530;
-                border-radius: 10px;
-                object-fit: cover;
-                padding: 40px;
-                height: 200px !important;
-                width: 200px !important;
+        & .buy-button {
+            width: 80%;
+            background-color: hsla(160, 100%, 37%, 1);
+            font-size: 1rem;
+            font-weight: 600;
+
+            &--coins {
+                background-color: #fcba03;
+            }
+        }
+
+        & h2 {
+            color: white;
+            font-weight: 700;
+            text-align: center;
+        }
+    }
+
+    & .header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 60px 60px 30px 60px;
+
+        & h4 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        & .filter {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+
+            & p {
+                font-size: 1rem;
+                font-weight: 500;
+                color: white;
+            }
+
+            & svg {
+                color: white;
+                height: 30px;
+                width: 30px;
             }
         }
     }
+
+    & .container {
+        padding: 0 60px;
+        background-color: #17181F;
+        padding-bottom: 60px;
+
+        & ul {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-gap: 40px;
+            
+            & li {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+
+                & .card {
+                    width: max-content;
+                    height: max-content;
+                    background-color: #252530;
+                    border-radius: 10px;
+                    padding: 20px;
+                    position: relative;
+                    cursor: pointer;
+        
+                    & h4 {
+                        font-size: 1.2rem;
+                        font-weight: 700;
+                        color: #fff;
+                    }
+        
+                    & img {
+                        object-fit: cover;
+                        padding: 30px;
+                        height: 200px !important;
+                        width: 200px !important;
+                    }
+        
+                    & .money {
+                        & p {
+                            text-align: center;
+                            color: hsla(160, 100%, 37%, 1);
+                            font-size: 1.4rem;
+                            font-weight: bold;
+                        }
+                    }
+                    & .coins {
+                        display: flex;
+                        flex-direction: row;
+                        gap: 5px;
+                        align-items: center;
+                        justify-content: center;
+        
+                        & p {
+                            font-size: 1rem;
+                            font-weight: 600;
+                        }
+                        & svg {
+                            height: 30px !important;
+                            width: 30px !important;
+                        }
+                    }
+                }
+
+                & span {
+                    color: #A0AEC0;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: color 0.5s ease;
+
+                    &:hover {
+                        color: #fff;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    border-radius: 10px;
+}
+
+.card:hover .overlay {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.overlay svg {
+    color: white;
+    height: 70px;
+    width: 70px;
 }
