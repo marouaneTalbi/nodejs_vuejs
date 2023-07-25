@@ -80,7 +80,7 @@ export default {
   },
   methods: {
     getPictureUrl(picture) {
-      return `${serverURI}/pictures/grades/${picture}`;
+      return `${serverURI}/${picture}`;
 
     },
     getPictureUrl2(picture) {
@@ -148,5 +148,8 @@ export default {
 }
 p{
   color: white;
+}
+.dashboard{
+  height: 100% !important;
 }
 </style>

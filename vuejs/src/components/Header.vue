@@ -57,12 +57,11 @@ export default {
       menuOptions: [
         { route: '/admin', label: 'Administration', requiredRoles: ['admin',] },
         { route: '/stats', label: 'Stats', requiredRoles: ['gamer', 'admin'] },
-        { route: '/billing', label: 'Billing', requiredRoles: ['admin', 'gamer'] },
+        // { route: '/billing', label: 'Billing', requiredRoles: ['admin', 'gamer'] },
         { route: '/profile', label: 'Profile', requiredRoles: ['admin']},
         { route: '/account', label: 'Account', requiredRoles: ['gamer'] },
         { route: '/skins', label: 'Skins', requiredRoles: ['admin', 'gamer'] },
         { route: '/admin/grades', label: 'Grades', requiredRoles: ['admin'] },
-        { route: '/skins_to_buy', label: 'Buy', requiredRoles: ['admin', 'gamer'] },
         { route: '/grade', label: 'Grade', requiredRoles: ['gamer'] },
       ]
     };

@@ -18,6 +18,22 @@ exports.getAllGrades = async (req, res) => {
     }
 };
 
+exports.getGradeById = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const grade = await Grade.findByPk(id);
+        if (grade){
+            grade.picture = path.join('pictures/grades/', grade.picture);
+            res.json(grade);
+        } else {
+            res.status(404).json({ message: 'grade non trouvé' });
+        }
+    } catch (error) {
+        console.error('Une erreur s\'est produite lors de la récupération des grades:', error);
+        res.status(500).json({ message: 'Une erreur s\'est produite lors de la récupération des grades' });
+    }
+};
+
 exports.getTopGamers = async (req, res) => {
     try {
         const topGamers = await User.findAll({
@@ -48,6 +64,7 @@ exports.getGradeByUserId = async (req, res) => {
                 order: [['required_points', 'DESC']],
             });
             if (grade) {
+                grade.picture = path.join('pictures/grades/', grade.picture);
                 res.json({ points,grade });
             } else {
                 res.status(404).json({ message: 'Grade non trouvé pour les points de l\'utilisateur' });
@@ -65,7 +82,6 @@ exports.getGradeByUserId = async (req, res) => {
 function saveGradeImage(imageTitle, imageData) {
     const fileName = uuidv4()+ '_' +imageTitle
     const imageType = 'png';
-
     const imagePath = path.join(__dirname, '../../pictures/grades/');
     var optionalObj = {fileName: fileName, 'type':imageType};
     base64ToImage(imageData, imagePath, optionalObj);
@@ -85,17 +101,28 @@ exports.createGrade = async (req, res) => {
 };
 
 exports.updateGrade = async (req, res) => {
-    const gardeId = req.params.id;
+    const gradeId = req.params.id;
     const { title, required_points, picture } = req.body;
-    const pictureName =  saveGradeImage(title, picture)
     try {
         const grade = await Grade.findByPk(gradeId);
-        if (grade) {
-            await grade.update({ title, required_points,  picture:pictureName });
-            res.json(grade);
-        } else {
-            res.status(404).json({ message: 'grade non trouvé' });
+        if (picture){
+            const pictureName =  saveGradeImage(title, picture)
+            if (grade) {
+                await grade.update({ title, required_points,  picture:pictureName });
+                res.json(grade);
+            } else {
+                res.status(404).json({ message: 'grade non trouvé' });
+            }
         }
+        else {
+            if (grade) {
+                await grade.update({ title, required_points});
+                res.json(grade);
+            } else {
+                res.status(404).json({ message: 'grade non trouvé' });
+            }
+        }
+
     } catch (error) {
         console.error('Une erreur s\'est produite lors de la mise à jour du grade:', error);
         res.status(500).json({ message: 'Une erreur s\'est produite lors de la mise à jour du grade' });

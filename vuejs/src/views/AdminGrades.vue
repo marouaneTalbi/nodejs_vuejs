@@ -166,4 +166,7 @@ export default {
   font-size: 12px;
   margin-top: 5px;
 }
+.dashboard{
+  height: 100% !important;
+}
 </style>

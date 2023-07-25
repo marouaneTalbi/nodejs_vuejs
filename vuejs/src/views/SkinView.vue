@@ -45,6 +45,14 @@
             <div class="block">
                 <div class="card">
                     <div class="row">
+                        <div class="text" >
+                            <span class="pseudo-title">Image</span>
+                            <br />
+                            <img :src="getPictureUrl(skin.picture)" alt="" style="height: 200px; width: 200px; object-fit: contain;">
+                        </div>
+                        <button @click="openModal('editPicture')">Edit</button>
+                    </div>
+                    <div class="row">
                         <div class="text">
                             <span class="pseudo-title">Titre</span>
                             <br />
@@ -76,20 +84,13 @@
                         </div>
                         <button @click="openModal('editCoins')">Edit</button>
                     </div>
-                    <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-                        <div class="text" >
-                            <br />
-                            <img :src="getPictureUrl(skin.picture)" alt="" style="height: 200px; width: 200px; object-fit: contain;">
-                        </div>
-                        <button @click="openModal('editPicture')">Edit</button>
-                    </div>
+                    
                 </div>
 
                 <div style="display:flex; justify-content: space-around;width: 100%;">
                     <button @click="openModal('delete')">
                          Supprimer le skin
                     </button>
-                    <button class="closebutton" @click="closeModalAndGoBack">Fermer</button>
                 </div>
             </div>
         </div>
@@ -235,10 +236,10 @@ export default {
 
             this.closeModal();
         },
-        closeModalAndGoBack() {
-            this.closeModal();
-            this.$router.push('/skins');
-        },
+        // closeModalAndGoBack() {
+        //     this.closeModal();
+        //     this.$router.push('/skins');
+        // },
         closeModal() {
             this.modalActive = false;
         }

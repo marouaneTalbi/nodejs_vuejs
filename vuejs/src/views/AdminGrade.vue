@@ -11,12 +11,15 @@
         <h2>Modifier le Titre</h2>
         <form @submit.prevent="handleConfirm">
           <input type="text" v-model="title" placeholder="Titre" required>
+          <button type="submit" @click="handleConfirm" class="maj">Mettre à jour</button>
         </form>
       </div>
       <div class="modal-content" v-if="currentModal === 'editPoints'">
         <h2>Modifier les Points requis</h2>
         <form @submit.prevent="handleConfirm">
           <input type="text" v-model="required_points" placeholder="Required points" required>
+          <button type="submit" @click="handleConfirm" class="maj">Mettre à jour</button>
+
         </form>
       </div>
       <div class="modal-content" v-if="currentModal === 'editPicture'">
@@ -25,6 +28,7 @@
           <div style="display: flex; justify-content: center;flex-direction: column; align-items: center;">
             <img :src="getPictureUrl(picture)" alt="" style="height: 200px; width: 200px; object-fit: contain;">
             <input type="file" style="color:white" id="picture" @change="handlePictureChange" placeholder="Photo" required>
+            <button type="submit" @click="handleConfirm" class="maj">Mettre à jour</button>
           </div>
         </form>
       </div>
@@ -93,6 +97,7 @@ export default {
   data() {
     return {
       grade: {},
+      picture : '',
     };
   },
   mounted() {
@@ -101,8 +106,7 @@ export default {
   },
   methods: {
     getPictureUrl(picture) {
-      return `${serverURI}/pictures/gradeS/${picture}`;
-
+      return `${serverURI}/${picture}`;
     },
     handlePictureChange(event) {
       const selectedFile = event.target.files[0];
@@ -111,7 +115,7 @@ export default {
       })
     },
     getGrade(gradeId) {
-      fetchData('/grade/' + gradeId)
+      fetchData('/admin/grade/' + gradeId)
           .then(response => {
             this.grade = response.data
             this.title = this.grade.title
@@ -150,13 +154,14 @@ export default {
     updateGrade(gradeId, data) {
       patchData('/grade/update/' + gradeId, data)
           .then(response => {
+            console.log(response)
             toast('Le grade a bien été modifié', {
               autoClose: 2000,
               type: 'success'
             })
             this.grade.title = this.title
             this.grade.required_points = this.required_points
-            this.grade.picture =this.picture
+            this.grade.picture = 'pictures/grades/'+response.data.picture
 
           })
           .catch(error => {
