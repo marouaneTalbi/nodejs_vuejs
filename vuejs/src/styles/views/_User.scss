@@ -225,11 +225,17 @@
 
     .block {
         width: 300px !important;
+        & .user-profile {
+            & .image {
+                width: 120px !important;
+                height: 120px !important;
+            }
+        }
 
         & .text {
 
             & .pseudo-title {
-                font-size: 13px !important;
+                font-size: 11px !important;
                 font-weight: 500;
                 color: #A0AEC0;
             }

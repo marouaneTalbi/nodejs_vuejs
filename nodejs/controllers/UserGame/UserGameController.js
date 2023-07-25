@@ -71,8 +71,8 @@ exports.updateUserGame = async(req, res) => {
         const { userId, gameId } = req.params;
         const { result } = req.body;
         const { date } = req.body;
-        console.log('date: ' , date);
-        console.log(gameId);
+        console.log('id user : ', userId)
+        console.log('id game : ', gameId)
 
         const user_game = await UserGame.update(
             { result: result },

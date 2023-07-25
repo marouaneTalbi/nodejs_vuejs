@@ -34,8 +34,8 @@
                         </div>
                         <div>
                             <time>{{ formatDate(game.date) }}</time>
-                            |
-                            <span>{{ game._id }}</span>
+                            
+                            <span class="gameId"><span class="bar">|</span> {{ game._id }}</span>
                         </div>
                     </div>
                     <p class="right">view</p>

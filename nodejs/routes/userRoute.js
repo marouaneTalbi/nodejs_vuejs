@@ -5,6 +5,7 @@ const route = express.Router();
 const authMiddleware = require('../middlewares/authMiddleware');
 
 // Public routes
+
 route.post('/login', UserController.login)
 route.post('/register', UserController.register)
 route.get('/current-user', UserController.getCurrentUser);
@@ -27,12 +28,21 @@ route.patch('/user/:id/pic', AdminController.updateUserPicture)
 
 
 // Routes protected by authentication and role Admin
+<<<<<<< HEAD
 
 route.use(authMiddleware(['admin']));
 route.get('/user/:id', AdminController.getUser)
 route.get('/users', AdminController.getUsers)
 route.delete('/user/:id', AdminController.deleteUser)
 route.patch('/user/:id', AdminController.updateUser)
+=======
+const adminAuthMiddleware = authMiddleware(["admin"]);
+route.get('/user/:id',adminAuthMiddleware, AdminController.getUser)
+route.get('/users',adminAuthMiddleware, AdminController.getUsers)
+route.delete('/user/:id',adminAuthMiddleware, AdminController.deleteUser)
+route.patch('/user/:id', adminAuthMiddleware,AdminController.updateUser)
+route.patch('/user/:id/pic',adminAuthMiddleware, AdminController.updateUserPicture)
+>>>>>>> develop
 
 module.exports = route;
 

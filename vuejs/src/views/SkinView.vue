@@ -148,6 +148,7 @@ export default {
                 this.price = this.skin.price
                 this.money_type = this.skin.money_type
                 this.picture = this.skin.picture
+                this.coins_price = this.skin.coins_price
             })
             .catch(error => {
             });
@@ -189,7 +190,7 @@ export default {
                 this.skin.price = this.price 
                 this.skin.money_type = this.money_type
                 this.skin.picture =this.picture 
-
+                this.skin.coins_price = this.coins_price
             })
             .catch(error => {
                 toast(error.message, {
