@@ -139,7 +139,7 @@ export default {
         return {
             user: {},
             skin: {},
-            skins:[]
+            skins:[],
         };
     },
     mounted() {

@@ -16,7 +16,7 @@
                   border-radius: 100px;
                   background-size: contain;"
                   :src="getPictureUrl('user.png')"
-                   alt="">
+                  alt="">
                 <img v-if="user.picture && user.picture !== 'picture.png'"
                   style="height: 100%;
                   width: 100%;
@@ -25,8 +25,10 @@
                   :src="getPictureUrl(user.picture)"
                 alt="">
             </div>
-
           </div>
+          <div class="text">
+            <span class="pseudo">{{ user.pseudo }}</span>
+          </div>       
         </div>
         <div class="card">
           <div class="row">
@@ -112,13 +114,13 @@
             </div>
           </div>
     </Popup>
-    <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive" :showConfirmButton="true">
+    <Modal @close="toggleModal" @confirm="handleUpdateClick" :modalActive="modalActive" :showConfirmButton="true">
       <div class="modal-content" v-if="currentModal === 'editEmail'">
             <h2 class="pseudo-title" >Update Informations</h2>
             <form @submit.prevent="updateUserInfo">
               <label>Email:</label>
               <input type="email" v-model="updatedUser.mail">
-              <button type="submit" @click="handleUpdateClick" class="maj">Mettre à jour</button>
+              <!-- <button type="submit" @click="handleUpdateClick" class="maj">Mettre à jour</button> -->
               <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
               <p v-if="infoChangeMessage" :class="{ 'success-message': !infoChangeError, 'error-message': infoChangeError }">{{ infoChangeMessage }}</p>
             </form>
@@ -135,7 +137,6 @@
          <form @submit.prevent="updateUserInfo">
           <label>Nom d'utilisateur:</label>
           <input type="text" v-model="updatedUser.pseudo">
-          <button type="submit" @click="handleUpdateClick" class="maj">Mettre à jour</button>
           <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
           <p v-if="infoChangeMessage" :class="{ 'success-message': !infoChangeError, 'error-message': infoChangeError }">{{ infoChangeMessage }}</p>
          </form>
