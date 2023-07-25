@@ -30,15 +30,41 @@
             </td>
           </tr>
         </table>
-      </div>      
+      </div>
+      
+      <div class="user-list">
+        <h5>Skins</h5>
+        <table>
+          <colgroup span="4"></colgroup>
+          <tr class="header">
+            <th>TITLE</th>
+            <th v-if="showInfos">PRICE</th>
+            <th v-if="showInfos">COINS PRICE</th>
+            <th>ACTION</th>
+          </tr>
+          <tr v-for="skin in skins" :key="skin.id" class="user-row">
+            <td style="text-align: left;" class="info">
+              <img :src="getPictureUrl(skin.picture)" alt="">
+                <span class="pseudo">{{ skin.title }}</span>
+                <span class="mail">{{ skin.id }}</span>
+            </td>
+            <td style="text-align: center;" class="date" v-if="showInfos">{{ skin.price }}{{ skin.money_type }}</td>
+            <td style="text-align: center;" class="date" v-if="showInfos">{{ skin.coins_price }}</td>
+
+            <td style="text-align: right;" class="action">
+              <router-link :to="{ name: 'skin', params: { id: skin.id } }">View</router-link>
+              <!-- <router-link :to="{ name: 'user', params: { slug: generateSlug(user.pseudo) } }">View</router-link> -->
+            </td>
+          </tr>
+        </table>
+      </div> 
     </div>
   </section>
 </template>
 
 <script>
-import { fetchData } from '../api/api';
+import { fetchData,serverURI } from '../api/api';
 import Header from '../components/Header.vue';
-import slugify from 'slugify';
 
 export default {
   components: {
@@ -47,11 +73,13 @@ export default {
   data() {
     return {
       users: [],
+      skins: [],
       showInfos: true
     };
   },
   mounted() {
     this.getUsers();
+    this.getSkins();
     window.addEventListener('resize', this.checkScreenWidth);
     this.checkScreenWidth();
   },
@@ -68,12 +96,17 @@ export default {
       .catch(error => {
       });
     },
-    generateSlug(pseudo) {
-      const options = {
-        lower: true,
-        remove: /[*+~.()'"!:@]/g,
-      };
-      return slugify(pseudo, options);
+    getPictureUrl(picture) {
+      return `${serverURI}${picture}`;
+    },
+    getSkins() {
+      fetchData('/skins')
+      .then(response => {
+        console.log(response.data)
+        this.skins = response.data
+      })
+      .catch(error => {
+      });
     },
     checkScreenWidth() {
       this.showInfos = window.innerWidth >= 850; 

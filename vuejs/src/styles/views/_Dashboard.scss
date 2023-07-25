@@ -4,10 +4,12 @@
     background-color: #17181F;
     display: flex;
     flex-direction: column;
-    
+    overflow-y: hidden;
+
     & .container {
         padding: 60px;
         flex-grow: 1;
+        background-color: #17181F;
 
         & h3 {
             color: #A0AEC0;
@@ -19,8 +21,20 @@
 
         & .user-list {
             margin-top: 40px;
-            height: 40%;
-        
+            max-height: 40%;
+            background-color: #17181F;
+            overflow-x: scroll;
+            overflow-x: hidden;
+            padding-right: 5px;
+            
+            &::-webkit-scrollbar {
+                width: 10px;
+            }
+            &::-webkit-scrollbar-thumb {
+                background-color: #718096;
+                border-radius: 20px; 
+            }
+
             & h5 {
                 font-weight: 700;
                 font-size: 20px;
@@ -44,6 +58,7 @@
             & table {
                 width: 100%;
                 border-collapse: collapse;
+                background-color: #17181F;
 
                 & .header {
                     & th {
@@ -60,11 +75,19 @@
                     & .info {
                         height: max-content;
                     }
+                    
                     & .img {
+                        background-color: hsla(160, 100%, 37%, 1);
                         width: 40px;
                         height: 40px;
-                        background-color: hsla(160, 100%, 37%, 1);
                         border-radius: 8px;
+                    }
+
+                    & img {
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 8px;
+                        object-fit: contain;
                     }
                     
                     & .pseudo {
