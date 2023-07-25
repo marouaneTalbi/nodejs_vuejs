@@ -4,7 +4,7 @@
     <div class="container">
       <div class="block" v-if="user">
         <div class="user-profile" >
-          <div class="image" @click="openModal('photo')" 
+          <div class="image" @click="openPopUpModal('photo')" 
             @mouseover="showOverlay"
             @mouseleave="hideOverlay">
             <div v-if="showOverlay" class="overlay">CHANGER</div>
@@ -52,6 +52,16 @@
               <span class="pseudo">{{ formatDate(user.createdat) }}</span>
             </div>
           </div>
+
+          <div class="row" v-if="skin && skin.title != undefined">
+            <div class="text">
+                <span class="pseudo-title">Skin</span>
+                <br />
+                <span class="pseudo">{{ skin?.title }}</span>
+            </div>
+            <button @click="openPopUpModal('skins')">Edit</button>
+          </div>
+
           <div class="row">
             <div class="text">
               <span class="pseudo-title">Role</span>
@@ -62,22 +72,13 @@
           <div>
             <button style="background-color: green" @click="openModal('editPassword')">Update Password</button>
           </div>
+    
         </div>
-          <div class="row" v-if="skin && skin.title != undefined">
-              <div class="text">
-                  <span class="pseudo-title">Skin</span>
-                  <br />
-                  <span class="pseudo">{{ skin?.title }}</span>
-              </div>
-              <button @click="openModal('skins')">Edit</button>
-          </div>
-          <div class="row">
-            <div class="text">
-            </div>
-          </div>
-        </div>
-        <Popup @close="paymentToggleModal"  :popupActive="paymentModalActive" >
-          <div class="popupButtons">
+      </div>
+    </div>
+
+    <Popup @close="paymentToggleModal" :popupActive="paymentModalActive" >
+      <div class="popupButtons">
             <div v-if="popUpImage" style="display: flex; justify-content: center; flex-direction: column; align-items: center; padding: 10px;">
               <form @submit.prevent="handleConfirm" style="display: flex; justify-content: center; flex-direction: column; align-items: center;">
                 <img 
@@ -110,8 +111,7 @@
               </div>
             </div>
           </div>
-        </Popup>
-    </div>
+    </Popup>
     <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive" :showConfirmButton="true">
       <div class="modal-content" v-if="currentModal === 'editEmail'">
             <h2 class="pseudo-title" >Update Informations</h2>
@@ -154,7 +154,6 @@
           </form>
         </div>
     </Modal>
- 
   </section>
 </template>
 
@@ -272,6 +271,11 @@ export default {
     Popup,
   },
   setup() {
+    const modalActive = ref(false);
+    const pseudo = ref('');
+    const toggleModal = () => {
+      modalActive.value = !modalActive.value;
+    }
     const state = reactive({
       showOverlay: false,
     });
@@ -285,7 +289,14 @@ export default {
     const paymentToggleModal = () => {
       paymentModalActive.value = !paymentModalActive.value;
     };
-    return { paymentModalActive, paymentToggleModal, currentPaymentModal: null,showOverlay, hideOverlay, state };
+    return { 
+      paymentModalActive,
+      paymentToggleModal,
+      currentPaymentModal: null,
+      showOverlay,
+      hideOverlay, state ,
+      modalActive, toggleModal, currentModal: null, pseudo
+    };
     },
   data() {
     return {
@@ -313,21 +324,7 @@ export default {
       skins:[]
     };
   },
-  setup() {
-    const modalActive = ref(false);
-    const pseudo = ref('');
 
-    const toggleModal = () => {
-      modalActive.value = !modalActive.value;
-    }
-    const modalPopupActive = ref(false);
-    const togglePopupModal = () => {
-      modalPopupActive.value = !modalPopupActive.value;
-    }
-
-
-    return { modalActive, toggleModal, currentModal: null, pseudo, modalPopupActive, togglePopupModal, currentPopupModal: null}
-  },
   mounted() {
     this.getUserInfo();
     this.getUserSkins();
@@ -346,6 +343,7 @@ export default {
       const userId = this.currentUserId();
       fetchData('/user/skins/' + userId)
       .then(response => {
+        console.log(response)
         this.skins = response.data
       })
       .catch(error => {
@@ -358,9 +356,7 @@ export default {
     assignUserSkin(data) {
       postData('/skin/assign', data)
       .then(response => {
-
         this.skin = response.data.skin
-        console.log(response.data.skin)
           toast('Skin vous a bien été affecter', {
               autoClose: 2000,
               type: 'success'
@@ -394,24 +390,29 @@ export default {
     getPictureUrl(picture) {
       return `${serverURI}/pictures/skins/${picture}`;
     },
-    openModal(type){
+    openPopUpModal(type){
+      console.log(type)
       if(type == 'photo') {
         this.popUpImage = true
+        this.popUpSkins = false
       } else {
         this.getUserSkins()
         this.popUpSkins = true
+        this.popUpImage = false
       }
-        this.paymentModalActive = true;
+
+      this.paymentModalActive = true;
+    },
+    closePoPupModal() {
+      this.paymentModalActive = false;
     },
     updateUserImage(userId, data){
-      console.log(userId)
       patchData('/user/'+userId+'/pic', data)
       .then(response => {
           toast('La photo a bien été modifié', {
               autoClose: 2000,
               type: 'success'
           })
-          console.log(response)
           this.user.picture = response.data.picture 
       })
       .catch(error => {
@@ -421,7 +422,6 @@ export default {
           })
       })
     },
-
     changePhoto(picture){
       const updatedPicture = {picture: this.picture};
       this.updateUserImage(this.user.id, updatedPicture)
@@ -493,9 +493,7 @@ export default {
         this.infoChangeError = true;
       }
     },
-    closePoPupModal() {
-      this.paymentModalActive = false;
-    },
+ 
     async verifyEmail(){
       try {
         const token = Cookies.get('token');
