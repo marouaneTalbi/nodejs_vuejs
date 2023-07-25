@@ -7,6 +7,7 @@ const adminAuthMiddleware = authMiddleware(['admin']);
 gradeRoute.post('/grade/create', adminAuthMiddleware, GradeController.createGrade)
 gradeRoute.patch('/grade/update/:id', adminAuthMiddleware, GradeController.updateGrade)
 gradeRoute.delete('/grade/delete/:id', adminAuthMiddleware, GradeController.deleteGrade)
+gradeRoute.get('/admin/grade/:id', adminAuthMiddleware, GradeController.getGradeById)
 
 const bothAuthMiddleware = authMiddleware(['admin','gamer']);
 gradeRoute.get('/grades',  bothAuthMiddleware, GradeController.getAllGrades)
