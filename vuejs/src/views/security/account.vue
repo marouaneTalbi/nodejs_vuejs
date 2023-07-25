@@ -119,7 +119,7 @@
             <h2 class="pseudo-title" >Update Informations</h2>
             <form @submit.prevent="updateUserInfo">
               <label>Email:</label>
-              <input type="email" v-model="updatedUser.mail">
+              <input type="email" v-model="user.mail">
               <!-- <button type="submit" @click="handleUpdateClick" class="maj">Mettre à jour</button> -->
               <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
               <p v-if="infoChangeMessage" :class="{ 'success-message': !infoChangeError, 'error-message': infoChangeError }">{{ infoChangeMessage }}</p>
@@ -136,7 +136,7 @@
          <h2 class="pseudo-title" >Update Informations</h2>
          <form @submit.prevent="updateUserInfo">
           <label>Nom d'utilisateur:</label>
-          <input type="text" v-model="updatedUser.pseudo">
+          <input type="text" v-model="user.pseudo">
           <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
           <p v-if="infoChangeMessage" :class="{ 'success-message': !infoChangeError, 'error-message': infoChangeError }">{{ infoChangeMessage }}</p>
          </form>
@@ -264,6 +264,8 @@ import {fetchData, postData, serverURI, patchData, putData} from '../../api/api'
 import Popup from '../../components/Popup.vue';
 import { toast } from 'vue3-toastify';
 import { reactive } from "vue";
+import { getCurrentUser } from '../../services/userService.js'
+
 
 export default {
   components: {
@@ -341,7 +343,7 @@ export default {
       return userId;
     },
     getUserSkins() {
-      const userId = this.currentUserId();
+      const userId = getCurrentUser();
       fetchData('/user/skins/' + userId)
       .then(response => {
         console.log(response)
@@ -379,14 +381,13 @@ export default {
       this.assignUserSkin(newSkin, this.user.id)
     },
     getUserSkin(){
-        const userId = this.currentUserId();
+        const userId = getCurrentUser();
         fetchData('/user/skin/' + userId)
         .then(response => {
             this.closeModal()
             this.skin = response.data
         })
     },
-
     //////
     getPictureUrl(picture) {
       return `${serverURI}/pictures/skins/${picture}`;
@@ -442,7 +443,7 @@ export default {
           }
           reader.readAsDataURL(blob)
       })
-      },
+    },
     async getUserInfo() {
       try {
         const token = Cookies.get('token');
@@ -455,6 +456,7 @@ export default {
           }
         });
         this.user = response.data;
+        console.log(this.user)
         return this.user
       } catch (error) {
         console.error(error);
@@ -470,13 +472,14 @@ export default {
       const year = date.getFullYear();
       return `${day}/${month}/${year}`;
     },
-    async updateUserInfo() {
+    async updateUserInfo() { 
       try {
         const token = Cookies.get('token');
         const [header, payload, signature] = token.split('.');
         const decodedPayload = JSON.parse(atob(payload));
         const userId = decodedPayload.id;
-        const response = await axios.put(`${serverURI}/user/${userId}/updateuser`, this.updatedUser, {
+
+        const response = await axios.put(`${serverURI}/user/${userId}/updateuser`, this.user, {
           headers: {
             Authorization: 'Bearer ' + token
           }
@@ -494,7 +497,6 @@ export default {
         this.infoChangeError = true;
       }
     },
- 
     async verifyEmail(){
       try {
         const token = Cookies.get('token');
