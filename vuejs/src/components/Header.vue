@@ -13,7 +13,14 @@
       </ul>
     </nav>
     <div class="button-container" v-show="!mobile">
-      <button class="button button--transparent"  @click="logout">Logout</button>
+      <div v-if="userId != null">
+        <button class="button button--transparent"  @click="logout">Logout</button>
+      </div>
+      <div v-else>
+        <router-link to="/login">
+          <button class="button">Login</button>
+        </router-link>
+      </div>
       <router-link to="/gamemode">
         <button class="button">Jouer</button>
       </router-link>
@@ -54,6 +61,7 @@ export default {
       mobileNav: null,
       windowWidth: null,
       userRoles: [],
+      userId:null,
       menuOptions: [
         { route: '/admin', label: 'Administration', requiredRoles: ['admin',] },
         { route: '/stats', label: 'Stats', requiredRoles: ['gamer', 'admin'] },
@@ -118,6 +126,7 @@ export default {
             }
           });
           this.userRoles = response.data.role;
+          this.userId = userId;
         }
       } catch (error) {
         console.error(error);
