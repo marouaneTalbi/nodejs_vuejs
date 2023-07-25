@@ -30,3 +30,7 @@ export function deleteData(route, data) {
 export function patchData(route, data) {
     return axios.patch(serverURI + route, data);
 }
+
+export function putData(route, data) {
+    return axios.put(serverURI + route, data);
+}
