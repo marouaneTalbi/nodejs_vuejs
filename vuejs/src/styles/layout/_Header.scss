@@ -7,6 +7,11 @@ header {
     align-items: center;
     padding: 20px 60px;
 
+    & img {
+        width: 120px;
+        height: 120px;
+    }
+
     & h1 {
         font-weight: 800;
         font-size: 36px;
