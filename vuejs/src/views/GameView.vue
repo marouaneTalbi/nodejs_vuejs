@@ -32,7 +32,6 @@
                 <p>Votre adversaire a quitté la partie. Vous avez remporté la victoire !</p>
             </div>
         </Modal>
-        <button @click="updateUserGame">click</button>
     </section>
   <!-- Cartes gagnées -->
   <div class="winning-cards">
@@ -50,7 +49,8 @@ import SocketioService from '../services/socketio.service';
 import Modal from '../components/Modal.vue';
 import { ref } from 'vue';
 import Cookies from 'js-cookie';
-import { fetchData, patchData } from '../api/api';
+import {fetchData, patchData, serverURI} from '../api/api'
+import {toast} from "vue3-toastify";
 
 let ActualUser = null;
 
@@ -72,7 +72,8 @@ export default {
             game: {},
             cards: [],
             cardsElement: [],
-            secondCardsElement: [],
+            countCardJ1: 0,
+            countCardJ2: 0,
         };
     },
     beforeRouteLeave() {
@@ -219,10 +220,12 @@ export default {
                   if (this.currentPlayer === this.getCurrentUser()) {
                     this.onWin(this.cardsElement[0].parentElement.cloneNode(true));
                     this.onWin(this.cardsElement[1].parentElement.cloneNode(true), true);
+                    this.countCardJ1++;
                   }
 
                   if (this.currentPlayer !== this.getCurrentUser()) {
                     console.log("for oppenent");
+                    this.countCardJ2++;
                     console.log(this.cardsElement);
                     this.onOppenentWin(this.cardsElement[0].parentElement.cloneNode(true));
                     this.onOppenentWin(this.cardsElement[1].parentElement.cloneNode(true), true);
@@ -342,19 +345,11 @@ export default {
             this.modalActive = false;
         },
         openModal() {
+          console.log("openModal");
+
+            this.updateUserGame(this.$route.params.id,this.getCurrentUser(), {result: "win"});
+            this.updateUserGame(this.$route.params.id,this.currentPlayer, {result: "loose"});
             this.modalActive = true;
-        },
-        updateUserGame() {
-            patchData('/user/' + this.userId + '/game/' + this.game.id, {
-                result: 'loose',
-                date: new Date(),
-            })
-            .then(response => {
-                console.log(response)
-            })
-            .catch(error => {
-                console.error(error)
-            })
         },
         copyToClipboard() {
             const code = this.game.code;
@@ -364,6 +359,21 @@ export default {
             .catch((error) => {
             });
         },
+      updateUserGame(userId, gameId, data) {
+        patchData('/user/'+ userId +'/game/' + gameId, data)
+            .then(response => {
+              toast('La game a bien été modifié', {
+                autoClose: 2000,
+                type: 'success'
+              })
+            })
+            .catch(error => {
+              toast(error.message, {
+                autoClose: 2000,
+                type: 'error',
+              })
+            })
+      },
     },
 }
 </script>
