@@ -1,12 +1,54 @@
 <template>
   <section class="user">
     <Header />
+    <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive" :showConfirmButton="true">
+      <div class="modal-content" v-if="currentModal === 'editEmail'">
+            <h2 class="pseudo-title" >Update Informations</h2>
+            <form @submit.prevent="updateUserInfo">
+              <label>Email:</label>
+              <input type="email" v-model="updatedUser.mail">
+              <button type="submit" @click="handleUpdateClick" class="maj">Mettre à jour</button>
+              <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+              <p v-if="infoChangeMessage" :class="{ 'success-message': !infoChangeError, 'error-message': infoChangeError }">{{ infoChangeMessage }}</p>
+            </form>
+            <form v-if="showEmailVerification" @submit.prevent="verifyEmail">
+              <h2 class="pseudo-title">Email Verification</h2>
+              <p>Entrez le code de validation d'adresse e-mail :</p>
+              <input type="text" v-model="emailVerificationcode">
+              <p>{{ verificationMessage }}</p>
+              <button type="submit" class="maj">Valider</button>
+            </form>
+        </div>
+        <div class="modal-content" v-else-if="currentModal === 'editPseudo'">
+         <h2 class="pseudo-title" >Update Informations</h2>
+         <form @submit.prevent="updateUserInfo">
+          <label>Nom d'utilisateur:</label>
+          <input type="text" v-model="updatedUser.pseudo">
+          <button type="submit" @click="handleUpdateClick" class="maj">Mettre à jour</button>
+          <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+          <p v-if="infoChangeMessage" :class="{ 'success-message': !infoChangeError, 'error-message': infoChangeError }">{{ infoChangeMessage }}</p>
+         </form>
+        </div>
+        <div class="modal-content" v-else-if="currentModal === 'editPassword'">
+          <form @submit.prevent="changePassword">
+            <h2 class="pseudo-title">Change Password</h2>
+            <label>Ancien mot de passe:</label>
+            <input type="password" v-model="passwordData.oldPassword">
+            <label>Nouveau mot de passe:</label>
+            <input type="password" v-model="passwordData.newPassword">
+            <label>Confirmer le nouveau mot de passe:</label>
+            <input type="password" v-model="passwordData.confirmPassword">
+            <button type="submit" class="maj">Changer le mot de passe</button>
+            <p v-if="passwordChangeMessage" :class="{ 'success-message': !passwordChangeError, 'error-message': passwordChangeError }">{{ passwordChangeMessage }}</p>
+          </form>
+        </div>
+    </Modal>
     <div class="container">
       <div class="block" v-if="user">
         <div class="user-profile">
           <div class="img"></div>
           <div class="text">
-            <span class="pseudo">{{ user.pseudo }}</span>
+            <span class="pseudo">{{ user.picture }}</span>
             <span>Online</span>
           </div>
         </div>
@@ -17,6 +59,7 @@
               <br />
               <span class="pseudo">{{ user.pseudo }}</span>
             </div>
+            <button @click="openModal('editPseudo')">Edit</button>
           </div>
           <div class="row">
             <div class="text">
@@ -24,6 +67,7 @@
               <br />
               <span class="pseudo">{{ user.mail }}</span>
             </div>
+            <button @click="openModal('editEmail')">Edit</button>
           </div>
           <div class="row">
             <div class="text">
@@ -39,57 +83,10 @@
               <span class="pseudo">{{ user.role }}</span>
             </div>
           </div>
-          <div class="row">
-            <div class="text">
-            </div>
+          <div>
+            <button style="background-color: green" @click="openModal('editPassword')">Update Password</button>
           </div>
         </div>
-
-        <div class="card card--footer">
-          <div class="row">
-            <div class="text">
-              <h2 class="pseudo-title" >Update Informations</h2>
-              <form @submit.prevent="updateUserInfo">
-                <label>Nom d'utilisateur:</label>
-                <input type="text" v-model="updatedUser.pseudo">
-                <label>Email:</label>
-                <input type="email" v-model="updatedUser.mail">
-                <button type="submit" @click="handleUpdateClick" class="maj">Mettre à jour</button>
-                <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
-                <p v-if="infoChangeMessage" :class="{ 'success-message': !infoChangeError, 'error-message': infoChangeError }">{{ infoChangeMessage }}</p>
-              </form>
-              <form v-if="showEmailVerification" @submit.prevent="verifyEmail">
-                <h2 class="pseudo-title">Email Verification</h2>
-                <p>Entrez le code de validation d'adresse e-mail :</p>
-                <input type="text" v-model="emailVerificationcode">
-                <p>{{ verificationMessage }}</p>
-                <button type="submit">Valider</button>
-              </form>
-            </div>
-          </div>
-        </div>
-
-        <div class="card card--footer">
-          <div class="row">
-            <div class="text">
-              <form @submit.prevent="changePassword">
-                <h2 class="pseudo-title">Change Password</h2>
-                <label>Ancien mot de passe:</label>
-                <input type="password" v-model="passwordData.oldPassword">
-                <label>Nouveau mot de passe:</label>
-                <input type="password" v-model="passwordData.newPassword">
-                <label>Confirmer le nouveau mot de passe:</label>
-                <input type="password" v-model="passwordData.confirmPassword">
-                <button type="submit" class="maj">Changer le mot de passe</button>
-                <p v-if="passwordChangeMessage" :class="{ 'success-message': !passwordChangeError, 'error-message': passwordChangeError }">{{ passwordChangeMessage }}</p>
-              </form>
-            </div>
-          </div>
-        </div>
-
-        <button>
-          Supprimer mon compte
-        </button>
       </div>
     </div>
   </section>
@@ -131,11 +128,15 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Header from '../../components/Header.vue';
-import {postData, serverURI} from '../../api/api';
+import {deleteData, postData, serverURI} from '../../api/api';
+import Modal from "@/components/Modal.vue";
+import {ref} from "vue";
+import {toast} from "vue3-toastify";
 
 export default {
   components: {
     Header,
+    Modal,
   },
   data() {
     return {
@@ -157,6 +158,21 @@ export default {
       infoChangeMessage: '',
       infoChangeError: false
     };
+  },
+  setup() {
+    const modalActive = ref(false);
+    const pseudo = ref('');
+
+    const toggleModal = () => {
+      modalActive.value = !modalActive.value;
+    }
+    const modalPopupActive = ref(false);
+    const togglePopupModal = () => {
+      modalPopupActive.value = !modalPopupActive.value;
+    }
+
+
+    return { modalActive, toggleModal, currentModal: null, pseudo, modalPopupActive, togglePopupModal, currentPopupModal: null}
   },
   mounted() {
     this.getUserInfo();
@@ -205,26 +221,26 @@ export default {
         this.infoChangeError = true;
       }
     },
-    async verifyEmail(){
+    async verifyEmail() {
       try {
         const token = Cookies.get('token');
         const [header, payload, signature] = token.split('.');
         const decodedPayload = JSON.parse(atob(payload));
         const userId = decodedPayload.id;
-      const response = await axios.put(`${serverURI}/user/${userId}/verify-email`, {code: this.emailVerificationcode}, {
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      });
+        const response = await axios.put(`${serverURI}/user/${userId}/verify-email`, {code: this.emailVerificationcode}, {
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
+        });
         if (response.status === 200) {
           this.verificationMessage = 'Code de validation correct';
           this.showEmailVerification = false;
         } else if (response.status === 400) {
           this.verificationMessage = response.data.message || 'Code de validation incorrect';
         }
-    }catch (error) {
-      console.error(error);
-    }
+      } catch (error) {
+        console.error(error);
+      }
     },
     handleUpdateClick() {
       if (this.updatedUser.mail && this.updatedUser.mail !== this.user.mail) {
@@ -261,6 +277,16 @@ export default {
         this.passwordChangeMessage = 'Une erreur s\'est produite lors de la modification du mot de passe';
         this.passwordChangeError = true;
       }
+    },
+    openModal(type) {
+        this.modalActive = true;
+        this.currentModal = type;
+    },
+    handleConfirm() {
+      this.closeModal();
+    },
+    closeModal() {
+      this.modalActive = false;
     }
   }
 };

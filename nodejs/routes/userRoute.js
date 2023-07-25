@@ -25,7 +25,6 @@ route.put("/user/:id/updateuser",gamerAuthMiddleware, UserController.updateUser)
 route.put('/user/:id/change-password',gamerAuthMiddleware, UserController.changePassword);
 
 
-
 // Routes protected by authentication and role Admin
 const adminAuthMiddleware = authMiddleware(['admin']);
 route.get('/user/:id', adminAuthMiddleware, AdminController.getUser)
