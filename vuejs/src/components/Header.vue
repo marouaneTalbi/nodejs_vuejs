@@ -62,7 +62,6 @@ export default {
         { route: '/account', label: 'Account', requiredRoles: ['gamer'] },
         { route: '/skins', label: 'Skins', requiredRoles: ['admin', 'gamer'] },
         { route: '/admin/grades', label: 'Grades', requiredRoles: ['admin'] },
-        { route: '/skins_to_buy', label: 'Buy', requiredRoles: ['admin', 'gamer'] },
         { route: '/grade', label: 'Grade', requiredRoles: ['gamer'] },
       ]
     };
