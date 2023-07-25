@@ -5,7 +5,18 @@ header {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 60px;
+    padding: 0px 60px;
+
+    & a {
+        width: max-content;
+        height: max-content;
+
+        & img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+        }
+    }
 
     & h1 {
         font-weight: 800;
