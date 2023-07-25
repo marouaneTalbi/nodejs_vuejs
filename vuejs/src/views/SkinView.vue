@@ -33,7 +33,7 @@
             </div>
             <div class="modal-content" v-if="currentModal === 'editPicture'">
                 <h2>Modifier la Photo</h2>
-                <form @submit.prevent="handleConfirm" sty>
+                <form @submit.prevent="handleConfirm" >
                     <div style="display: flex; justify-content: center;flex-direction: column; align-items: center;">
                         <img :src="getPictureUrl(picture)" alt="" style="height: 200px; width: 200px; object-fit: contain;">
                         <input type="file" style="color:white" id="picture" @change="handlePictureChange" placeholder="Photo" required>
