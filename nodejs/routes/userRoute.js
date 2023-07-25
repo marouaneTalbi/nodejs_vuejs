@@ -27,13 +27,12 @@ route.put('/user/:id/change-password',gamerAuthMiddleware, UserController.change
 
 
 // Routes protected by authentication and role Admin
-
-route.use(authMiddleware(['admin']));
-route.get('/user/:id', AdminController.getUser)
-route.get('/users', AdminController.getUsers)
-route.delete('/user/:id', AdminController.deleteUser)
-route.patch('/user/:id', AdminController.updateUser)
-route.patch('/user/:id/pic', AdminController.updateUserPicture)
+const adminAuthMiddleware = authMiddleware(["admin"]);
+route.get('/user/:id',adminAuthMiddleware, AdminController.getUser)
+route.get('/users',adminAuthMiddleware, AdminController.getUsers)
+route.delete('/user/:id',adminAuthMiddleware, AdminController.deleteUser)
+route.patch('/user/:id', adminAuthMiddleware,AdminController.updateUser)
+route.patch('/user/:id/pic',adminAuthMiddleware, AdminController.updateUserPicture)
 
 module.exports = route;
 
