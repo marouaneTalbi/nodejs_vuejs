@@ -11,6 +11,7 @@ skinRoute.patch('/skin/update/:id',AuthMiddleware, SkinController.updateSkin)
 skinRoute.delete('/skin/delete/:id',AuthMiddleware, SkinController.deleteSkin)
 skinRoute.post('/skin/purchase', AuthMiddleware,SkinController.purchaseSkin)
 skinRoute.post('/skin/assign', AuthMiddleware,SkinController.assignSkinToUser)
+
 skinRoute.post('/skin/pay', AuthMiddleware,SkinController.paySkin)
 
 module.exports = skinRoute;

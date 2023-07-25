@@ -43,7 +43,7 @@
 </template>  
 
 <script>
-import { fetchData, postData, serverURI } from '../api/api';
+import { fetchData, postData, serverURI, patchData } from '../api/api';
 import Header from '../components/Header.vue';
 import Modal from '../components/Modal.vue';
 import { ref } from 'vue';
@@ -105,6 +105,7 @@ export default {
     getPictureUrl(picture) {
       return `${serverURI}${picture}`;
     },
+
     async buySkin() {
       const token = Cookies.get('token');
       const [header, payload, signature] = token.split('.');
@@ -214,6 +215,7 @@ export default {
       });
     },
     openModal(type) {
+      this.skin = type
       this.modalActive = true;
       this.currentModal = type;
     },
