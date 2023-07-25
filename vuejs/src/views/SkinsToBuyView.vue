@@ -132,8 +132,6 @@
 
       const currentUser = await fetchData('/user/'+userId)
 
-      console.log(currentUser.data.coins , this.skin.coins_price)
-
       if(currentUser.data.coins >= this.skin.coins_price){
         const newCoinsValue = currentUser.data.coins - this.skin.coins_price
 

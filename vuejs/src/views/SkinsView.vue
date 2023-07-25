@@ -59,6 +59,7 @@
           <div class="form-group">
             <label for="money_type">Coins</label>
             <input type="text" style="color:white" v-model="coins_price" id="coins_price" placeholder="Coins" required>
+            <p v-if="!isValidPrice" class="error-message">Veuillez entrer une valeur numérique pour les Coins.</p>
           </div>
           <button type="submit">Créer</button>
         </form>
