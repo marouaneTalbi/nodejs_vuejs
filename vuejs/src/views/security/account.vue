@@ -299,6 +299,7 @@ export default {
       showOverlay,
       hideOverlay, state ,
       modalActive, toggleModal, currentModal: null, pseudo
+      
     };
     },
   data() {
