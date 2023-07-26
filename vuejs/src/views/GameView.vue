@@ -120,6 +120,7 @@ export default {
     });
   },
 
+  
 
   setup() {
     const modalActive = ref(false);
