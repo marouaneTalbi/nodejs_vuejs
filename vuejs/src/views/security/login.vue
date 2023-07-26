@@ -19,6 +19,7 @@
             <input v-if="showPassword" type="text" class="input" style="width: 150%"  id="password" v-model="password" required />
             <input v-else type="password" class="input" style="width: 150%" id="password" v-model="password" required>
           </div>
+
           <div class="control">
             <span class="button" type="button" @click="toggleShow">
               <span class="icon is-small is-right">
@@ -28,9 +29,16 @@
           </div>
         </div> -->
       </div>
-      <button type="submit">Login</button>
       <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
-    </form>
+      <button type="submit">Login</button>
+      </form>
+
+      <div v-if="showsendMail" style="margin-right: auto; margin-left:auto;width:50%;margin-top: 30px">
+        <div class="form-group">
+          <p @click="resendMail">Renvoyer l'Email de confirmation</p>
+            <div v-if="errorMessageMail" class="error-message">{{ errorMessageMail }}</div>
+        </div>
+      </div>
 
     <div class="register-link">
       Don't have an account? <router-link to="/register">Register</router-link><br>
@@ -58,9 +66,12 @@ export default {
   data() {
     return {
       email: '',
+      email2: '',
       password: '',
       showPassword: false,
       errorMessage: '',
+      errorMessageMail:'',
+      showsendMail:false,
       animateForm: false
     };
   },
@@ -83,6 +94,7 @@ export default {
           const errorMessage = error.response.data.message;
           if (errorMessage === 'Utilisateur non confirmé') {
             this.errorMessage = 'Account not confirmed, check your emails';
+            this.showsendMail=true;
           }
           else{
             this.errorMessage = 'Invalid credentials';
@@ -97,6 +109,32 @@ export default {
         }, 1000);
       }
     },
+    async resendMail(){
+      try {
+        postData('/resend-confirmation-email',{ email: this.email } )
+            .then(response => {
+              toast('Le mail est renvoyer', {
+                autoClose: 2000,
+                type: 'success'
+              })
+            })
+            .catch(error => {
+              if (error.response.status === 400) {
+              const errorMessage = error.response.data.message;
+              if (errorMessage === 'Votre compte est déja confirmé') {
+                this.errorMessageMail = 'Votre compte est déja confirmé';
+              }
+              else{
+                this.errorMessageMail = 'cette adresse email est pas encore inscrit';
+              }
+            }else {
+              this.errorMessageMail = 'Réssayer plus tard';
+            }
+            });
+      }catch (error){
+        console.error(error);
+      }
+    },
     toggleShow() {
       this.showPassword = !this.showPassword;
     }
@@ -106,6 +144,7 @@ export default {
 import './../../styles/global.css';
 import './../../styles/login.css';
 import Header from "@/components/Header.vue";
+import {toast} from "vue3-toastify";
 </script>
 <style>
 .eye-icon {
