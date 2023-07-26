@@ -1,40 +1,27 @@
 <template>
   <section class="game">
-    <Header/>
+    <Header />
     <div id="messageDiv" class="message hidden">A vous de jouer !</div>
     <section v-if="waitingForOpponent" class="waiting-screen">
-      <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
-        <g clip-path="url(#a)">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="m14.071 7.586-.828.828A2 2 0 0 1 11.828 9h-1.414c-.375 0-.735.149-1 .414v0a1.414 1.414 0 0 0 0 2l1.829 1.829a2 2 0 0 0 2.828 0l1.414-1.415.964 2.121a1.346 1.346 0 0 0 2.178.395v0c.252-.252.394-.595.394-.952v-4.27a2 2 0 0 1 .586-1.415l2.242-2.243c.472-.47 1.132-1.697 0-2.828-1.131-1.131-2.357-.471-2.828 0l-1.768 1.768m-3.182 3.182-2.02-.674a1.448 1.448 0 0 1-.566-2.397v0a1.448 1.448 0 0 1 1.12-.421l4.648.31m-3.182 3.182 3.182-3.182M2 14.905c.705-1.234 1.825-2.32 3-3.204M2 22.404c1.072-3.002 3.055-5.564 5.023-7.5m.477 6.5c.721-1.442 1.96-3.077 3.087-4.405"></path>
-        </g>
-        <defs>
-          <clipPath id="a">
-            <path fill="#fff" d="M0 0h24v24H0z"></path>
-          </clipPath>
-        </defs>
-      </svg>
+      <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><g clip-path="url(#a)"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.071 7.586-.828.828A2 2 0 0 1 11.828 9h-1.414c-.375 0-.735.149-1 .414v0a1.414 1.414 0 0 0 0 2l1.829 1.829a2 2 0 0 0 2.828 0l1.414-1.415.964 2.121a1.346 1.346 0 0 0 2.178.395v0c.252-.252.394-.595.394-.952v-4.27a2 2 0 0 1 .586-1.415l2.242-2.243c.472-.47 1.132-1.697 0-2.828-1.131-1.131-2.357-.471-2.828 0l-1.768 1.768m-3.182 3.182-2.02-.674a1.448 1.448 0 0 1-.566-2.397v0a1.448 1.448 0 0 1 1.12-.421l4.648.31m-3.182 3.182 3.182-3.182M2 14.905c.705-1.234 1.825-2.32 3-3.204M2 22.404c1.072-3.002 3.055-5.564 5.023-7.5m.477 6.5c.721-1.442 1.96-3.077 3.087-4.405"></path></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h24v24H0z"></path></clipPath></defs></svg>
       <p v-if="waitingForOpponent">Adversaire en attente...</p>
       <div v-if="game.gamemode === 'private'" class="code">
         <span>{{ game.code }}</span>
-        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-             @click="copyToClipboard">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M15 8h2c1.333 0 4 .8 4 4s-2.667 4-4 4h-2M9 8H7c-1.333 0-4 .8-4 4s2.667 4 4 4h2m-1-4h8"></path>
-        </svg>
+        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" @click="copyToClipboard"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 8h2c1.333 0 4 .8 4 4s-2.667 4-4 4h-2M9 8H7c-1.333 0-4 .8-4 4s2.667 4 4 4h2m-1-4h8"></path></svg>
       </div>
     </section>
 
-    <section class="waiting-screen" v-if="!waitingForOpponent">
+    <div  class="transparent-div" v-if="!isMyTurn && !waitingForOpponent"></div>
+    <section  class="waiting-screen" v-if="!waitingForOpponent"  >
       <div class="memory-game">
         <div class="memory-board">
           <div v-for="(card, index) in cards" :key="index"
                class="memory-card"
                :class="{ flipped: card.flipped }"
                @click="flipCard($event, index)">
-              <div class="card-face front" v-if="skin" :style="{ backgroundImage:`url('${getSkinUrl(skin.picture)}')`}"></div>
-              <div class="card-face front-noskin" v-if="!skin"></div>            
-              <div class="card-face back" :style="{ backgroundImage:`url('${getPictureUrl(card.image)}')`}"></div>
+            <div class="card-face front" v-if="skin" :style="{ backgroundImage:`url('${getSkinUrl(skin.picture)}')`}"></div>
+            <div class="card-face front-noskin" v-if="!skin"></div>
+            <div class="card-face back" :style="{ backgroundImage:`url('${getPictureUrl(card.image)}')`}"></div>
           </div>
         </div>
       </div>
@@ -42,16 +29,40 @@
 
     <Modal v-if="userLeft" @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive">
       <div class="modal-content">
-        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="m3 7 2 13h14l2-13-5 3-4-6-4 6-5-3z"></path>
-          <circle cx="12" cy="14" r="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                  stroke-width="2"></circle>
-        </svg>
+        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m3 7 2 13h14l2-13-5 3-4-6-4 6-5-3z"></path><circle cx="12" cy="14" r="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></circle></svg>
         <h2>Victoire !</h2>
         <p>Votre adversaire a quitté la partie. Vous avez remporté la victoire !</p>
       </div>
     </Modal>
+  </section>
+
+  <section class="waiting-screen" v-if="!waitingForOpponent">
+    <div class="memory-game">
+      <div class="memory-board">
+        <div v-for="(card, index) in cards" :key="index"
+             class="memory-card"
+             :class="{ flipped: card.flipped }"
+             @click="flipCard($event, index)">
+          <div class="card-face front" v-if="skin" :style="{ backgroundImage:`url('${getSkinUrl(skin.picture)}')`}"></div>
+          <div class="card-face front-noskin" v-if="!skin"></div>
+          <div class="card-face back" :style="{ backgroundImage:`url('${getPictureUrl(card.image)}')`}"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Modal v-if="userLeft" @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive">
+    <div class="modal-content">
+      <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="m3 7 2 13h14l2-13-5 3-4-6-4 6-5-3z"></path>
+        <circle cx="12" cy="14" r="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                stroke-width="2"></circle>
+      </svg>
+      <h2>Victoire !</h2>
+      <p>Votre adversaire a quitté la partie. Vous avez remporté la victoire !</p>
+    </div>
+  </Modal>
   </section>
   <!-- Cartes gagnées -->
   <div class="winning-cards">
@@ -70,7 +81,6 @@
     </div>
     <input v-model="messageInput" @keyup.enter="sendMessage" placeholder="Tapez votre message..."/>
   </div>
-
 </template>
 
 <script>
@@ -113,6 +123,7 @@ export default {
     };
   },
   beforeRouteLeave() {
+    console.log("bonjour");
     SocketioService.userLeft(() => {
       this.userLeft = true;
       this.openModal();
@@ -200,17 +211,17 @@ export default {
       }
     },
     getUserSkin(){
-          fetchData('/user/skin/' + this.userId)
+      fetchData('/user/skin/' + this.userId)
           .then(response => {
             this.skin = response.data
             console.log('skin : ', this.skin)
           })
-        },
-        getSkinUrl(picture) {
-          console.log('get')
-          console.log(`${serverURI}/pictures/skins/${picture}`)
-          return `${serverURI}/pictures/skins/${picture}`;
-        },
+    },
+    getSkinUrl(picture) {
+      console.log('get')
+      console.log(`${serverURI}/pictures/skins/${picture}`)
+      return `${serverURI}/pictures/skins/${picture}`;
+    },
     getPictureUrl(picture) {
       return `${serverURI}/pictures/cards/${picture}`;
     },
@@ -331,7 +342,88 @@ export default {
           return;
           //this.endTurn();
         }
-      }
+        winningCardsContainer.appendChild(winningCardElement);
+
+        // Animation d'apparition de la carte gagnée depuis le haut
+        winningCardElement.style.animation = 'slideInFromTop 3s';
+        winningCardElement.style.animationFillMode = 'forwards';
+
+        // Animation de disparition de la carte du jeu en la faisant glisser vers le haut
+        winningCardElement.addEventListener('animationend', () => {
+          //winningCardElement.remove();
+        });
+      },
+
+      onOppenentWin(winningCardElement, secondCard = false) {
+        const loosingCardsContainer = document.querySelector('.loosing-cards');
+        console.log('loosingCardElement');
+        console.log(winningCardElement);
+        // Ajouter la carte gagnée dans le conteneur des cartes gagnées
+        if(secondCard){
+          winningCardElement.setAttribute('class', 'memory-card flipped');
+        }
+        loosingCardsContainer.appendChild(winningCardElement);
+
+        // Animation d'apparition de la carte gagnée depuis le haut
+        /*winningCardElement.style.animation = 'slideInFromTop 3s';
+        winningCardElement.style.animationFillMode = 'forwards';
+
+        // Animation de disparition de la carte du jeu en la faisant glisser vers le haut
+        winningCardElement.addEventListener('animationend', () => {
+          //winningCardElement.remove();
+        });*/
+      },
+
+      endTurn() {
+        console.log('end turn')
+        let currentUserId = this.getCurrentUser()
+        this.isMyTurn = false;
+        const gameId = this.$route.params.id;
+        SocketioService.endTurn(gameId, this.currentPlayer, this.cards);
+      },
+
+      getGame(gameId) {
+        fetchData('/game/' + gameId)
+            .then(response => {
+              this.game = response.data;
+            })
+            .catch(error => {
+              console.error(error)
+            });
+      },
+      handleConfirm() {
+        this.modalActive = false;
+      },
+      openModal() {
+        this.updateUserGame(this.getCurrentUser(),this.$route.params.id, {result: "win"});
+        console.log('current player : ', this.currentPlayer);
+
+        this.updateUserGame(this.currentPlayer,this.$route.params.id, {result: "loose"});
+        this.modalActive = true;
+      },
+      copyToClipboard() {
+        const code = this.game.code;
+        navigator.clipboard.writeText(code)
+            .then(() => {
+            })
+            .catch((error) => {
+            });
+      },
+      updateUserGame(userId, gameId, data) {
+        patchData('/user/'+ userId +'/game/' + gameId, data)
+            .then(response => {
+              toast('La game a bien été modifié', {
+                autoClose: 2000,
+                type: 'success'
+              })
+            })
+            .catch(error => {
+              toast(error.message, {
+                autoClose: 2000,
+                type: 'error',
+              })
+            })
+      },
     },
 
     endGame() {
