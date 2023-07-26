@@ -16,7 +16,7 @@ route.put('/user/:id/verify-email', UserController.updateIsConfirmed);
 route.get('/user/:id/stats', UserController.getUserStats);
 route.get('/user/:id/games-history', UserController.getUserGamesHistory);
 route.post('/resend-confirmation-email', UserController.resendMail);
-
+route.get('/user/:id', AdminController.getUser)
 
 // Routes protected by authentication middleware
 const gamerAuthMiddleware = authMiddleware();
@@ -29,9 +29,7 @@ route.patch('/user/:id/pic', AdminController.updateUserPicture)
 
 
 // Routes protected by authentication and role Admin
-
 const adminAuthMiddleware = authMiddleware(["admin"]);
-route.get('/user/:id',adminAuthMiddleware, AdminController.getUser)
 route.get('/users',adminAuthMiddleware, AdminController.getUsers)
 route.delete('/user/:id',adminAuthMiddleware, AdminController.deleteUser)
 route.patch('/user/:id', adminAuthMiddleware,AdminController.updateUser)

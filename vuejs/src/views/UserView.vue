@@ -13,6 +13,12 @@
                     <input type="text" v-model="pseudo" placeholder="Pseudo" required>
                 </form>
             </div>
+            <div class="modal-content" v-else-if="currentModal === 'add-coins'">
+                <h2>Ajouter des coins</h2>
+                <form @submit.prevent="handleConfirm">
+                    <input type="text" v-model="coins" placeholder="Coins" required>
+                </form>
+            </div>
         </Modal>
 
         <Modal @close="togglePopupModal" @confirm="handleConfirm" :modalActive="modalPopupActive" >
@@ -69,6 +75,7 @@
                             <br />
                             <span class="pseudo">{{ user?.coins  ? user?.coins  : 0}}</span>
                         </div>
+                        <button @click="openModal('add-coins')">Edit</button>
                     </div>
                     <div class="row" v-if="skin && skin.title != undefined">
                         <div class="text">
@@ -89,11 +96,6 @@
                     </div>
                     <div class="footer">
                         Voir les messages
-                        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 12-6-6m6 6-6 6m6-6H5"></path></svg>
-                    </div>
-
-                    <div class="footer" @click="openModal('skins')"  v-if="skin && skin.title != undefined">
-                        Voir mes skins
                         <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 12-6-6m6 6-6 6m6-6H5"></path></svg>
                     </div>
                 </div>
@@ -123,6 +125,7 @@ export default {
     setup() {
         const modalActive = ref(false);
         const pseudo = ref('');
+        const coins = ref('');
 
         const toggleModal = () => {
             modalActive.value = !modalActive.value;
@@ -133,7 +136,7 @@ export default {
         }
 
 
-        return { modalActive, toggleModal, currentModal: null, pseudo, modalPopupActive, togglePopupModal, currentPopupModal: null}
+        return { modalActive, toggleModal, currentModal: null, pseudo, modalPopupActive, togglePopupModal, currentPopupModal: null, coins}
     },
     data() {
         return {
@@ -154,6 +157,7 @@ export default {
             .then(response => {
                 this.user = response.data
                 this.pseudo = response.data.pseudo;
+                this.coins = response.data.coins;
             })
             .catch(error => {
             });
@@ -227,11 +231,12 @@ export default {
         updateUser(userId, data) {
             patchData('/user/' + userId, data)
             .then(response => {
-                toast('Le pseudo a bien été modifié', {
+                toast('Vous avez bien modifié la valeur', {
                     autoClose: 2000,
                     type: 'success'
                 })
                 this.user.pseudo = this.pseudo;
+                this.user.coins = this.coins;
             })
             .catch(error => {
                 toast(error.message, {
@@ -261,6 +266,9 @@ export default {
 
             if(this.currentModal == 'edit') {
                 this.updateUser(userId, { pseudo: this.pseudo })
+            }
+            if(this.currentModal == 'add-coins') {
+                this.updateUser(userId, { coins: this.coins })
             }
             this.closeModal();
         },
