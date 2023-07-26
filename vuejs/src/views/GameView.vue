@@ -201,6 +201,7 @@ export default {
                   const cardArray = Array.from(cardsDiv);
                   cardArray.forEach((element) => {
                     element.style.pointerEvents = 'none';
+                    
                   });
 
                   setTimeout(() => {
