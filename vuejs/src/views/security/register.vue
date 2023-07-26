@@ -1,6 +1,6 @@
 <template>
-  <Header />
-  <div class="register-form">
+  <section class="auth">
+    <div class="login-form">
       <h2>Register</h2>
       <form @submit.prevent="register">
         <div class="form-group">
@@ -9,44 +9,22 @@
         </div>
         <div class="form-group">
           <label class="label">Password</label>
-          <div >
-            <div class="control is-expanded" >
-              <div class="password-div">
-                <div>
-                  <input v-if="showPassword" type="text" class="input" style="width: 150%"  id="password" v-model="password" required />
-                  <input v-else type="password" class="input" style="width: 150%" id="password" v-model="password" required>
-                </div>
-                <div>
-                  <div class="control">
-                   <span class="button" type="button" @click="toggleShow">
-                    <span class="icon is-small is-right">
-                      <font-awesome-icon :icon="showPassword ? 'eye' : 'eye-slash'" />
-                    </span>
-                   </span>
-                  </div>
-                </div>
-              </div>
-              <label style="margin-top: 20px">Confirm Password</label>
-              <div class="password-div">
-                <div>
-                  <input v-if="showPassword2" type="text" class="input" style="width: 150%"  id="password2" v-model="password2" required />
-                  <input v-else type="password" class="input" style="width: 150%" id="password2" v-model="password2" required>
-                </div>
-                <div>
-                  <div class="control">
-                   <span class="button" type="button" @click="toggleShow2">
-                    <span class="icon is-small is-right">
-                      <font-awesome-icon :icon="showPassword2 ? 'eye' : 'eye-slash'" />
-                    </span>
-                   </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div v-if="passwordErrorMessage" class="error-message">{{ passwordErrorMessage }}</div>
-
-          </div>
+          <input v-if="showPassword" type="text" class="input" id="password" v-model="password" required />
+          <input v-else type="password" class="input"  id="password" v-model="password" required>
+          <span class="icon is-small is-right" type="button" @click="toggleShow">
+            <font-awesome-icon :icon="showPassword ? 'eye' : 'eye-slash'" />
+          </span>
         </div>
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input v-if="showPassword2" type="text" class="input"  id="password2" v-model="password2" required />
+          <input v-else type="password" class="input" id="password2" v-model="password2" required>
+          <span class="icon is-small is-right" type="button" @click="toggleShow2">
+            <font-awesome-icon :icon="showPassword2 ? 'eye' : 'eye-slash'" />
+          </span>
+        </div>
+        <div v-if="passwordErrorMessage" class="error-message">{{ passwordErrorMessage }}</div>
+
         <div class="form-group" style="margin-top: -10px">
           <label for="pseudo">Pseudo:</label>
           <input type="text" id="pseudo" v-model="pseudo" required>
@@ -60,12 +38,13 @@
         Already have an account? <router-link to="/login">Login</router-link>
       </div>
     </div>
-    <div class="des-container bg-img-container">
+  </section>
+    <!-- <div class="des-container bg-img-container">
     </div>
   <div class="crayon-container bg-img-container">
   </div>
   <div class="dollars-container bg-img-container">
-  </div>
+  </div> -->
   </template>
   
   <script>
@@ -141,14 +120,14 @@
   left: -28px;
   cursor: pointer;
 }
-.password-div {
+/* .password-div {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 .password-div .control {
   margin-right: 10px;
-}
+} */
 .password-div .icon {
   display: flex;
   align-items: center;

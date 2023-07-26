@@ -1,6 +1,6 @@
 <template>
-  <div class="login-form" :class="{ 'form-error': errorMessage, 'form-shake': animateForm }">
-    <Header />
+  <section class="auth">
+    <div class="login-form" :class="{ 'form-error': errorMessage, 'form-shake': animateForm }">
     <form @submit.prevent="login">
       <h2>Login</h2>
       <div class="form-group">
@@ -9,7 +9,12 @@
       </div>
       <div class="form-group">
         <label class="label">Password</label>
-        <div class="password-div">
+        <input v-if="showPassword" type="text" class="input" id="password" v-model="password" required />
+        <input v-else type="password" class="input" id="password" v-model="password" required>
+        <span class="icon is-small is-right" type="button" @click="toggleShow">
+          <font-awesome-icon :icon="showPassword ? 'eye' : 'eye-slash'" />
+        </span>
+        <!-- <div class="password-div">
           <div class="control is-expanded" >
             <input v-if="showPassword" type="text" class="input" style="width: 150%"  id="password" v-model="password" required />
             <input v-else type="password" class="input" style="width: 150%" id="password" v-model="password" required>
@@ -21,7 +26,7 @@
               </span>
             </span>
           </div>
-        </div>
+        </div> -->
       </div>
       <button type="submit">Login</button>
       <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
@@ -32,9 +37,10 @@
       <router-link to="/forgot-password">Forgot Password ?</router-link>
     </div>
   </div>
-  <div class="des-container bg-img-container"></div>
+  </section>
+  <!-- <div class="des-container bg-img-container"></div>
   <div class="crayon-container bg-img-container"></div>
-  <div class="dollars-container bg-img-container"></div>
+  <div class="dollars-container bg-img-container"></div> -->
 </template>
 
 <script>
@@ -108,14 +114,14 @@ import Header from "@/components/Header.vue";
   left: -28px;
   cursor: pointer;
 }
-.password-div {
+/* .password-div {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 .password-div .control {
   margin-right: 10px;
-}
+} */
 .password-div .icon {
   display: flex;
   align-items: center;
