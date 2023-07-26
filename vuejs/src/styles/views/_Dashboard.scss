@@ -1,9 +1,38 @@
 .dashboard {
     width: 100vw;
-    height: 100%;
+    height: 100vh;
     background-color: #17181F;
     display: flex;
     flex-direction: column;
+
+    & .modal-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 20px;
+
+        & h2 {
+            color: white;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        & form {
+            width: 80%;
+
+            & input {
+                width: 100%;
+                outline: none;
+                background-color: transparent;
+                padding: 10px;
+                border-radius: 10px;
+                border: #555561 2px solid;
+                color: white;
+                font-weight: 500;
+            }
+        }
+    }
 
     & .container {
         padding: 60px;

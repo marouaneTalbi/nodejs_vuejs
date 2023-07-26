@@ -2,7 +2,7 @@
   <section class="dashboard">
     <Header />
 
-    <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive" >
+    <Modal @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive" :showConfirmButton="true">
       <div class="modal-content">
         <h2 style="color: white;">Créer le Skin</h2>
         <form @submit.prevent="handleConfirm">
@@ -31,13 +31,12 @@
             <input type="text" style="color:white" v-model="coins_price" id="coins_price" placeholder="Coins" required>
             <p v-if="!isValidPrice" class="error-message">Veuillez entrer une valeur numérique pour les Coins.</p>
           </div>
-          <button type="submit">Créer</button>
         </form>
       </div>
     </Modal>
 
     <div class="container">
-      <!-- <h3>Administration <span>/ All</span></h3> -->
+      <h3>Administration <span>/ All</span></h3>
       <div class="user-list">
         <h5>Users</h5>
         <table>
