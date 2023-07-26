@@ -37,8 +37,8 @@ module.exports = function (socket) {
 
                 players = await  UserGameController.PlayersOfGame(socket.gameId)
                 let cards = await GameController.getCards()
-
-                socket.emit('yourTurn',{player: players[1], cards: cards} );
+                console.log(players);
+                socket.emit('yourTurn',{player: players[1], opponent: players[0], cards: cards} );
             
                 socket.to(game.id).emit('waitingForPlayers',{ playersCount:playersCount, cards:cards});
 
@@ -77,13 +77,16 @@ module.exports = function (socket) {
 
     socket.on('endTurn', (data) => {
         let turnId;
+        let opponent;
         UserGameController.PlayersOfGame(socket.gameId).then((c) => {
             if(data.userId == c[0] ){
                 turnId = c[1]
+                opponent = c[0]
             } else if( data.userId == c[1]) {
                 turnId = c[0]
+                opponent = c[1]
             }
-            socket.to(socket.gameId).emit('yourTurn', {player: turnId, cards: data.cards });
+            socket.to(socket.gameId).emit('yourTurn', {player: turnId,opponent: opponent,cards: data.cards });
         })
     });
 
@@ -95,5 +98,26 @@ module.exports = function (socket) {
         } catch (error) {
             console.error('Erreur lors de la gestion de la déconnexion du joueur :', error);
         }
+    });
+
+    // Gestionnaire d'événement pour rejoindre le chat
+    socket.on('joinChat', () => {
+        socket.join('chat-room'); // Rejoignez une "chat-room" dédiée pour le chat
+        // Envoyez les messages existants du chat au client qui vient de se connecter
+        //const chatMessages = ChatController.getChatMessages();
+        //socket.emit('chatMessages', chatMessages);
+    });
+
+    // Gestionnaire d'événement pour envoyer un message dans le chat
+    socket.on('sendMessage', (message) => {
+        const userId = socket.userId;
+        const username = socket.username; // Assurez-vous d'avoir le nom d'utilisateur de l'utilisateur
+        const chatMessage = {
+            userId,
+            username,
+            message,
+        };
+        ChatController.addChatMessage(chatMessage); // Ajoutez le message au contrôleur de chat
+        socket.to('chat-room').emit('chatMessage', chatMessage); // Envoyez le message à tous les clients dans la "chat-room"
     });
 };
