@@ -339,10 +339,10 @@ setTimeout(() => {
 
     showCard(index, event) {
       let totalCardTurn = this.countCardJ1 + this.countCardJ2;
-      if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
-        this.endGame();
-        //this.endTurn();
-      }
+      // if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
+      //   this.endGame();
+      //   //this.endTurn();
+      // }
       //this.setUser1AndUser2();
       if (this.currentPlayer !== this.getCurrentUser()) {
         this.isMyTurn = false;
