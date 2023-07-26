@@ -25,6 +25,7 @@
       </div>
     </section>
 
+    <div class="transparent-div" v-if="!isMyTurn"></div>
     <section class="waiting-screen" v-if="!waitingForOpponent">
       <div class="memory-game">
         <div class="memory-board">
@@ -134,16 +135,20 @@ export default {
     const gameId = this.$route.params.id;
     this.getGame(gameId);
     SocketioService.onYourTurn((c) => {
-      this.currentPlayer = c.player
-      this.currentOpponent = c.opponent;
-      let totalCardTurn = this.countCardJ1 + this.countCardJ2;
-      if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
-        this.endGame();
-      }
-      if (c && c.player === this.getCurrentUser()) {
-        this.cards = c.cards
-        this.isMyTurn = true;
-      }
+
+      setTimeout(() => {
+         this.currentPlayer = c.player
+        this.currentOpponent = c.opponent;
+        let totalCardTurn = this.countCardJ1 + this.countCardJ2;
+        if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
+          this.endGame();
+        }
+        if (c && c.player === this.getCurrentUser()) {
+          this.cards = c.cards
+          this.isMyTurn = true;
+        }
+      }, 2000);
+
     });
   },
 
@@ -231,7 +236,7 @@ export default {
       SocketioService.flipedCard(gameId, index)
       if (this.currentPlayer === this.getCurrentUser()) {
         this.displayMessageTurn("A vous de jouer");
-        this.removeTransparentDiv();
+        this.isMyTurn = true;
       }
       const clickedCard = event.target;
       this.cardsElement.push(clickedCard);
@@ -260,10 +265,10 @@ export default {
       }
       //this.setUser1AndUser2();
       if (this.currentPlayer !== this.getCurrentUser()) {
-        this.createTransparentDiv();
+        this.isMyTurn = false;
       }
       if (this.currentPlayer === this.getCurrentUser()) {
-        this.removeTransparentDiv();
+          this.isMyTurn = true;
       }
       if (this.isComparing || this.cards[index].flipped) return;
       this.cards[index].flipped = true;
@@ -274,7 +279,7 @@ export default {
         if (this.cards[this.flippedCards[0]].image !== this.cards[this.flippedCards[1]].image) {
           this.cardsElement = [];
           if (this.currentPlayer === this.getCurrentUser()) {
-            this.createTransparentDiv();
+            this.isMyTurn = false;
           }
           let cardsDiv = document.getElementsByClassName('memory-card');
           const cardArray = Array.from(cardsDiv);
@@ -285,35 +290,34 @@ export default {
           setTimeout(() => {
             this.cards[this.flippedCards[0]].flipped = false;
             this.cards[this.flippedCards[1]].flipped = false;
-
             this.flippedCards = [];
             this.isComparing = false;
             cardArray.forEach((element) => {
               element.style.pointerEvents = 'initial';
             });
             if (this.currentPlayer === this.getCurrentUser()) {
-              this.createTransparentDiv();
+              this.isMyTurn = false;
             }
             if (this.currentPlayer !== this.getCurrentUser()) {
-              this.removeTransparentDiv();
-            }
-            if (this.currentPlayer !== this.getCurrentUser()) {
+              this.isMyTurn = false;
               this.showTurnMessage();
+            } else {
+              this.isMyTurn = true;
             }
             this.endTurn();
           }, 2000);
+
         } else {
+
           let totalCardTurn = this.countCardJ1 + this.countCardJ2;
+
           if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
             this.endGame();
             //this.endTurn();
           }
           this.flippedCards = [];
           this.isComparing = false;
-          setTimeout(() => {
-            this.cardsElement[0].style.display = "none";
-            this.cardsElement[1].style.display = "none";
-          }, 2000);
+    
           if (this.currentPlayer === this.getCurrentUser()) {
             this.onWin(this.cardsElement[0].parentElement.cloneNode(true));
             this.onWin(this.cardsElement[1].parentElement.cloneNode(true), true);
@@ -376,14 +380,7 @@ export default {
       }
     },
 
-    removeTransparentDiv() {
-      const transparentDiv = document.querySelector('.transparent-div');
-      if (transparentDiv) {
-        //transparentDiv.forEach((element) => {
-        transparentDiv.remove();
-        //})
-      }
-    },
+
 
     onWin(winningCardElement, secondCard = false) {
       const winningCardsContainer = document.querySelector('.winning-cards');
@@ -469,7 +466,16 @@ export default {
 }
 </script>
 <style scoped>
-
+.transparent-div{
+  position : fixed;
+  top : 0;
+  left : 0;
+  width : 100%;
+  height : 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  pointer-events : auto;
+}
 
 .memory-game {
   display: flex;

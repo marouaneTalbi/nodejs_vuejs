@@ -82,7 +82,7 @@ module.exports = function (socket) {
             if(data.userId == c[0] ){
                 turnId = c[1]
                 opponent = c[0]
-            } else if( data.userId == c[1]) {
+            } else {
                 turnId = c[0]
                 opponent = c[1]
             }
@@ -117,7 +117,7 @@ module.exports = function (socket) {
             username,
             message,
         };
-        ChatController.addChatMessage(chatMessage); // Ajoutez le message au contrôleur de chat
+        // ChatController.addChatMessage(chatMessage); // Ajoutez le message au contrôleur de chat
         socket.to('chat-room').emit('chatMessage', chatMessage); // Envoyez le message à tous les clients dans la "chat-room"
     });
 };
