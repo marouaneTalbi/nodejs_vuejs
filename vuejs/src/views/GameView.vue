@@ -322,11 +322,11 @@ export default {
 
     endGame() {
       if (this.currentPlayer === this.getCurrentUser() && this.countCardJ1 > this.countCardJ2) {
-        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "win"})
-        this.updateUserGame(this.currentOpponent, this.$route.params.id, {result: "loose"})
+        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "win", opponent:this.currentOpponent})
+        this.updateUserGame(this.currentOpponent, this.$route.params.id, {result: "loose", opponent:this.currentOpponent})
       } else if (this.currentPlayer !== this.getCurrentUser() && this.countCardJ1 < this.countCardJ2) {
-        this.updateUserGame(this.currentPlayer, this.$route.params.id, {result: "win"})
-        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "loose"})
+        this.updateUserGame(this.currentPlayer, this.$route.params.id, {result: "win", opponent: this.getCurrentUser()})
+        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "loose", opponent: this.getCurrentUser()})
       } else {
         this.updateUserGame(this.currentOpponent, this.$route.params.id, {result: "equality"})
         this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "equality"})
