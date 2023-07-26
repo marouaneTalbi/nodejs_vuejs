@@ -221,12 +221,11 @@ export default {
                   }
                   if (this.currentPlayer !== this.getCurrentUser()){
                     console.log("joueur");
-                    // this.removeTransparentDiv();
                     this.isMyTurn = true;
 
-                  }
-                  if (this.currentPlayer !== this.getCurrentUser()) {
+                  }else{
                     this.showTurnMessage();
+                    this.isMyTurn = false;
                   }
                 this.endTurn();
                 }, 2000);
