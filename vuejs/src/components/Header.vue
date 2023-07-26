@@ -1,6 +1,6 @@
 <template>
   <header :class="{'scrolled-nav': windowWidth}">
-    <router-link to="/gamemode">
+    <router-link to="/gamemode" class="logo">
         <img src="../../public/logo.png" />
     </router-link>
     <nav v-show="!mobile">
