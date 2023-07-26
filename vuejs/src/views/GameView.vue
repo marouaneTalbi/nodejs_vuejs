@@ -134,6 +134,7 @@ export default {
     this.getGame(gameId);
     SocketioService.onYourTurn((c) => {
       this.currentPlayer = c.player
+      this.currentOpponent = c.opponent;
       let totalCardTurn = this.countCardJ1 + this.countCardJ2;
       if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
         this.endGame();
