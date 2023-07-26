@@ -66,9 +66,9 @@
 
           <div class="row">
             <div class="text">
-              <span class="pseudo-title">Role</span>
+              <span class="pseudo-title">Coins</span>
               <br />
-              <span class="pseudo">{{ user.role }}</span>
+              <span class="pseudo">{{ user.coins }}</span>
             </div>
           </div>
           <div>

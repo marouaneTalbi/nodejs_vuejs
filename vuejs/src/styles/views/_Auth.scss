@@ -1,0 +1,51 @@
+.auth {
+    width: 100vw;
+    height: 100vh;
+    background-color: #17181F;
+    display: flex;
+    flex-direction: column;
+
+    & h2 {
+        font-size: 2.8rem;
+        color: white;
+        font-weight: 800;
+    }
+    
+    & .login-form {
+        padding: 80px;
+        width: 600px;
+
+        & form {
+            width: 100%;
+
+            & .form-group {
+                position: relative;
+
+                & input {
+                    width: 100%;
+                }
+    
+                & .icon {
+                    position: absolute;
+                    bottom: 4px;
+                    right: 10px;
+                    width: max-content;
+                    height: max-content;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .login-form {
+        max-width: 500px !important;
+    }
+}
+
+@media screen and (max-width: 760px) {
+    .login-form {
+        max-width: 100% !important;
+        padding: 60px !important;
+    }
+}
