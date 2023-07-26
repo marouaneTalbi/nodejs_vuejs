@@ -223,8 +223,6 @@ export default {
         div.style.backgroundColor = color;
       }
     },
-
-
     flipCard(event, index) {
       const gameId = this.$route.params.id;
       let totalCardTurn = this.countCardJ1 + this.countCardJ2;
