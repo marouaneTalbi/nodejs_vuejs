@@ -79,6 +79,7 @@ class SocketioService {
     
     disconnect() {
         if (this.socket) {
+            console.log("il s'est connecté");
             this.socket.disconnect();
         }
     }
