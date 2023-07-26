@@ -11,6 +11,7 @@
             </div>
         </section>
 
+        <div class="transparent-div" v-if="!isMyTurn"></div>
         <section  class="waiting-screen" v-if="!waitingForOpponent"  >
             <div class="memory-game">
                 <div class="memory-board">
@@ -144,13 +145,6 @@ export default {
         getPictureUrl(picture) {
             return `${serverURI}/pictures/cards/${picture}`;
         },
-        changeDivColor(color) {
-            const div = document.getElementById('testdiv');
-            if (div) {
-                div.style.backgroundColor = color;
-            }
-        },
-
 
         flipCard(event, index) {
             const gameId = this.$route.params.id;
@@ -158,86 +152,97 @@ export default {
             SocketioService.flipedCard(gameId, index)
           if (this.currentPlayer === this.getCurrentUser()) {
             this.displayMessageTurn("A vous de jouer");
-            this.removeTransparentDiv();
+            this.isMyTurn = true;
+
+            // this.removeTransparentDiv();
           }
             const clickedCard = event.target;
             this.cardsElement.push(clickedCard);
             this.showCard(index, event)
         },
 
-        showCard(index, event) {
-          if (this.currentPlayer !== this.getCurrentUser()) {
-            this.createTransparentDiv();
-          }
-          if (this.currentPlayer === this.getCurrentUser()){
-            this.removeTransparentDiv();
-          }
-            if (this.isComparing || this.cards[index].flipped) return;
-                this.cards[index].flipped = true;
-                this.flippedCards.push(index);
-                if (this.flippedCards.length >= 2) {
-                    this.isComparing = true;
+      showCard(index, event) {
+        if (this.currentPlayer !== this.getCurrentUser()) {
+          this.isMyTurn = false;
+          // this.createTransparentDiv();
+        }
+        if (this.currentPlayer === this.getCurrentUser()){
+          this.isMyTurn = true;
 
-                if (this.cards[this.flippedCards[0]].image !== this.cards[this.flippedCards[1]].image) {
-                  this.cardsElement = [];
+          // this.removeTransparentDiv();
+        }
+          if (this.isComparing || this.cards[index].flipped) return;
+              this.cards[index].flipped = true;
+              this.flippedCards.push(index);
+              if (this.flippedCards.length >= 2) {
+                  this.isComparing = true;
+
+              if (this.cards[this.flippedCards[0]].image !== this.cards[this.flippedCards[1]].image) {
+                this.cardsElement = [];
+                if (this.currentPlayer === this.getCurrentUser()) {
+                    this.isMyTurn = false;
+
+                  // this.createTransparentDiv();
+                }
+                let cardsDiv = document.getElementsByClassName('memory-card');
+                const cardArray = Array.from(cardsDiv);
+                cardArray.forEach((element) => {
+                  element.style.pointerEvents = 'none';
+                });
+
+                setTimeout(() => {
+                this.cards[this.flippedCards[0]].flipped = false;
+                this.cards[this.flippedCards[1]].flipped = false;
+
+                this.flippedCards = [];
+                this.isComparing = false;
+                cardArray.forEach((element) => {
+                  element.style.pointerEvents = 'initial';
+                });
                   if (this.currentPlayer === this.getCurrentUser()) {
-                    this.createTransparentDiv();
+                    console.log("opposant");
+                    // this.createTransparentDiv();
+                    this.isMyTurn = false;
+
                   }
-                  let cardsDiv = document.getElementsByClassName('memory-card');
-                  const cardArray = Array.from(cardsDiv);
-                  cardArray.forEach((element) => {
-                    element.style.pointerEvents = 'none';
-                  });
+                  if (this.currentPlayer !== this.getCurrentUser()){
+                    console.log("joueur");
+                    // this.removeTransparentDiv();
+                    this.isMyTurn = true;
 
-                  setTimeout(() => {
-                  this.cards[this.flippedCards[0]].flipped = false;
-                  this.cards[this.flippedCards[1]].flipped = false;
-
+                  }
+                  if (this.currentPlayer !== this.getCurrentUser()) {
+                    this.showTurnMessage();
+                  }
+                this.endTurn();
+                }, 2000);
+              } else {
                   this.flippedCards = [];
                   this.isComparing = false;
-                  cardArray.forEach((element) => {
-                    element.style.pointerEvents = 'initial';
-                  });
-                    if (this.currentPlayer === this.getCurrentUser()) {
-                      console.log("opposant");
-                      this.createTransparentDiv();
-                    }
-                    if (this.currentPlayer !== this.getCurrentUser()){
-                      console.log("joueur");
-                      this.removeTransparentDiv();
-                    }
-                    if (this.currentPlayer !== this.getCurrentUser()) {
-                      this.showTurnMessage();
-                    }
-                  this.endTurn();
-                  }, 2000);
-                } else {
-                    this.flippedCards = [];
-                    this.isComparing = false;
-                  setTimeout(() => {
-                    this.cardsElement[0].style.display = "none";
-                    this.cardsElement[1].style.display = "none";
-                  }, 2000);
-                  if (this.currentPlayer === this.getCurrentUser()) {
-                    this.onWin(this.cardsElement[0].parentElement.cloneNode(true));
-                    this.onWin(this.cardsElement[1].parentElement.cloneNode(true), true);
-                    this.countCardJ1++;
-                  }
+                // setTimeout(() => {
+                //   this.cardsElement[0].style.display = "none";
+                //   this.cardsElement[1].style.display = "none";
+                // }, 2000);
 
-                  if (this.currentPlayer !== this.getCurrentUser()) {
-                    console.log("for oppenent");
-                    this.countCardJ2++;
-                    console.log(this.cardsElement);
-                    this.onOppenentWin(this.cardsElement[0].parentElement.cloneNode(true));
-                    this.onOppenentWin(this.cardsElement[1].parentElement.cloneNode(true), true);
-                  }
-                  this.cardsElement = [];
-                    return;
-                    //this.endTurn();
+                if (this.currentPlayer === this.getCurrentUser()) {
+                  this.onWin(this.cardsElement[0].parentElement.cloneNode(true));
+                  this.onWin(this.cardsElement[1].parentElement.cloneNode(true), true);
+                  this.countCardJ1++;
                 }
-            }
-        },
 
+                if (this.currentPlayer !== this.getCurrentUser()) {
+                  console.log("for oppenent");
+                  this.countCardJ2++;
+                  console.log(this.cardsElement);
+                  this.onOppenentWin(this.cardsElement[0].parentElement.cloneNode(true));
+                  this.onOppenentWin(this.cardsElement[1].parentElement.cloneNode(true), true);
+                }
+                this.cardsElement = [];
+                  return;
+                  //this.endTurn();
+              }
+          }
+      },
       showTurnMessage() {
         const messageDiv = document.getElementById('messageDiv');
         messageDiv.classList.remove('hidden');
@@ -245,41 +250,39 @@ export default {
           messageDiv.classList.add('hidden');
         }, 2000); // Supprimez le message après 2 secondes (ajustez cette valeur selon votre préférence)
       },
-
       displayMessageTurn(message) {
         const messageElement = document.getElementById('messageDiv');
         messageElement.innerText = message;
       },
 
+      // createTransparentDiv(){
+      //   const transparentDiv = document.querySelector('.transparent-div');
+      //   console.log(transparentDiv);
+      //   if (!transparentDiv) {
+      //     const transparentDiv = document.createElement('div');
+      //     transparentDiv.style.position = 'fixed';
+      //     transparentDiv.style.top = '0';
+      //     transparentDiv.style.left = '0';
+      //     transparentDiv.style.width = '100%';
+      //     transparentDiv.style.height = '100%';
+      //     transparentDiv.style.backgroundColor = 'transparent';
+      //     transparentDiv.style.zIndex = '9999'; // Assurez-vous qu'elle est au-dessus de tout autre contenu
+      //     transparentDiv.style.pointerEvents = 'auto'; // Capture tous les événements de clic
+      //     transparentDiv.className = "transparent-div";
+      //     document.body.appendChild(transparentDiv);
+      //   }
+      // },
 
-      createTransparentDiv(){
-        const transparentDiv = document.querySelector('.transparent-div');
-        console.log(transparentDiv);
-        if (!transparentDiv) {
-          const transparentDiv = document.createElement('div');
-          transparentDiv.style.position = 'fixed';
-          transparentDiv.style.top = '0';
-          transparentDiv.style.left = '0';
-          transparentDiv.style.width = '100%';
-          transparentDiv.style.height = '100%';
-          transparentDiv.style.backgroundColor = 'transparent';
-          transparentDiv.style.zIndex = '9999'; // Assurez-vous qu'elle est au-dessus de tout autre contenu
-          transparentDiv.style.pointerEvents = 'auto'; // Capture tous les événements de clic
-          transparentDiv.className = "transparent-div";
-          document.body.appendChild(transparentDiv);
-        }
-      },
-
-      removeTransparentDiv() {
-        const transparentDiv = document.querySelector('.transparent-div');
-        console.log(transparentDiv);
-        if (transparentDiv) {
-          console.log("dans ifffff");
-          //transparentDiv.forEach((element) => {
-          transparentDiv.remove();
-          //})
-        }
-      },
+      // removeTransparentDiv() {
+      //   const transparentDiv = document.querySelector('.transparent-div');
+      //   console.log(transparentDiv);
+      //   if (transparentDiv) {
+      //     console.log("dans ifffff");
+      //     //transparentDiv.forEach((element) => {
+      //     transparentDiv.remove();
+      //     //})
+      //   }
+      // },
 
       onWin(winningCardElement, secondCard = false) {
         const winningCardsContainer = document.querySelector('.winning-cards');
@@ -326,11 +329,6 @@ export default {
             this.isMyTurn = false;
             const gameId = this.$route.params.id;
             SocketioService.endTurn(gameId, this.currentPlayer, this.cards);
-        },
-
-        async setColor(color) {
-            await SocketioService.changeColor(color)
-            this.changeDivColor(color);
         },
 
         getGame(gameId) {
@@ -380,7 +378,16 @@ export default {
 </script>
 <style scoped>
 
-
+.transparent-div{
+  position : fixed;
+  top : 0;
+  left : 0;
+  width : 100%;
+  height : 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  pointer-events : auto;
+}
 
 .memory-game {
   display: flex;
