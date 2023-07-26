@@ -343,8 +343,8 @@ export default {
       const userId = decodedPayload.id;
       return userId;
     },
-    getUserSkins() {
-      const userId = getCurrentUser();
+     getUserSkins() {
+      const userId = this.currentUserId()
       fetchData('/user/skins/' + userId)
       .then(response => {
         console.log(response)
@@ -382,7 +382,7 @@ export default {
       this.assignUserSkin(newSkin, this.user.id)
     },
     getUserSkin(){
-        const userId = getCurrentUser();
+      const userId = this.currentUserId()
         fetchData('/user/skin/' + userId)
         .then(response => {
             this.closeModal()
