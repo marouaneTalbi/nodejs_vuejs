@@ -32,8 +32,9 @@
                class="memory-card"
                :class="{ flipped: card.flipped }"
                @click="flipCard($event, index)">
-            <div class="card-face front"></div>
-            <div class="card-face back" :style="{ backgroundImage:`url('${getPictureUrl(card.image)}')`}"></div>
+              <div class="card-face front" v-if="skin" :style="{ backgroundImage:`url('${getSkinUrl(skin.picture)}')`}"></div>
+              <div class="card-face front-noskin" v-if="!skin"></div>            
+              <div class="card-face back" :style="{ backgroundImage:`url('${getPictureUrl(card.image)}')`}"></div>
           </div>
         </div>
       </div>
@@ -147,6 +148,7 @@ export default {
 
   created() {
     this.getCurrentUser();
+    this.getUserSkin();
 
     SocketioService.opponentCardFlipped((index) => {
       this.showCard(index)
@@ -197,6 +199,18 @@ export default {
         return this.userId
       }
     },
+    getUserSkin(){
+          fetchData('/user/skin/' + this.userId)
+          .then(response => {
+            this.skin = response.data
+            console.log('skin : ', this.skin)
+          })
+        },
+        getSkinUrl(picture) {
+          console.log('get')
+          console.log(`${serverURI}/pictures/skins/${picture}`)
+          return `${serverURI}/pictures/skins/${picture}`;
+        },
     getPictureUrl(picture) {
       return `${serverURI}/pictures/cards/${picture}`;
     },
@@ -496,11 +510,19 @@ export default {
 }
 
 .front {
-  background: gray; /* couleur de fond des cartes face cachée */
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 2em;
+}
+.front-noskin {
+  background-color: #3D2642;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2em;
+  object-fit: contain;
+  border-radius: 10px;
 }
 
 .back {
