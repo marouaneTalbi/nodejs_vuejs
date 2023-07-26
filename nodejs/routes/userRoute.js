@@ -5,7 +5,6 @@ const route = express.Router();
 const authMiddleware = require('../middlewares/authMiddleware');
 
 // Public routes
-
 route.post('/login', UserController.login)
 route.post('/register', UserController.register)
 route.get('/current-user', UserController.getCurrentUser);
@@ -16,6 +15,8 @@ route.post('/initPassword',  UserController.initPassword);
 route.put('/user/:id/verify-email', UserController.updateIsConfirmed);
 route.get('/user/:id/stats', UserController.getUserStats);
 route.get('/user/:id/games-history', UserController.getUserGamesHistory);
+route.post('/resend-confirmation-email', UserController.resendMail);
+
 
 // Routes protected by authentication middleware
 const gamerAuthMiddleware = authMiddleware();

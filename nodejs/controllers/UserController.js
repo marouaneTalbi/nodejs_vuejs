@@ -171,6 +171,29 @@ exports.register = async (req, res) => {
     }
   };
 
+exports.resendMail = async (req,res) => {
+  const email = req.body.email
+  try {
+    const existingUser = await User.findOne({ where: { mail : email } });
+    if (existingUser) {
+      if (existingUser.isconfirmed===false){
+        const newToken = crypto.randomBytes(32).toString('hex');
+        await existingUser.update({ token:newToken});
+        await mailSender.sendConfirmationEmail(email, newToken);
+        res.status(200).json(existingUser)
+      }
+      else {
+        res.status(400).json({ message: 'Votre compte est déja confirmé' });
+      }
+    }else{
+      res.status(400).json({ message: 'cette adresse email est pas encore inscrit' });
+    }
+  }catch (error){
+    console.error('An error occurred:', error);
+    res.status(500).send('Internal Server Error');
+  }
+}
+
 exports.confirm = async (req, res) => {
   const token = req.body.token;
   try {
