@@ -1,26 +1,40 @@
 <template>
   <section class="game">
-    <Header />
+    <Header/>
     <div id="messageDiv" class="message hidden">A vous de jouer !</div>
     <section v-if="waitingForOpponent" class="waiting-screen">
-      <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><g clip-path="url(#a)"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.071 7.586-.828.828A2 2 0 0 1 11.828 9h-1.414c-.375 0-.735.149-1 .414v0a1.414 1.414 0 0 0 0 2l1.829 1.829a2 2 0 0 0 2.828 0l1.414-1.415.964 2.121a1.346 1.346 0 0 0 2.178.395v0c.252-.252.394-.595.394-.952v-4.27a2 2 0 0 1 .586-1.415l2.242-2.243c.472-.47 1.132-1.697 0-2.828-1.131-1.131-2.357-.471-2.828 0l-1.768 1.768m-3.182 3.182-2.02-.674a1.448 1.448 0 0 1-.566-2.397v0a1.448 1.448 0 0 1 1.12-.421l4.648.31m-3.182 3.182 3.182-3.182M2 14.905c.705-1.234 1.825-2.32 3-3.204M2 22.404c1.072-3.002 3.055-5.564 5.023-7.5m.477 6.5c.721-1.442 1.96-3.077 3.087-4.405"></path></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h24v24H0z"></path></clipPath></defs></svg>
+      <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+        <g clip-path="url(#a)">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m14.071 7.586-.828.828A2 2 0 0 1 11.828 9h-1.414c-.375 0-.735.149-1 .414v0a1.414 1.414 0 0 0 0 2l1.829 1.829a2 2 0 0 0 2.828 0l1.414-1.415.964 2.121a1.346 1.346 0 0 0 2.178.395v0c.252-.252.394-.595.394-.952v-4.27a2 2 0 0 1 .586-1.415l2.242-2.243c.472-.47 1.132-1.697 0-2.828-1.131-1.131-2.357-.471-2.828 0l-1.768 1.768m-3.182 3.182-2.02-.674a1.448 1.448 0 0 1-.566-2.397v0a1.448 1.448 0 0 1 1.12-.421l4.648.31m-3.182 3.182 3.182-3.182M2 14.905c.705-1.234 1.825-2.32 3-3.204M2 22.404c1.072-3.002 3.055-5.564 5.023-7.5m.477 6.5c.721-1.442 1.96-3.077 3.087-4.405"></path>
+        </g>
+        <defs>
+          <clipPath id="a">
+            <path fill="#fff" d="M0 0h24v24H0z"></path>
+          </clipPath>
+        </defs>
+      </svg>
       <p v-if="waitingForOpponent">Adversaire en attente...</p>
       <div v-if="game.gamemode === 'private'" class="code">
         <span>{{ game.code }}</span>
-        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" @click="copyToClipboard"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 8h2c1.333 0 4 .8 4 4s-2.667 4-4 4h-2M9 8H7c-1.333 0-4 .8-4 4s2.667 4 4 4h2m-1-4h8"></path></svg>
+        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+             @click="copyToClipboard">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 8h2c1.333 0 4 .8 4 4s-2.667 4-4 4h-2M9 8H7c-1.333 0-4 .8-4 4s2.667 4 4 4h2m-1-4h8"></path>
+        </svg>
       </div>
     </section>
 
-    <div  class="transparent-div" v-if="!isMyTurn && !waitingForOpponent"></div>
-    <section  class="waiting-screen" v-if="!waitingForOpponent"  >
+    <div class="transparent-div" v-if="!isMyTurn"></div>
+    <section class="waiting-screen" v-if="!waitingForOpponent">
       <div class="memory-game">
         <div class="memory-board">
           <div v-for="(card, index) in cards" :key="index"
                class="memory-card"
                :class="{ flipped: card.flipped }"
                @click="flipCard($event, index)">
-            <div class="card-face front" v-if="skin" :style="{ backgroundImage:`url('${getSkinUrl(skin.picture)}')`}"></div>
-            <div class="card-face front-noskin" v-if="!skin"></div>
+               <div class="card-face front" v-if="skin" :style="{ backgroundImage:`url('${getSkinUrl(skin.picture)}')`}"></div>
+              <div class="card-face front-noskin" v-if="!skin"></div>  
             <div class="card-face back" :style="{ backgroundImage:`url('${getPictureUrl(card.image)}')`}"></div>
           </div>
         </div>
@@ -29,40 +43,55 @@
 
     <Modal v-if="userLeft" @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive">
       <div class="modal-content">
-        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m3 7 2 13h14l2-13-5 3-4-6-4 6-5-3z"></path><circle cx="12" cy="14" r="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></circle></svg>
+        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m3 7 2 13h14l2-13-5 3-4-6-4 6-5-3z"></path>
+          <circle cx="12" cy="14" r="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="2"></circle>
+        </svg>
         <h2>Victoire !</h2>
         <p>Votre adversaire a quitté la partie. Vous avez remporté la victoire !</p>
       </div>
     </Modal>
-  </section>
-
-  <section class="waiting-screen" v-if="!waitingForOpponent">
-    <div class="memory-game">
-      <div class="memory-board">
-        <div v-for="(card, index) in cards" :key="index"
-             class="memory-card"
-             :class="{ flipped: card.flipped }"
-             @click="flipCard($event, index)">
-          <div class="card-face front" v-if="skin" :style="{ backgroundImage:`url('${getSkinUrl(skin.picture)}')`}"></div>
-          <div class="card-face front-noskin" v-if="!skin"></div>
-          <div class="card-face back" :style="{ backgroundImage:`url('${getPictureUrl(card.image)}')`}"></div>
-        </div>
+    <Modal @close="toggleModalVictory" @confirm="handleConfirmVictory" :modalActive="modalActiveVictory">
+      <div class="modal-content">
+        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m3 7 2 13h14l2-13-5 3-4-6-4 6-5-3z"></path>
+          <circle cx="12" cy="14" r="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="2"></circle>
+        </svg>
+        <h2>VICTOIRE !</h2>
+        <span id="counterSpan">+0</span>
+        <p>Bien joué !</p>
       </div>
-    </div>
-  </section>
-
-  <Modal v-if="userLeft" @close="toggleModal" @confirm="handleConfirm" :modalActive="modalActive">
-    <div class="modal-content">
-      <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
-        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="m3 7 2 13h14l2-13-5 3-4-6-4 6-5-3z"></path>
-        <circle cx="12" cy="14" r="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                stroke-width="2"></circle>
-      </svg>
-      <h2>Victoire !</h2>
-      <p>Votre adversaire a quitté la partie. Vous avez remporté la victoire !</p>
-    </div>
-  </Modal>
+    </Modal>
+    <Modal @close="toggleModalDefeat" @confirm="handleConfirmDefeat" :modalActive="modalActiveDefeat">
+      <div class="modal-content">
+        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m3 7 2 13h14l2-13-5 3-4-6-4 6-5-3z"></path>
+          <circle cx="12" cy="14" r="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="2"></circle>
+        </svg>
+        <h2>DEFAITE !</h2>
+        <span>0 coins</span>
+        <p>Mince !</p>
+      </div>
+    </Modal>
+    <Modal @close="toggleModalEquality" @confirm="handleConfirmEquality" :modalActive="modalActiveEquality">
+      <div class="modal-content">
+        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m3 7 2 13h14l2-13-5 3-4-6-4 6-5-3z"></path>
+          <circle cx="12" cy="14" r="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="2"></circle>
+        </svg>
+        <h2>EGALITE !</h2>
+        <span>0 coins</span>
+        <p>wow !</p>
+      </div>
+    </Modal>
   </section>
   <!-- Cartes gagnées -->
   <div class="winning-cards">
@@ -81,6 +110,7 @@
     </div>
     <input v-model="messageInput" @keyup.enter="sendMessage" placeholder="Tapez votre message..."/>
   </div>
+
 </template>
 
 <script>
@@ -92,8 +122,6 @@ import Cookies from 'js-cookie';
 import {fetchData, patchData, serverURI} from '../api/api'
 import {toast} from "vue3-toastify";
 import {io} from 'socket.io-client';
-
-let ActualUser = null;
 
 export default {
   components: {
@@ -123,13 +151,14 @@ export default {
     };
   },
   beforeRouteLeave() {
-    console.log("bonjour");
     SocketioService.userLeft(() => {
       this.userLeft = true;
       this.openModal();
     });
   },
 
+
+  
 
   setup() {
     const modalActive = ref(false);
@@ -138,29 +167,77 @@ export default {
       modalActive.value = !modalActive.value;
     }
 
-    return {modalActive, toggleModal}
+    const modalActiveVictory = ref(false);
+
+    const toggleModalVictory = () => {
+      modalActiveVictory.value = !modalActiveVictory.value;
+    }
+
+    const modalActiveDefeat = ref(false);
+
+    const toggleModalDefeat = () => {
+      modalActiveDefeat.value = !modalActiveDefeat.value;
+    }
+
+    const modalActiveEquality = ref(false);
+
+    const toggleModalEquality = () => {
+      modalActiveEquality.value = !modalActiveEquality.value;
+    }
+
+    return {
+      modalActive,
+      toggleModal,
+      modalActiveVictory,
+      toggleModalVictory,
+      modalActiveDefeat,
+      toggleModalDefeat,
+      modalActiveEquality,
+      toggleModalEquality
+    }
+
   },
 
   mounted() {
     const gameId = this.$route.params.id;
     this.getGame(gameId);
     SocketioService.onYourTurn((c) => {
+
+setTimeout(() => {
       this.currentPlayer = c.player
+      this.currentOpponent = c.opponent;
       let totalCardTurn = this.countCardJ1 + this.countCardJ2;
-      if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
-        this.endGame();
+      console.log('passe bien par on your turn :' + this.currentPlayer);
+      console.log('this.countCardJ1 ' + this.countCardJ1);
+      console.log('this.countCardJ2 ' + this.countCardJ2);
+      console.log('totalCardTurn ' + totalCardTurn);
+      let testCondition = totalCardTurn === 8 && (this.countCardJ1 >= 5 || this.countCardJ2 >= 5);
+      console.log('testCondition ' + testCondition);
+      console.log('this.winner ' + this.winner);
+      console.log('this.currentPlayer ' + this.currentPlayer);
+      console.log('this.currentOpponent ' + this.currentOpponent);
+      if (this.winner !== this.currentPlayer && this.currentPlayer) {
+        if (this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
+          console.log("defaite");
+          this.openModalDefeat();
+        } else if (totalCardTurn === 8) {
+          console.log("egalite");
+          this.openModalEquality();
+        }
       }
       if (c && c.player === this.getCurrentUser()) {
         this.cards = c.cards
         this.isMyTurn = true;
       }
+    }, 2000);
+
     });
   },
 
   created() {
     this.getCurrentUser();
     this.getUserSkin();
-
+    
     SocketioService.opponentCardFlipped((index) => {
       this.showCard(index)
     });
@@ -212,18 +289,15 @@ export default {
     },
     getUserSkin(){
       fetchData('/user/skin/' + this.userId)
-          .then(response => {
-            this.skin = response.data
-            console.log('skin : ', this.skin)
-          })
-    },
-    getSkinUrl(picture) {
-      console.log('get')
-      console.log(`${serverURI}/pictures/skins/${picture}`)
-      return `${serverURI}/pictures/skins/${picture}`;
+      .then(response => {
+        this.skin = response.data
+      })
     },
     getPictureUrl(picture) {
       return `${serverURI}/pictures/cards/${picture}`;
+    },
+    getSkinUrl(picture) {
+      return `${serverURI}/pictures/skins/${picture}`;
     },
     changeDivColor(color) {
       const div = document.getElementById('testdiv');
@@ -231,20 +305,18 @@ export default {
         div.style.backgroundColor = color;
       }
     },
-
-
     flipCard(event, index) {
       const gameId = this.$route.params.id;
       let totalCardTurn = this.countCardJ1 + this.countCardJ2;
       if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
-        this.endGame();
+        // this.endGame();
         //this.endTurn();
       }
       if (!this.isMyTurn || this.flippedCards.length === 2) return;
       SocketioService.flipedCard(gameId, index)
       if (this.currentPlayer === this.getCurrentUser()) {
         this.displayMessageTurn("A vous de jouer");
-        this.removeTransparentDiv();
+        this.isMyTurn = true;
       }
       const clickedCard = event.target;
       this.cardsElement.push(clickedCard);
@@ -267,16 +339,16 @@ export default {
 
     showCard(index, event) {
       let totalCardTurn = this.countCardJ1 + this.countCardJ2;
-      if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
-        this.endGame();
-        //this.endTurn();
-      }
+      // if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
+      //   this.endGame();
+      //   //this.endTurn();
+      // }
       //this.setUser1AndUser2();
       if (this.currentPlayer !== this.getCurrentUser()) {
-        this.createTransparentDiv();
+        this.isMyTurn = false;
       }
       if (this.currentPlayer === this.getCurrentUser()) {
-        this.removeTransparentDiv();
+          this.isMyTurn = true;
       }
       if (this.isComparing || this.cards[index].flipped) return;
       this.cards[index].flipped = true;
@@ -287,7 +359,7 @@ export default {
         if (this.cards[this.flippedCards[0]].image !== this.cards[this.flippedCards[1]].image) {
           this.cardsElement = [];
           if (this.currentPlayer === this.getCurrentUser()) {
-            this.createTransparentDiv();
+            this.isMyTurn = false;
           }
           let cardsDiv = document.getElementsByClassName('memory-card');
           const cardArray = Array.from(cardsDiv);
@@ -298,35 +370,34 @@ export default {
           setTimeout(() => {
             this.cards[this.flippedCards[0]].flipped = false;
             this.cards[this.flippedCards[1]].flipped = false;
-
             this.flippedCards = [];
             this.isComparing = false;
             cardArray.forEach((element) => {
               element.style.pointerEvents = 'initial';
             });
             if (this.currentPlayer === this.getCurrentUser()) {
-              this.createTransparentDiv();
+              this.isMyTurn = false;
             }
             if (this.currentPlayer !== this.getCurrentUser()) {
-              this.removeTransparentDiv();
-            }
-            if (this.currentPlayer !== this.getCurrentUser()) {
+              this.isMyTurn = false;
               this.showTurnMessage();
+            } else {
+              this.isMyTurn = true;
             }
             this.endTurn();
           }, 2000);
+
         } else {
-          let totalCardTurn = this.countCardJ1 + this.countCardJ2;
+          /*let totalCardTurn = this.countCardJ1 + this.countCardJ2;
+
           if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
             this.endGame();
             //this.endTurn();
-          }
+          }*/
+
           this.flippedCards = [];
           this.isComparing = false;
-          setTimeout(() => {
-            this.cardsElement[0].style.display = "none";
-            this.cardsElement[1].style.display = "none";
-          }, 2000);
+    
           if (this.currentPlayer === this.getCurrentUser()) {
             this.onWin(this.cardsElement[0].parentElement.cloneNode(true));
             this.onWin(this.cardsElement[1].parentElement.cloneNode(true), true);
@@ -339,103 +410,33 @@ export default {
             this.onOppenentWin(this.cardsElement[1].parentElement.cloneNode(true), true);
           }
           this.cardsElement = [];
+          let totalCardTurn = this.countCardJ1 + this.countCardJ2;
+
+          if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
+            this.endGame();
+            this.endTurn();
+          }
           return;
           //this.endTurn();
         }
-        winningCardsContainer.appendChild(winningCardElement);
-
-        // Animation d'apparition de la carte gagnée depuis le haut
-        winningCardElement.style.animation = 'slideInFromTop 3s';
-        winningCardElement.style.animationFillMode = 'forwards';
-
-        // Animation de disparition de la carte du jeu en la faisant glisser vers le haut
-        winningCardElement.addEventListener('animationend', () => {
-          //winningCardElement.remove();
-        });
-      },
-
-      onOppenentWin(winningCardElement, secondCard = false) {
-        const loosingCardsContainer = document.querySelector('.loosing-cards');
-        console.log('loosingCardElement');
-        console.log(winningCardElement);
-        // Ajouter la carte gagnée dans le conteneur des cartes gagnées
-        if(secondCard){
-          winningCardElement.setAttribute('class', 'memory-card flipped');
-        }
-        loosingCardsContainer.appendChild(winningCardElement);
-
-        // Animation d'apparition de la carte gagnée depuis le haut
-        /*winningCardElement.style.animation = 'slideInFromTop 3s';
-        winningCardElement.style.animationFillMode = 'forwards';
-
-        // Animation de disparition de la carte du jeu en la faisant glisser vers le haut
-        winningCardElement.addEventListener('animationend', () => {
-          //winningCardElement.remove();
-        });*/
-      },
-
-      endTurn() {
-        console.log('end turn')
-        let currentUserId = this.getCurrentUser()
-        this.isMyTurn = false;
-        const gameId = this.$route.params.id;
-        SocketioService.endTurn(gameId, this.currentPlayer, this.cards);
-      },
-
-      getGame(gameId) {
-        fetchData('/game/' + gameId)
-            .then(response => {
-              this.game = response.data;
-            })
-            .catch(error => {
-              console.error(error)
-            });
-      },
-      handleConfirm() {
-        this.modalActive = false;
-      },
-      openModal() {
-        this.updateUserGame(this.getCurrentUser(),this.$route.params.id, {result: "win"});
-        console.log('current player : ', this.currentPlayer);
-
-        this.updateUserGame(this.currentPlayer,this.$route.params.id, {result: "loose"});
-        this.modalActive = true;
-      },
-      copyToClipboard() {
-        const code = this.game.code;
-        navigator.clipboard.writeText(code)
-            .then(() => {
-            })
-            .catch((error) => {
-            });
-      },
-      updateUserGame(userId, gameId, data) {
-        patchData('/user/'+ userId +'/game/' + gameId, data)
-            .then(response => {
-              toast('La game a bien été modifié', {
-                autoClose: 2000,
-                type: 'success'
-              })
-            })
-            .catch(error => {
-              toast(error.message, {
-                autoClose: 2000,
-                type: 'error',
-              })
-            })
-      },
+      }
     },
 
     endGame() {
       if (this.currentPlayer === this.getCurrentUser() && this.countCardJ1 > this.countCardJ2) {
-        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "win", opponent:this.currentOpponent})
-        this.updateUserGame(this.currentOpponent, this.$route.params.id, {result: "loose", opponent:this.currentOpponent})
-      } else if (this.currentPlayer !== this.getCurrentUser() && this.countCardJ1 < this.countCardJ2) {
-        this.updateUserGame(this.currentPlayer, this.$route.params.id, {result: "win", opponent: this.getCurrentUser()})
-        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "loose", opponent: this.getCurrentUser()})
-      } else {
-        this.updateUserGame(this.currentOpponent, this.$route.params.id, {result: "equality"})
-        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "equality"})
+        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "win", opponentId:this.currentOpponent})
+        this.updateUserGame(this.currentOpponent, this.$route.params.id, {result: "loose", opponentId:this.currentOpponent})
+        this.openModalVictory();
+      }
+      if (this.currentPlayer !== this.getCurrentUser() && this.countCardJ1 < this.countCardJ2) {
+        this.updateUserGame(this.currentPlayer, this.$route.params.id, {result: "win", opponentId: this.getCurrentUser()})
+        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "loose", opponentId: this.getCurrentUser()})
+        this.openModalVictory();
+      } 
+      if (this.countCardJ1 === this.countCardJ2) {
+        this.updateUserGame(this.currentOpponent, this.$route.params.id, {result: "equality", opponentId: this.getCurrentUser()})
+        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "equality", opponentId: this.currentOpponent})
+        this.openModalEquality();
       }
     },
 
@@ -467,15 +468,6 @@ export default {
         transparentDiv.style.pointerEvents = 'auto'; // Capture tous les événements de clic
         transparentDiv.className = "transparent-div";
         document.body.appendChild(transparentDiv);
-      }
-    },
-
-    removeTransparentDiv() {
-      const transparentDiv = document.querySelector('.transparent-div');
-      if (transparentDiv) {
-        //transparentDiv.forEach((element) => {
-        transparentDiv.remove();
-        //})
       }
     },
 
@@ -535,7 +527,38 @@ export default {
     openModal() {
       this.modalActive = true;
     },
+    handleConfirmVictory() {
+      this.modalActiveVictory = false;
+    },
 
+    openModalVictory() {
+      this.modalActiveVictory = true;
+      setTimeout(() => {
+        this.$router.push('/stats');
+      }, 2500);
+    },
+
+    handleConfirmDefeat() {
+      this.modalActiveDefeat = false;
+    },
+
+    openModalDefeat() {
+      this.modalActiveDefeat = true;
+      setTimeout(() => {
+        this.$router.push('/stats');
+      }, 2500);
+    },
+
+    handleConfirmEquality() {
+      this.modalActiveEquality = false;
+    },
+
+    openModalEquality() {
+      this.modalActiveEquality = true;
+      setTimeout(() => {
+        this.$router.push('/stats');
+      }, 2500);
+    },
     copyToClipboard() {
       const code = this.game.code;
       navigator.clipboard.writeText(code)
@@ -560,10 +583,20 @@ export default {
           })
     },
   },
+
 }
 </script>
 <style scoped>
-
+.transparent-div{
+  position : fixed;
+  top : 0;
+  left : 0;
+  width : 100%;
+  height : 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  pointer-events : auto;
+}
 
 .memory-game {
   display: flex;
@@ -616,7 +649,6 @@ export default {
   object-fit: contain;
   border-radius: 10px;
 }
-
 .back {
   transform: rotateY(180deg);
 }

@@ -59,17 +59,6 @@ module.exports = function (socket) {
         }
     });
 
-    socket.on('changeColor', async (color) => {
-        try {
-            socket.emit('colorChanged', color);
-            socket.to(socket.gameId).emit('colorChanged', color);
-            socket.broadcast.emit('changeColor', color);
-
-        } catch (error) {
-            console.error('Erreur lors du changement de couleur:', error);
-        }
-    });
-
 
     socket.on('cardFlipped', (data) => {
         socket.to(socket.gameId).emit('opponentCardFlipped', data.cardIndex);
@@ -82,11 +71,12 @@ module.exports = function (socket) {
             if(data.userId == c[0] ){
                 turnId = c[1]
                 opponent = c[0]
-            } else if( data.userId == c[1]) {
+            } else {
                 turnId = c[0]
                 opponent = c[1]
             }
             socket.to(socket.gameId).emit('yourTurn', {player: turnId,opponent: opponent,cards: data.cards });
+
         })
     });
 
@@ -117,7 +107,7 @@ module.exports = function (socket) {
             username,
             message,
         };
-        ChatController.addChatMessage(chatMessage); // Ajoutez le message au contrôleur de chat
+        // ChatController.addChatMessage(chatMessage); // Ajoutez le message au contrôleur de chat
         socket.to('chat-room').emit('chatMessage', chatMessage); // Envoyez le message à tous les clients dans la "chat-room"
     });
 };
