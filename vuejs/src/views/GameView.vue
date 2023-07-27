@@ -154,6 +154,7 @@ import Cookies from 'js-cookie';
 import {fetchData, patchData, serverURI} from '../api/api'
 import {toast} from "vue3-toastify";
 import {io} from 'socket.io-client';
+import soundflip from  '@/sounds/flipcard.mp3';
 
 export default {
   components: {
@@ -299,6 +300,10 @@ export default {
   },
 
   methods: {
+    playAudio() {
+      const audio = new Audio(soundflip);
+      audio.play();
+    },
     sendMessage() {
       const message = this.messageInput.trim();
       if (message !== '') {
@@ -330,6 +335,7 @@ export default {
       return `${serverURI}/pictures/skins/${picture}`;
     },
     flipCard(event, index) {
+      this.playAudio();
       const gameId = this.$route.params.id;
       let totalCardTurn = this.countCardJ1 + this.countCardJ2;
       if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
