@@ -5,8 +5,9 @@ const stripe = require('stripe')('sk_test_51IM8ZrEwRtoFpDAHRzosyjI15p26BORIEDgbm
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 var base64ToImage = require('base64-to-image');
+require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 
-const serverURI = 'https://challenge.ovh';
+const serverURI = process.env.SERVER_URI;
 
 exports.getAllSkins = async (req, res) => {
   try {

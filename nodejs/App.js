@@ -19,6 +19,8 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const fs = require('fs');
 const https = require('https');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
+
 
 app.use(express.urlencoded({ extended: false, limit: "200mb" }));
 app.use(express.json({ limit: '50mb' }));
@@ -41,13 +43,14 @@ mongodb.initClientDbConnection();
 // MONGODB CONNECTION //
 
 // SOCKET.IO //
-// const server = require('http').createServer(app);
-const options = {
-  key: fs.readFileSync('/etc/letsencrypt/live/challenge.ovh/privkey.pem'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/challenge.ovh/fullchain.pem'),
-};
 
-const server = https.createServer(options, app);
+ const server = require('http').createServer(app);
+
+// const options = {
+//   key: fs.readFileSync('/etc/letsencrypt/live/challenge.ovh/privkey.pem'),
+//   cert: fs.readFileSync('/etc/letsencrypt/live/challenge.ovh/fullchain.pem'),
+// };
+// const server = https.createServer(options, app);
 
 const io = require('socket.io')(server, {
     cors: {

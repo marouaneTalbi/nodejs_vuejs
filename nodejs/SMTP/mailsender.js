@@ -1,8 +1,11 @@
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
+
 const mailjet = require('node-mailjet').apiConnect(
     '94cb59578ce8bf999fba891984ba559f',
     '9655b7604d4692e64eaacf74939f2ee9',
 )
-const serverURI = 'https://challenge.ovh';
+const serverURI = process.env.SERVER_URI;
 
 const fromConfig = {
     Email: 'aminecherigui44@gmail.com',
