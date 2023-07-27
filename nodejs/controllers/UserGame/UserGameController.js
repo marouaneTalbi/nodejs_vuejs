@@ -1,13 +1,16 @@
 const UserGame = require('../../models/userGameModel');
 const User = require('../../models/userModel');
 const { Op } = require("sequelize");
+const UserGameMongo = require('../../models/user_game/userGameModelMongo');
+const UserController = require('../../controllers/UserController');
 
-exports.createUserGame = async(gameId, userId) => {
+exports.createUserGame = async(gameId, userId, gamemode) => {
     try {
-
+        console.log('gamemode : ', gamemode)
         const user_game = await UserGame.create({
             user_id: userId,
             game_id: gameId,
+            gamemode: gamemode
         });
         return user_game;
 
@@ -81,6 +84,8 @@ exports.deleteUserGame = async(gameId, userId) => {
     try {
 
         await UserGame.destroy({ where: { user_id: userId } });
+
+        await UserGameMongo.deleteOne({ user_id: userId, game_id: gameId });
         return;
         
     } catch(error) {
@@ -95,32 +100,61 @@ exports.updateUserGame = async(req, res) => {
         const { result } = req.body;
         const { opponentId } = req.body;
         const { date } = req.body;
+        const { game } = req.body;
+        console.log('opponent ID : ', opponentId)
         let newUserPoints; 
-        console.log("id op : ", opponentId)
+        let eloChange;
+        let pointsWin;
         const user = await User.findByPk(userId);
         const opponent = await User.findByPk(opponentId);
+        if (game.gamemode == "ranked") {
+            console.log('ranked')
+            if(result === "win") {
+                eloChange = calculateEloChange(user.points, opponent.points, false);
+                newUserPoints = user.points + eloChange.deltaPointsX;
+            }
+            if(result === "loose") {
+                eloChange = calculateEloChange(user.points, opponent.points, false);
+                newUserPoints = user.points + eloChange.deltaPointsY;
+                console.log('loose new elo : ', newUserPoints)
+            }
+            if(result === "equality") {
+                eloChange = calculateEloChange(user.points, opponent.points, true);
+                newUserPoints = user.points + eloChange.deltaPointsX;
+            }
 
-        if(result === "win") {
-            console.log('win - pseudo : ', user.pseudo)
-            const eloChange = calculateEloChange(user.points, opponent.points, false);
-            newUserPoints = user.points + eloChange.deltaPointsX;
-            console.log('new elo : ', newUserPoints);
-        }
-        if(result === "loose") {
-            console.log('loose - pseudo : ', user.pseudo)
-            const eloChange = calculateEloChange(user.points, opponent.points, false);
-            newUserPoints = user.points + eloChange.deltaPointsY;
-            console.log('new elo : ', newUserPoints);
-        }
-        if(result === "equality") {
-            console.log('draw - pseudo : ', user.pseudo)
-            const eloChange = calculateEloChange(user.points, opponent.points, true);
-            newUserPoints = user.points + eloChange.deltaPointsX;
-            console.log('new elo : ', newUserPoints);
+            await user.update({points: newUserPoints});
+
+            if (result === "loose") {
+                console.log(userId, 'à perdu, et devrait etre update en postgres')
+                const user_game = await UserGame.update(
+                    { result: result, pointswin: eloChange.deltaPointsY },
+                    {
+                        where: {
+                            user_id: userId,
+                            game_id: gameId
+                        }
+                    }
+                );
+                return user_game;
+            }
+            
+            const user_game = await UserGame.update(
+                { result: result, pointswin: eloChange.deltaPointsX },
+                {
+                    where: {
+                        user_id: userId,
+                        game_id: gameId
+                    }
+                }
+            );
+
+            await UserController.updateUserGrade(user);
+
+            return res.status(200).json({ user_game });
         }
 
-        await user.update({points: newUserPoints});
-
+        console.log('unranked')
         const user_game = await UserGame.update(
             { result: result },
             {
@@ -130,6 +164,7 @@ exports.updateUserGame = async(req, res) => {
                 }
             }
         );
+        
 
         return res.status(200).json({ user_game });
 

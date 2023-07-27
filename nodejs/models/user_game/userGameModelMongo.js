@@ -16,6 +16,14 @@ const userGameSchema = new mongoose.Schema({
     result: {
         type: String,
         required: false
+    },
+    pointswin: {
+        type: Number,
+        required: false
+    },
+    gamemode: {
+        type: String,
+        required: true
     }
 });
 userGameSchema.index({ user_id: 1, game_id: 1 }, { unique: true });

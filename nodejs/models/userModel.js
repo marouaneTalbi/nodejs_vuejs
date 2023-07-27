@@ -1,7 +1,8 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const { Sequelize, DataTypes, Op } = require('sequelize');
 const UserMongo = require('./userModelMongo');
 const Skin = require('./skin/SkinModel');
 const UserSkin = require('./user_skin/user_skin');
+const Grade = require('./grade/GradeModel');
 
 const sequelize = new Sequelize({
   dialect: 'postgres',
@@ -65,6 +66,14 @@ const User = sequelize.define('_user', {
       key: 'id'
     }
   },
+  grade_id: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+    references: {
+      model: 'Grade',
+      key: 'id'
+    }
+  },
   createdat: {
     type: DataTypes.DATE,
     allowNull: false,
@@ -91,6 +100,9 @@ const User = sequelize.define('_user', {
 
 Skin.belongsToMany(User, { through: 'user_skin', foreignKey: 'skin_id', onDelete: 'CASCADE' });
 User.belongsToMany(Skin, { through: 'user_skin', foreignKey: 'user_id', onDelete: 'CASCADE' });
+User.belongsTo(Grade, {
+  foreignKey: 'grade_id', // This is the column in the User table that will reference the Grade table's primary key (ID)
+});
 
 User.afterCreate(async (user, options) => {
   try {
@@ -125,4 +137,41 @@ User.afterUpdate(async (user, options) => {
     console.error('An error occurred after user deletion in MongoDB:', error);
   }
 })
+
+
+User.prototype.updateGrade = async function () {
+  try {
+    // Replace "X" with the minimum points required to gain a new grade
+    const X = 1000; // Example: 1000 points required to gain a new grade
+
+    // Get the current user's grade
+    const currentGrade = await this.getGrade();
+    console.log('current : ', currentGrade);
+    
+    // Get the new grade based on points
+    const newGrade = await Grade.findOne({
+      where: {
+        required_points: {
+          [Op.lte]: this.points, // Find the grade where pointsRequired is less than or equal to the user's points
+        },
+      },
+      order: [['required_points', 'DESC']], // Order by pointsRequired in descending order to get the highest grade that the user qualifies for
+    });
+    console.log('new : ', newGrade);
+
+    if (!newGrade) {
+      // If there's no new grade, set the user's grade to null (unranked)
+      this.setGrade(null);
+    } else if (!currentGrade || newGrade.id !== currentGrade.id) {
+      // If the user's grade has changed, update the gradeId of the user
+      this.setGrade(newGrade);
+    }
+
+    await this.save(); // Save the changes to the database
+
+  } catch (error) {
+    console.error('Error updating user grade:', error);
+    throw error;
+  }
+};
 module.exports = User;

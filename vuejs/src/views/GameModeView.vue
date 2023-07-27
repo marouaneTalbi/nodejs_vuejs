@@ -108,6 +108,7 @@ export default {
   },
   methods: {
     joinWaitingRoom(gamemode) {
+      console.log(gamemode)
       SocketioService.joinWaitingRoom(gamemode, this.userId, null);
     },
 

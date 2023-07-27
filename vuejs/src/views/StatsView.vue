@@ -30,7 +30,11 @@
                             <div v-if="game.result == 'loose'" class="result result--lose">Défaite</div>
                             <div v-if="game.result == 'win'" class="result">Victoire</div>
                             <div v-if="game.result == 'equality'" class="result result--equality">Egalité</div>
-                            <span>+ 100 ELO</span>
+                            <template v-if="game.gamemode == 'ranked'">
+                                <span v-if="game.result == 'loose'" > {{ game.pointswin }} ELO</span>
+                                <span v-if="game.result == 'win'" >+ {{ game.pointswin }} ELO</span>
+                                <span v-if="game.result == 'equality'" >+ 0 ELO</span>
+                            </template>
                         </div>
                         <div>
                             <time>{{ formatDate(game.date) }}</time>

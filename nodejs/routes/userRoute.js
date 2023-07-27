@@ -17,6 +17,7 @@ route.get('/user/:id/stats', UserController.getUserStats);
 route.get('/user/:id/games-history', UserController.getUserGamesHistory);
 route.post('/resend-confirmation-email', UserController.resendMail);
 route.get('/user/:id', AdminController.getUser)
+route.get('/user/:id/grade', UserController.getUserGrade);
 
 // Routes protected by authentication middleware
 const gamerAuthMiddleware = authMiddleware();
