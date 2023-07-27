@@ -25,15 +25,14 @@ route.get('/user/skin/:id',gamerAuthMiddleware, UserController.getUserSkin);
 route.post('/logout',gamerAuthMiddleware,  UserController.logout);
 route.put("/user/:id/updateuser",gamerAuthMiddleware, UserController.updateUser);
 route.put('/user/:id/change-password',gamerAuthMiddleware, UserController.changePassword);
-route.patch('/user/:id/pic', AdminController.updateUserPicture)
+route.patch('/user/:id/pic', gamerAuthMiddleware, AdminController.updateUserPicture)
+route.patch('/user/:id', gamerAuthMiddleware,AdminController.updateUser)
 
 
 // Routes protected by authentication and role Admin
 const adminAuthMiddleware = authMiddleware(["admin"]);
 route.get('/users',adminAuthMiddleware, AdminController.getUsers)
 route.delete('/user/:id',adminAuthMiddleware, AdminController.deleteUser)
-route.patch('/user/:id', adminAuthMiddleware,AdminController.updateUser)
-route.patch('/user/:id/pic',adminAuthMiddleware, AdminController.updateUserPicture)
 
 module.exports = route;
 
