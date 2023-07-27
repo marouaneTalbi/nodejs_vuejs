@@ -80,8 +80,9 @@
             display: grid;
             // grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            grid-gap: 40px;
-            
+            grid-gap: 80px;
+            padding: 0;
+
             & li {
                 display: flex;
                 flex-direction: column;
@@ -177,4 +178,18 @@
     color: white;
     height: 70px;
     width: 70px;
+}
+@media (max-width: 560px) {
+    .filter {
+        display: none !important;
+    }
+
+    .container {
+        padding: 20px;
+
+        & ul {
+            padding: 0 !important;
+            // grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+        }
+    }
 }
