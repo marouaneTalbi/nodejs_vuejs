@@ -103,23 +103,27 @@ exports.updateUserGame = async(req, res) => {
         let newUserPoints; 
         let eloChange;
         let pointsWin;
+        let coinsWin = 0;
         const user = await User.findByPk(userId);
         const opponent = await User.findByPk(opponentId);
         if (game.gamemode == "ranked") {
             if(result === "win") {
                 eloChange = calculateEloChange(user.points, opponent.points, false);
                 newUserPoints = user.points + eloChange.deltaPointsX;
+                coinsWin = 10;
             }
             if(result === "loose") {
                 eloChange = calculateEloChange(user.points, opponent.points, false);
                 newUserPoints = user.points + eloChange.deltaPointsY;
+                coinsWin = 0;
             }
             if(result === "equality") {
                 eloChange = calculateEloChange(user.points, opponent.points, true);
                 newUserPoints = user.points + eloChange.deltaPointsX;
+                coinsWin = 5;
             }
 
-            await user.update({points: newUserPoints});
+            const updateUser = await user.update({points: newUserPoints, coins: user.coins + coinsWin});
 
             if (result === "loose") {
                 const user_game = await UserGame.update(
