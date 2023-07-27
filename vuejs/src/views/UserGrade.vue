@@ -1,10 +1,10 @@
 <template>
-  <section class="dashboard">
+  <section class="gamemode" >
     <Header />
     <div class="container">
       <div class="user-list" >
-        <div style="text-align: center">
-          <h5>Grade</h5>
+        <div style="text-align: center;margin-top: 50px">
+          <h3>Grade</h3>
           <div v-if="grade" class="user-row">
             <p style="text-align: center;" class="status" >  {{ grade.title }}</p>
             <p style="text-align: center;" class="status">Required Points : {{ grade.required_points }}</p>
@@ -12,7 +12,7 @@
               <img :src="getPictureUrl(grade.picture)" alt="" style="height: 200px; width: 200px; object-fit: contain;">
             </div>
             <p style="text-align: center;" class="status" >Your Points : {{ points }}</p>
-            <div style="display: flex; margin-top:30px;flex-wrap: wrap;">
+            <div class="grades" style="display: flex; margin-top:30px;flex-wrap: wrap;">
               <div v-for="grade in grades" :key="grade.id" style="margin: 10px;flex-basis: 7.2%">
                 <div style="text-align: center;margin-top:30px" class="status">
                   <img :src="getPictureUrl2(grade.picture)" alt="" style="height: 100px; width: 100px; object-fit: contain;">
@@ -22,7 +22,7 @@
               </div>
             </div>
             <div v-if="topGamers.length > 0" style="margin-top: 50px">
-              <h5>Top 10 Gamers</h5>
+              <h3>Top 10 Gamers</h3>
               <div  class="top-gamer">
                 <table>
                   <colgroup span="4"></colgroup>
@@ -41,8 +41,8 @@
             </div>
           </div>
           <div v-else>
-            <h5>Vous n'êtes pas encore classé.</h5>
-            <button style="width: auto;color:white"> <router-link :to="{ name: 'gamemode'}">Play Now</router-link></button>
+            <h3>Vous n'êtes pas encore classé.</h3>
+            <button style="width: auto;"> <router-link :to="{ name: 'gamemode'}"><p style="color:white; font-size: 25px">Play Now</p></router-link></button>
           </div>
         </div>
       </div>
@@ -149,7 +149,17 @@ export default {
 p{
   color: white;
 }
-.dashboard{
+.gamemode{
   height: 100% !important;
+}
+.user-list p{
+  font-size: 25px;
+}
+.grades p{
+  font-size: 12px;
+}
+table{
+  font-size: 20px;
+  color: white;
 }
 </style>

@@ -13,13 +13,8 @@
       </ul>
     </nav>
     <div class="button-container" v-show="!mobile">
-      <div v-if="userId != null">
+      <div>
         <button class="button button--transparent"  @click="logout">Logout</button>
-      </div>
-      <div v-else>
-        <router-link to="/login">
-          <button class="button">Login</button>
-        </router-link>
       </div>
       <router-link to="/gamemode">
         <button class="button">Jouer</button>

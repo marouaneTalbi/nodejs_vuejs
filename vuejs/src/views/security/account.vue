@@ -14,14 +14,14 @@
                   height: 100%;
                   width: 100%;
                   border-radius: 100px;
-                  background-size: contain;"
+                  object-fit: cover;"
                   :src="getPictureUrl('user.png')"
                   alt="">
                 <img v-if="user.picture && user.picture !== 'picture.png'"
                   style="height: 100%;
                   width: 100%;
                   border-radius: 100px;
-                  background-size: contain;"
+                  object-fit: cover;"
                   :src="getPictureUrl(user.picture)"
                 alt="">
             </div>
@@ -119,8 +119,7 @@
             <h2 class="pseudo-title" >Update Informations</h2>
             <form @submit.prevent="updateUserInfo">
               <label>Email:</label>
-              <input type="email" v-model="user.mail">
-              <!-- <button type="submit" @click="handleUpdateClick" class="maj">Mettre à jour</button> -->
+              <input type="email" v-model="updatedUser.mail">
               <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
               <p v-if="infoChangeMessage" :class="{ 'success-message': !infoChangeError, 'error-message': infoChangeError }">{{ infoChangeMessage }}</p>
             </form>
