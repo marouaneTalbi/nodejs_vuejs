@@ -59,17 +59,6 @@ module.exports = function (socket) {
         }
     });
 
-    socket.on('changeColor', async (color) => {
-        try {
-            socket.emit('colorChanged', color);
-            socket.to(socket.gameId).emit('colorChanged', color);
-            socket.broadcast.emit('changeColor', color);
-
-        } catch (error) {
-            console.error('Erreur lors du changement de couleur:', error);
-        }
-    });
-
 
     socket.on('cardFlipped', (data) => {
         socket.to(socket.gameId).emit('opponentCardFlipped', data.cardIndex);
@@ -87,6 +76,7 @@ module.exports = function (socket) {
                 opponent = c[1]
             }
             socket.to(socket.gameId).emit('yourTurn', {player: turnId,opponent: opponent,cards: data.cards });
+
         })
     });
 

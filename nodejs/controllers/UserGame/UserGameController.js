@@ -55,6 +55,28 @@ exports.PlayersOfGame = async(gameId) => {
     }
 }
 
+exports.Players = async(req, res) => {
+
+    const {id} = req.params
+
+     try {
+
+        const userIds = await UserGame.findAll({
+            where:{
+                game_id: req.params.id
+            }
+        })
+
+        const e = userIds.map(ug => ug.dataValues);
+
+        res.json(e);
+
+
+    } catch(error) {
+        throw error;
+    }
+}
+
 exports.deleteUserGame = async(gameId, userId) => {
     try {
 
