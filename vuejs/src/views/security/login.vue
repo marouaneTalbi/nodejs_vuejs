@@ -87,7 +87,6 @@ export default {
         const token = response.data.token;
         Cookies.set('token', token, { secure: true, expires: 7 });
         this.$router.push('/gamemode');
-        console.log(response);
       } catch (error) {
         console.error(error);
         if (error.response.status === 401) {

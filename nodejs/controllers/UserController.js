@@ -52,7 +52,6 @@ exports.createUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   const userId = req.params.id;
-  console.log(req.session.userId);
   const { pseudo, mail } = req.body;
   try {
     const user = await User.findByPk(userId);
@@ -294,9 +293,7 @@ exports.changePassword = async (req, res) => {
 
 exports.getCurrentUser = async (req, res, next) => {
 
-  try {
-    console.log(req.session.userId);
-    
+  try {    
     return res.json(user);
   } catch (error) {
     console.error('Une erreur s\'est produite lors de la récupération du current user :', error);
@@ -383,8 +380,6 @@ exports.getUserGamesHistory = async (req, res) => {
 exports.getUserGrade = async (req, res) => {
   try {
     const userId = req.params.id;
-    console.log(req.params)
-    console.log('dradddedzzeezd', userId)
     const user = await User.findByPk(userId);
     if(!user) {
       res.status(404).json({ message: 'Utilisateur non trouvé' });
@@ -404,9 +399,7 @@ exports.getUserGrade = async (req, res) => {
 
 exports.updateUserGrade = async (user) => {
   try {
-    console.log('userrrr : ', user.points)
     const currentGrade = await Grade.findByPk(user.grade_id);
-    console.log('grade courant : ', currentGrade)
     const newGrade = await Grade.findOne({
       where: {
         required_points: {
@@ -415,7 +408,6 @@ exports.updateUserGrade = async (user) => {
       },
       order: [['required_points', 'DESC']], // Order by requiredPoints in descending order to get the highest grade that the user qualifies for
     });
-    console.log('new grade : ', 'userId : ', user.id,'userPoint : ', user.points,'userNewGrade : ', newGrade)
 
     if (!newGrade) {
       // If there's no new grade, set the user's grade to null (unranked)
@@ -428,6 +420,6 @@ exports.updateUserGrade = async (user) => {
     user.save();
 
   } catch(error) {
-    console.log('error: ', error);
+    return res.status(500).json({ message: 'Server error' })
   }
 }

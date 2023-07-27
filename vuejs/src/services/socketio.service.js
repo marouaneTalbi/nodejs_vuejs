@@ -16,14 +16,12 @@ class SocketioService {
 
     joinPrivateGameError(callback) {
         this.socket.on('joinPrivateGameError', (error) => {
-            console.log('ggggg')
           callback(error);
         });
       }
 
     changedColor(callback) {
         this.socket.on('colorChanged', (color) => {
-            console.log(color)
             callback(color);
         });
     }
@@ -68,7 +66,6 @@ class SocketioService {
 
     joinGameSucces() {
         this.socket.on('joinGameSucces', (gameId) => {
-            console.log(router);
             router.push(`/game/${gameId}`);
         });
     }
@@ -79,7 +76,6 @@ class SocketioService {
     
     disconnect() {
         if (this.socket) {
-            console.log("il s'est connecté");
             this.socket.disconnect();
         }
     }

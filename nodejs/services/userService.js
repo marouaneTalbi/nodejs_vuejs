@@ -2,7 +2,6 @@ const UserGameMongo = require('../models/user_game/userGameModelMongo');
 
 async function getUserStats(userId) {
     try {
-        console.log(userId)
         
         const result = await UserGameMongo.aggregate([
             {

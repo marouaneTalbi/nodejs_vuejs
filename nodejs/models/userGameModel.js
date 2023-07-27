@@ -59,7 +59,6 @@ UserGame.afterCreate(async (userGame, options) => {
             date: new Date()
         })
 
-        console.log('User creation in MongoDB successful');
     } catch (error) {
         console.error('An error occurred after user deletion in MongoDB:', error);
     }
@@ -67,13 +66,11 @@ UserGame.afterCreate(async (userGame, options) => {
 
 UserGame.afterBulkUpdate(async (userGame, options) => {
     try {
-        console.log(userGame.where.user_id, 'à gagné : ', userGame.attributes.pointswin)
         await UserGameMongo.updateOne(
             { user_id: userGame.where.user_id, game_id: userGame.where.game_id },
             { result: userGame.attributes.result, date: userGame.attributes.date, pointswin: userGame.attributes.pointswin, gamemode: userGame.attributes.gamemode }
         )
 
-        console.log('User update in MongoDB successful');
     } catch (error) {
         console.error('An error occurred after user update in MongoDB:', error);
     }

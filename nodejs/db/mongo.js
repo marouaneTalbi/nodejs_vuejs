@@ -13,9 +13,7 @@ exports.initClientDbConnection = async () => {
             await mongoose.connect(process.env.URL_MONGO, clientOptions)
         }
         await mongoose.connect(process.env.URL_MONGO)
-        console.log('Connected');
     } catch (error) {
-        console.log(error);
         throw error;
     }
 }

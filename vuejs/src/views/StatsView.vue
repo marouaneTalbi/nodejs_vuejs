@@ -51,7 +51,7 @@
 
 <script>
 import Header from '../components/Header.vue';
-import { fetchData } from '../api/api';
+import { fetchData, serverURI } from '../api/api';
 import Cookies from 'js-cookie';
 
 export default {
@@ -82,7 +82,6 @@ export default {
             fetchData('/user/' + userId + '/grade')
             .then(response => {
                 this.grade = response.data['grade']
-                console.log(this.grade)
             })
             .catch(error => {
                 toast(error.message, {
@@ -90,6 +89,9 @@ export default {
                 type: 'error',
                 })
             });
+        },
+        getGradeUrl(picture) {
+            return `${serverURI}/pictures/grades/${picture}`;
         },
         getUserStats(userId) {
             fetchData('/user/' + userId + '/stats')

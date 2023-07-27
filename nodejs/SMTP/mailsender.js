@@ -33,7 +33,6 @@ module.exports = {
             });
 
             const result = await request;
-            console.log(result.body);
             return result.body;
         } catch (err) {
             console.error('Error sending confirmation email:', err.statusCode, err.ErrorMessage);
@@ -56,7 +55,6 @@ module.exports = {
             });
 
             const result = await request;
-            console.log(result.body);
             return result.body;
         } catch (err) {
             console.error('Error sending confirmation email:', err.statusCode, err.ErrorMessage);
@@ -79,7 +77,6 @@ module.exports = {
             });
 
             const result = await request;
-            console.log(result.body);
             return result.body;
         } catch (err) {
             console.error('Error sending code email:', err.statusCode, err.ErrorMessage);
@@ -107,7 +104,6 @@ module.exports = {
             });
 
             const result = await request;
-            console.log(result.body);
             return result.body;
         } catch (err) {
             console.error('Error sending forgot password email:', err.statusCode, err.ErrorMessage);

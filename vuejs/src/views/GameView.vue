@@ -186,7 +186,6 @@ export default {
   },
   beforeRouteLeave() {
     SocketioService.userLeft(() => {
-      console.log('user left')
       this.userLeft = true;
       this.openModal();
     });
@@ -242,7 +241,6 @@ export default {
 
       const advairsaire = c.players.find(item => item != this.getCurrentUser())
       const r =this.getAdvairsaireInfo(advairsaire)
-      console.log(advairsaire)
 
       this.currentPlayer = c.player
       this.currentOpponent = c.opponent;
@@ -251,10 +249,8 @@ export default {
 
       if (this.winner !== this.currentPlayer && this.currentPlayer) {
         if (this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
-          console.log("defaite");
           this.openModalDefeat();
         } else if (totalCardTurn === 8) {
-          console.log("egalite");
           this.openModalEquality();
         }
       }
@@ -287,7 +283,6 @@ export default {
     });
 
     SocketioService.userLeft(() => {
-      console.log('userrrrrrrrr left')
       this.userLeft = true;
       this.openModal();
     });
@@ -575,14 +570,12 @@ export default {
     getUserInfo(){
       fetchData('/user/' + this.getCurrentUser())
       .then(response => {
-        console.log(response)
           this.userInfo = response.data
       })
     },
     getAdvairsaireInfo(userId){
       fetchData('/user/' + userId)
       .then(response => {
-        console.log(response)
         this.advairsaireInfo = response.data
       })
     },

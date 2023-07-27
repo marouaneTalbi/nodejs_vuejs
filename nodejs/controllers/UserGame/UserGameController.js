@@ -6,7 +6,6 @@ const UserController = require('../../controllers/UserController');
 
 exports.createUserGame = async(gameId, userId, gamemode) => {
     try {
-        console.log('gamemode : ', gamemode)
         const user_game = await UserGame.create({
             user_id: userId,
             game_id: gameId,
@@ -101,14 +100,12 @@ exports.updateUserGame = async(req, res) => {
         const { opponentId } = req.body;
         const { date } = req.body;
         const { game } = req.body;
-        console.log('opponent ID : ', opponentId)
         let newUserPoints; 
         let eloChange;
         let pointsWin;
         const user = await User.findByPk(userId);
         const opponent = await User.findByPk(opponentId);
         if (game.gamemode == "ranked") {
-            console.log('ranked')
             if(result === "win") {
                 eloChange = calculateEloChange(user.points, opponent.points, false);
                 newUserPoints = user.points + eloChange.deltaPointsX;
@@ -116,7 +113,6 @@ exports.updateUserGame = async(req, res) => {
             if(result === "loose") {
                 eloChange = calculateEloChange(user.points, opponent.points, false);
                 newUserPoints = user.points + eloChange.deltaPointsY;
-                console.log('loose new elo : ', newUserPoints)
             }
             if(result === "equality") {
                 eloChange = calculateEloChange(user.points, opponent.points, true);
@@ -126,7 +122,6 @@ exports.updateUserGame = async(req, res) => {
             await user.update({points: newUserPoints});
 
             if (result === "loose") {
-                console.log(userId, 'à perdu, et devrait etre update en postgres')
                 const user_game = await UserGame.update(
                     { result: result, pointswin: eloChange.deltaPointsY },
                     {
@@ -154,7 +149,6 @@ exports.updateUserGame = async(req, res) => {
             return res.status(200).json({ user_game });
         }
 
-        console.log('unranked')
         const user_game = await UserGame.update(
             { result: result },
             {
@@ -175,7 +169,6 @@ exports.updateUserGame = async(req, res) => {
     }
 }
 function calculateEloChange(winnerPoints, loserPoints, isDraw) {
-    console.log('calcul elo')
     const K1 = 100; // Constante pour le gagnant
     const K2 = 120; // Constante pour le perdant
   

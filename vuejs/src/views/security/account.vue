@@ -354,11 +354,9 @@ export default {
   methods: {
     getUserGrade() {
       const userId = this.currentUserId()
-      console.log(this.currentUserId)
       fetchData('/user/' + userId + '/grade')
       .then(response => {
         this.grade = response.data['grade']
-        console.log(this.grade)
       })
       .catch(error => {
         toast(error.message, {
@@ -378,7 +376,6 @@ export default {
       const userId = this.currentUserId()
       fetchData('/user/skins/' + userId)
       .then(response => {
-        console.log(response)
         this.skins = response.data
       })
       .catch(error => {
@@ -428,7 +425,6 @@ export default {
       return `${serverURI}/pictures/grades/${picture}`;
     },
     openPopUpModal(type){
-      console.log(type)
       if(type == 'photo') {
         this.popUpImage = true
         this.popUpSkins = false
@@ -491,7 +487,6 @@ export default {
           }
         });
         this.user = response.data;
-        console.log(this.user)
         return this.user
       } catch (error) {
         console.error(error);
@@ -520,7 +515,6 @@ export default {
           }
         });
         this.user = response.data;
-        console.log('Informations utilisateur mises à jour:', this.user);
         this.infoChangeMessage = 'Informations modifié avec succès';
         this.infoChangeError = false;
         // Réinitialiser les champs de formulaire

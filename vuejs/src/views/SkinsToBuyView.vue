@@ -104,7 +104,6 @@
       const decodedPayload = JSON.parse(atob(payload));
       const userId = decodedPayload.id;
 
-      console.log(this.skin)
       const stripePromise = loadStripe('pk_test_51IM8ZrEwRtoFpDAHs6Iu7d92N4DPiPWs4MjYP3BhnlNyf0Lz3itqGdpugMYLXIMyHZeQvxNyH4FCEAAtoJv9b7V600AGKAwSrE');
       const stripe = await stripePromise;
       const response = await postData('/skin/pay', {skin: this.skin})
