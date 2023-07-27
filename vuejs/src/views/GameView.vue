@@ -25,6 +25,30 @@
       </div>
     </section>
 
+    <div style="
+      display:flex;
+      justify-content: center;
+      align-items: center ;
+      width: 100%;
+      padding: 10px;
+      ">
+      <div style=" width: 100%;padding: 2%;" v-if="advairsaireInfo && !isMyTurn">
+        <h2 style="
+        background-color: rgba(42, 165, 79, 0.419);
+        color:white;
+        padding: 2%;
+        "> Adversaire: {{ advairsaireInfo.pseudo }}</h2>
+      </div>
+      <div style="width: 100%;padding: 2%;" v-if="userInfo && isMyTurn">
+        <h2 style="
+          background-color: rgba(42, 165, 79, 0.419);
+          color:white;
+          padding: 2%;
+          ">Vous: {{ userInfo.pseudo }}</h2>
+      </div>
+    </div>
+
+
     <div class="transparent-div" v-if="!isMyTurn && !waitingForOpponent "></div>
     <section class="waiting-screen" v-if="!waitingForOpponent">
       <div class="memory-game">
@@ -148,6 +172,8 @@ export default {
       player2: null,
       chatMessages: [],
       messageInput: '',
+      userInfo:null,
+      advairsaireInfo:null,
     };
   },
   beforeRouteLeave() {
@@ -203,19 +229,17 @@ export default {
     this.getGame(gameId);
     SocketioService.onYourTurn((c) => {
 
-setTimeout(() => {
+    setTimeout(() => {
+
+      const advairsaire = c.players.find(item => item != this.getCurrentUser())
+      const r =this.getAdvairsaireInfo(advairsaire)
+      console.log(advairsaire)
+
       this.currentPlayer = c.player
       this.currentOpponent = c.opponent;
       let totalCardTurn = this.countCardJ1 + this.countCardJ2;
-      console.log('passe bien par on your turn :' + this.currentPlayer);
-      console.log('this.countCardJ1 ' + this.countCardJ1);
-      console.log('this.countCardJ2 ' + this.countCardJ2);
-      console.log('totalCardTurn ' + totalCardTurn);
       let testCondition = totalCardTurn === 8 && (this.countCardJ1 >= 5 || this.countCardJ2 >= 5);
-      console.log('testCondition ' + testCondition);
-      console.log('this.winner ' + this.winner);
-      console.log('this.currentPlayer ' + this.currentPlayer);
-      console.log('this.currentOpponent ' + this.currentOpponent);
+
       if (this.winner !== this.currentPlayer && this.currentPlayer) {
         if (this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
           console.log("defaite");
@@ -237,7 +261,8 @@ setTimeout(() => {
   created() {
     this.getCurrentUser();
     this.getUserSkin();
-    
+    this.getUserInfo()
+
     SocketioService.opponentCardFlipped((index) => {
       this.showCard(index)
     });
@@ -299,12 +324,6 @@ setTimeout(() => {
     getSkinUrl(picture) {
       return `${serverURI}/pictures/skins/${picture}`;
     },
-    changeDivColor(color) {
-      const div = document.getElementById('testdiv');
-      if (div) {
-        div.style.backgroundColor = color;
-      }
-    },
     flipCard(event, index) {
       const gameId = this.$route.params.id;
       let totalCardTurn = this.countCardJ1 + this.countCardJ2;
@@ -322,7 +341,6 @@ setTimeout(() => {
       this.cardsElement.push(clickedCard);
       this.showCard(index, event)
     },
-
     setUser1AndUser2(check = false) {
       /*if (this.player1 === null) {
         this.player1 = this.getCurrentUser();
@@ -336,7 +354,6 @@ setTimeout(() => {
       }
 
     },
-
     showCard(index, event) {
       let totalCardTurn = this.countCardJ1 + this.countCardJ2;
       // if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
@@ -421,7 +438,6 @@ setTimeout(() => {
         }
       }
     },
-
     endGame() {
       if (this.currentPlayer === this.getCurrentUser() && this.countCardJ1 > this.countCardJ2) {
         this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "win", opponentId:this.currentOpponent})
@@ -439,7 +455,6 @@ setTimeout(() => {
         this.openModalEquality();
       }
     },
-
     showTurnMessage() {
       const messageDiv = document.getElementById('messageDiv');
       messageDiv.classList.remove('hidden');
@@ -447,30 +462,10 @@ setTimeout(() => {
         messageDiv.classList.add('hidden');
       }, 2000); // Supprimez le message après 2 secondes (ajustez cette valeur selon votre préférence)
     },
-
     displayMessageTurn(message) {
       const messageElement = document.getElementById('messageDiv');
       messageElement.innerText = message;
     },
-
-
-    createTransparentDiv() {
-      const transparentDiv = document.querySelector('.transparent-div');
-      if (!transparentDiv) {
-        const transparentDiv = document.createElement('div');
-        transparentDiv.style.position = 'fixed';
-        transparentDiv.style.top = '0';
-        transparentDiv.style.left = '0';
-        transparentDiv.style.width = '100%';
-        transparentDiv.style.height = '100%';
-        transparentDiv.style.backgroundColor = 'transparent';
-        transparentDiv.style.zIndex = '9999'; // Assurez-vous qu'elle est au-dessus de tout autre contenu
-        transparentDiv.style.pointerEvents = 'auto'; // Capture tous les événements de clic
-        transparentDiv.className = "transparent-div";
-        document.body.appendChild(transparentDiv);
-      }
-    },
-
     onWin(winningCardElement, secondCard = false) {
       const winningCardsContainer = document.querySelector('.winning-cards');
       // Ajouter la carte gagnée dans le conteneur des cartes gagnées
@@ -488,7 +483,6 @@ setTimeout(() => {
         //winningCardElement.remove();
       });
     },
-
     onOppenentWin(winningCardElement, secondCard = false) {
       const loosingCardsContainer = document.querySelector('.loosing-cards');
       // Ajouter la carte gagnée dans le conteneur des cartes gagnées
@@ -497,19 +491,12 @@ setTimeout(() => {
       }
       loosingCardsContainer.appendChild(winningCardElement);
     },
-
     endTurn() {
       let currentUserId = this.getCurrentUser()
       this.isMyTurn = false;
       const gameId = this.$route.params.id;
       SocketioService.endTurn(gameId, this.currentPlayer, this.cards);
     },
-
-    async setColor(color) {
-      await SocketioService.changeColor(color)
-      this.changeDivColor(color);
-    },
-
     getGame(gameId) {
       fetchData('/game/' + gameId)
           .then(response => {
@@ -519,40 +506,33 @@ setTimeout(() => {
             console.error(error)
           });
     },
-
     handleConfirm() {
       this.modalActive = false;
     },
-
     openModal() {
       this.modalActive = true;
     },
     handleConfirmVictory() {
       this.modalActiveVictory = false;
     },
-
     openModalVictory() {
       this.modalActiveVictory = true;
       setTimeout(() => {
         this.$router.push('/stats');
       }, 2500);
     },
-
     handleConfirmDefeat() {
       this.modalActiveDefeat = false;
     },
-
     openModalDefeat() {
       this.modalActiveDefeat = true;
       setTimeout(() => {
         this.$router.push('/stats');
       }, 2500);
     },
-
     handleConfirmEquality() {
       this.modalActiveEquality = false;
     },
-
     openModalEquality() {
       this.modalActiveEquality = true;
       setTimeout(() => {
@@ -581,6 +561,19 @@ setTimeout(() => {
               type: 'error',
             })
           })
+    },
+    getUserInfo(){
+      fetchData('/user/' + this.getCurrentUser())
+      .then(response => {
+          this.userInfo = response.data
+      })
+    },
+    getAdvairsaireInfo(userId){
+      fetchData('/user/' + userId)
+      .then(response => {
+        console.log(response)
+        this.advairsaireInfo = response.data
+      })
     },
   },
 
