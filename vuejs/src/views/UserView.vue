@@ -86,20 +86,6 @@
                     </div>
                 </div>
 
-                <div class="card card--footer">
-                    <div class="row">
-                        <div class="text">
-                            <span class="pseudo-title">Messages</span>
-                            <br />
-                            <span class="pseudo">Consulter les messages de {{ user.pseudo }}</span>
-                        </div>
-                    </div>
-                    <div class="footer">
-                        Voir les messages
-                        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 12-6-6m6 6-6 6m6-6H5"></path></svg>
-                    </div>
-                </div>
-
                 <button @click="openModal('delete')">
                     Supprimer l'utilisateur
                 </button>
