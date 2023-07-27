@@ -368,7 +368,12 @@ exports.getUserGamesHistory = async (req, res) => {
   try {
 
     const userId = req.params.id;
-    const userGamesHistory = await UserGameMongo.find({ user_id: userId });
+    const query = {
+      user_id: userId,
+      result: { $ne: null }
+    };
+    const userGamesHistory = await UserGameMongo.find(query);
+    
     res.status(200).json(userGamesHistory);
 
   } catch (error) {
