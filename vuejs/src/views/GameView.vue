@@ -41,7 +41,7 @@
                class="memory-card"
                :class="{ flipped: card.flipped }"
                @click="flipCard($event, index)">
-               <div class="card-face front" v-if="skin" :style="{ backgroundImage:`url('${getSkinUrl(skin.picture)}');background-size: cover;background-position: center;`}"></div>
+               <div class="card-face front" v-if="skin" :style="{ backgroundImage:`url('${getSkinUrl(skin.picture)}')`}"></div>
               <div class="card-face front-noskin" v-if="!skin"></div>  
             <div class="card-face back" :style="{ backgroundImage:`url('${getPictureUrl(card.image)}')`}"></div>
           </div>
