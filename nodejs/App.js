@@ -87,3 +87,5 @@ app.use((req, res, next) => {
 server.listen('3000', () => {
     console.log('Serveur Express en cours d\'exécution sur le port 3000');
 });
+
+module.exports = app;

@@ -4,11 +4,8 @@ const mailSender  = require('../../SMTP/mailsender');
 const httpMocks = require('node-mocks-http');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
-
 jest.mock('../../models/userModel');
 jest.mock('../../SMTP/mailsender');
-
 describe('User Controller Tests', () => {
     afterEach(() => {
         jest.clearAllMocks();
@@ -133,7 +130,6 @@ describe('User Controller Tests', () => {
             expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Une erreur s\'est produite lors de la création de l\'utilisateur' });
         });
     });
-
     describe('updateUser', () => {
         it('should update user with email verification code', async () => {
             const mockUserId = 1;
@@ -258,7 +254,6 @@ describe('User Controller Tests', () => {
             expect(mockResponse.status).toHaveBeenCalledWith(404);
             expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Utilisateur non trouvé' });
         });
-
         it('should handle user not confirmed', async () => {
             const mockLoginData = {
                 mail: 'user@example.com',
@@ -279,12 +274,10 @@ describe('User Controller Tests', () => {
                 json: jest.fn()
             };
             await userController.login(mockRequest, mockResponse);
-
             expect(User.findOne).toHaveBeenCalledWith({ where: { mail: mockLoginData.mail } });
             expect(mockResponse.status).toHaveBeenCalledWith(401);
             expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Utilisateur non confirmé' });
         });
-
         it('should handle incorrect password', async () => {
             const mockLoginData = {
                 mail: 'user@example.com',
@@ -296,11 +289,9 @@ describe('User Controller Tests', () => {
                 password: '$2a$10$7F9XfHcGPVD6RLWYpg6yE.m3Fp2UcEDQVifM.4CRH0sG.j.YLqV0O',
                 isconfirmed: true
             };
-
             User.findOne.mockResolvedValue(mockUser);
             const mockCompareResult = false;
             jest.spyOn(bcrypt, 'compare').mockResolvedValue(mockCompareResult);
-
             const mockRequest = {
                 body: mockLoginData
             };
@@ -308,24 +299,19 @@ describe('User Controller Tests', () => {
                 status: jest.fn().mockReturnThis(),
                 json: jest.fn()
             };
-
             await userController.login(mockRequest, mockResponse);
-
             expect(User.findOne).toHaveBeenCalledWith({ where: { mail: mockLoginData.mail } });
             expect(bcrypt.compare).toHaveBeenCalledWith(mockLoginData.password, mockUser.password);
             expect(mockResponse.status).toHaveBeenCalledWith(401);
             expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Mot de passe incorrect' });
         });
-
         it('should handle errors', async () => {
             const mockError = new Error('Something went wrong');
             const mockLoginData = {
                 mail: 'user@example.com',
                 password: 'password123'
             };
-
             User.findOne.mockRejectedValue(mockError);
-
             const mockRequest = {
                 body: mockLoginData
             };
@@ -333,21 +319,18 @@ describe('User Controller Tests', () => {
                 status: jest.fn().mockReturnThis(),
                 json: jest.fn()
             };
-
             await userController.login(mockRequest, mockResponse);
-
             expect(User.findOne).toHaveBeenCalledWith({ where: { mail: mockLoginData.mail } });
             expect(mockResponse.status).toHaveBeenCalledWith(500);
             expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Une erreur s\'est produite lors de la connexion : Something went wrong' });
         });
     });
-
     describe('logout', () => {
         it('should logout user successfully', async () => {
             const mockRequest = {
                 session: {
                     destroy: jest.fn(callback => {
-                        callback(); // Call the callback to simulate session destruction
+                        callback();
                     })
                 }
             };
@@ -355,14 +338,11 @@ describe('User Controller Tests', () => {
                 clearCookie: jest.fn(),
                 sendStatus: jest.fn()
             };
-
             await userController.logout(mockRequest, mockResponse);
-
             expect(mockRequest.session.destroy).toHaveBeenCalled();
             expect(mockResponse.clearCookie).toHaveBeenCalledWith('token');
             expect(mockResponse.sendStatus).toHaveBeenCalledWith(200);
         });
-
         it('should handle errors', async () => {
             const mockError = new Error('Something went wrong');
             const mockRequest = {
@@ -376,9 +356,7 @@ describe('User Controller Tests', () => {
                 status: jest.fn().mockReturnThis(),
                 json: jest.fn()
             };
-
             await userController.logout(mockRequest, mockResponse);
-
             expect(mockRequest.session.destroy).toHaveBeenCalled();
             expect(mockResponse.status).toHaveBeenCalledWith(500);
             expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Erreur lors de la déconnexion' });
@@ -411,9 +389,7 @@ describe('User Controller Tests', () => {
             const mockResponse = {
                 json: jest.fn()
             };
-
             await userController.register(mockRequest, mockResponse);
-
             expect(User.findOne).toHaveBeenCalledWith({ where: { mail: mockRequestBody.mail } });
             expect(bcrypt.hash).toHaveBeenCalledWith(mockRequestBody.password, 10);
             expect(User.create).toHaveBeenCalledWith({
@@ -427,9 +403,6 @@ describe('User Controller Tests', () => {
             expect(mailSender.sendConfirmationEmail).toHaveBeenCalledWith(mockRequestBody.mail, expect.any(String));
             expect(mockResponse.json).toHaveBeenCalledWith({ token: expect.any(String) });
         });
-
-        // ... (other test cases for register)
-
     });
     describe('confirm', () => {
         it('should confirm user account', async () => {
@@ -442,23 +415,15 @@ describe('User Controller Tests', () => {
                 mail: 'user@example.com',
                 save: jest.fn()
             };
-
-            // Mock User.findOne to simulate finding the user
             User.findOne.mockResolvedValue(mockUser);
-
-            // Mock mailSender.sendWelcomEmail
             mailSender.sendWelcomEmail.mockResolvedValue();
-
             const mockRequest = {
                 body: mockRequestBody
             };
-
             const mockResponse = {
                 send: jest.fn()
             };
-
             await userController.confirm(mockRequest, mockResponse);
-
             expect(User.findOne).toHaveBeenCalledWith({ where: { token: mockRequestBody.token } });
             expect(mockUser.isconfirmed).toBe(true);
             expect(mockUser.save).toHaveBeenCalled();
@@ -466,7 +431,6 @@ describe('User Controller Tests', () => {
             expect(mockResponse.send).toHaveBeenCalledWith('Votre compte est confirmé');
         });
     });
-
     describe('getOne', () => {
         it('should get a single user by ID', async () => {
             const mockUserId = 1;
@@ -475,10 +439,7 @@ describe('User Controller Tests', () => {
                 pseudo: 'MockUser',
                 mail: 'user@example.com'
             };
-
-            // Mock User.findOne to simulate finding the user
             User.findOne.mockResolvedValue(mockUser);
-
             const mockRequest = {
                 params: { id: mockUserId }
             };
@@ -486,20 +447,14 @@ describe('User Controller Tests', () => {
                 json: jest.fn(),
                 sendStatus: jest.fn()
             };
-
             await userController.getOne(mockRequest, mockResponse);
-
             expect(User.findOne).toHaveBeenCalledWith({ where: { id: mockUserId } });
             expect(mockResponse.json).toHaveBeenCalledWith(mockUser);
             expect(mockResponse.sendStatus).not.toHaveBeenCalled();
         });
-
         it('should return 404 if user is not found', async () => {
             const mockUserId = 1;
-
-            // Mock User.findOne to simulate not finding the user
             User.findOne.mockResolvedValue(null);
-
             const mockRequest = {
                 params: { id: mockUserId }
             };
@@ -507,9 +462,7 @@ describe('User Controller Tests', () => {
                 json: jest.fn(),
                 sendStatus: jest.fn()
             };
-
             await userController.getOne(mockRequest, mockResponse);
-
             expect(User.findOne).toHaveBeenCalledWith({ where: { id: mockUserId } });
             expect(mockResponse.json).not.toHaveBeenCalled();
             expect(mockResponse.sendStatus).toHaveBeenCalledWith(404);
@@ -530,14 +483,11 @@ describe('User Controller Tests', () => {
             const mockResponse = {
                 json: jest.fn()
             };
-
             await userController.getUserSkins(mockRequest, mockResponse);
-
             expect(User.findByPk).toHaveBeenCalledWith(mockUserId);
             expect(mockUser.getSkins).toHaveBeenCalled();
             expect(mockResponse.json).toHaveBeenCalledWith([{ id: 1, name: 'Skin 1' }, { id: 2, name: 'Skin 2' }]);
         });
-
         it('should handle user not found', async () => {
             const mockUserId = 1;
             User.findByPk.mockResolvedValue(null);
@@ -548,18 +498,12 @@ describe('User Controller Tests', () => {
                 status: jest.fn().mockReturnThis(),
                 json: jest.fn()
             };
-
             await userController.getUserSkins(mockRequest, mockResponse);
-
             expect(User.findByPk).toHaveBeenCalledWith(mockUserId);
             expect(mockResponse.status).toHaveBeenCalledWith(404);
             expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Utilisateur non trouvé' });
         });
-
-        // ... (other test cases for getUserSkins)
-
     });
-
     describe('updateIsConfirmed', () => {
         it('should update user isconfirmed successfully', async () => {
             const mockUserId = 1;
@@ -577,15 +521,12 @@ describe('User Controller Tests', () => {
             const mockResponse = {
                 json: jest.fn()
             };
-
             await userController.updateIsConfirmed(mockRequest, mockResponse);
-
             expect(User.findByPk).toHaveBeenCalledWith(mockUserId);
             expect(mockUser.isconfirmed).toBe(true);
             expect(mockUser.save).toHaveBeenCalled();
             expect(mockResponse.json).toHaveBeenCalledWith(mockUser);
         });
-
         it('should handle incorrect validation code', async () => {
             const mockUserId = 1;
             const mockCode = 5678;
@@ -604,7 +545,6 @@ describe('User Controller Tests', () => {
             };
             await userController.updateIsConfirmed(mockRequest, mockResponse);
             expect(User.findByPk).toHaveBeenCalledWith(mockUserId);
-            //expect(mockUser.save).not.toHaveBeenCalled();
             expect(mockResponse.status).toHaveBeenCalledWith(400);
             expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Code de validation incorrect' });
         });
@@ -623,7 +563,6 @@ describe('User Controller Tests', () => {
             User.findByPk.mockResolvedValue(mockUser);
             bcrypt.compare.mockResolvedValue(true);
             bcrypt.hash.mockResolvedValue(mockHashedPassword);
-
             const mockRequest = {
                 params: { id: mockUserId },
                 body: { oldPassword: mockOldPassword, newPassword: mockNewPassword }
@@ -631,9 +570,7 @@ describe('User Controller Tests', () => {
             const mockResponse = {
                 json: jest.fn()
             };
-
             await userController.changePassword(mockRequest, mockResponse);
-
             expect(User.findByPk).toHaveBeenCalledWith(mockUserId);
             expect(bcrypt.compare).toHaveBeenCalledWith(mockOldPassword, mockHashedPassword);
             expect(bcrypt.hash).toHaveBeenCalledWith(mockNewPassword, 10);
@@ -641,7 +578,6 @@ describe('User Controller Tests', () => {
             expect(mockUser.save).toHaveBeenCalled();
             expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Mot de passe modifié avec succès' });
         });
-
         it('should handle incorrect old password', async () => {
             const mockUserId = 1;
             const mockOldPassword = 'oldPassword';
@@ -653,7 +589,6 @@ describe('User Controller Tests', () => {
             };
             User.findByPk.mockResolvedValue(mockUser);
             bcrypt.compare.mockResolvedValue(false);
-
             const mockRequest = {
                 params: { id: mockUserId },
                 body: { oldPassword: mockOldPassword, newPassword: mockNewPassword }
@@ -662,20 +597,56 @@ describe('User Controller Tests', () => {
                 status: jest.fn().mockReturnThis(),
                 json: jest.fn()
             };
-
             await userController.changePassword(mockRequest, mockResponse);
-
             expect(User.findByPk).toHaveBeenCalledWith(mockUserId);
             expect(bcrypt.compare).toHaveBeenCalledWith(mockOldPassword, mockHashedPassword);
             expect(bcrypt.hash).not.toHaveBeenCalled();
-            //expect(mockUser.save).not.toHaveBeenCalled();
             expect(mockResponse.status).toHaveBeenCalledWith(400);
             expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Ancien mot de passe incorrect' });
         });
-
-        // ... (other test cases for changePassword)
-
     });
-
+    describe('forgotPassword', () => {
+        it('should send forgot password email if user exists', async () => {
+            const mockMail = 'user@example.com';
+            const mockUser = {
+                mail: mockMail,
+                update: jest.fn().mockResolvedValue()
+            };
+            User.findOne.mockResolvedValue(mockUser);
+            jwt.sign.mockReturnValue('mockToken');
+            mailSender.sendForgotPassword.mockResolvedValue();
+            const mockRequest = {
+                body: { mail: mockMail }
+            };
+            const mockResponse = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+            await userController.forgotPassword(mockRequest, mockResponse);
+            expect(User.findOne).toHaveBeenCalledWith({ where: { mail: mockMail } });
+            expect(jwt.sign).toHaveBeenCalledWith({ id: mockUser.id }, 'secretKey');
+            expect(mockUser.update).toHaveBeenCalledWith({ forgot_pwd: 'mockToken' });
+            expect(mailSender.sendForgotPassword).toHaveBeenCalledWith(mockMail, 'mockToken');
+            expect(mockResponse.status).toHaveBeenCalledWith(409);
+            expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Utilisateur trouvé' });
+        });
+        it('should handle user not found', async () => {
+            const mockMail = 'user@example.com';
+            User.findOne.mockResolvedValue(null);
+            const mockRequest = {
+                body: { mail: mockMail }
+            };
+            const mockResponse = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+            await userController.forgotPassword(mockRequest, mockResponse);
+            expect(User.findOne).toHaveBeenCalledWith({ where: { mail: mockMail } });
+            expect(jwt.sign).not.toHaveBeenCalled();
+            expect(mailSender.sendForgotPassword).not.toHaveBeenCalled();
+            expect(mockResponse.status).toHaveBeenCalledWith(404);
+            expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Utilisateur non trouvé' });
+        });
+    });
 });
 
