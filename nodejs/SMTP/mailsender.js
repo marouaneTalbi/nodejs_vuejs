@@ -5,7 +5,7 @@ const mailjet = require('node-mailjet').apiConnect(
     '94cb59578ce8bf999fba891984ba559f',
     '9655b7604d4692e64eaacf74939f2ee9',
 )
-const serverURI = process.env.SERVER_URI;
+const serverURI = process.env.CLIENT_URI;
 
 const fromConfig = {
     Email: 'aminecherigui44@gmail.com',
