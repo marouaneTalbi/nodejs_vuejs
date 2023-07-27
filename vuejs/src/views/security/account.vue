@@ -25,9 +25,12 @@
                   :src="getPictureUrl(user.picture)"
                 alt="">
             </div>
+            <img class="grade" :src="getGradeUrl(grade.picture)" />
           </div>
           <div class="text">
             <span class="pseudo">{{ user.pseudo }}</span>
+            <br />
+            <strong class="gradeTitle">{{ grade.title }}<span> | {{ user.points }}</span></strong>
           </div>       
         </div>
         <div class="card">
@@ -201,6 +204,11 @@
   width: 45%;
 }
 
+.gradeTitle {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #A0AEC0;
+}
 .card-image {
   display: flex;
   align-items: center;
@@ -250,6 +258,14 @@
 
 .card-content-skin {
   text-align: center;
+}
+
+.grade {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  bottom: 0;
+  right: 0;
 }
 </style>
 
@@ -303,6 +319,7 @@ export default {
     },
   data() {
     return {
+      grade: {},
       user: null,
       updatedUser: {
         pseudo: '',
@@ -332,9 +349,24 @@ export default {
     this.getUserInfo();
     this.getUserSkins();
     this.getUserSkin();
-
+    this.getUserGrade();
   },
   methods: {
+    getUserGrade() {
+      const userId = this.currentUserId()
+      console.log(this.currentUserId)
+      fetchData('/user/' + userId + '/grade')
+      .then(response => {
+        this.grade = response.data['grade']
+        console.log(this.grade)
+      })
+      .catch(error => {
+        toast(error.message, {
+          autoClose: 2000,
+          type: 'error',
+        })
+      });
+    },
     currentUserId(){
       const token = Cookies.get('token');
       const [header, payload, signature] = token.split('.');
@@ -391,6 +423,9 @@ export default {
     //////
     getPictureUrl(picture) {
       return `${serverURI}/pictures/skins/${picture}`;
+    },
+    getGradeUrl(picture) {
+      return `${serverURI}/pictures/grades/${picture}`;
     },
     openPopUpModal(type){
       console.log(type)

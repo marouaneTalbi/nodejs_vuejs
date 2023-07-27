@@ -34,6 +34,14 @@ const UserGame = sequelize.define('user_game', {
     result: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    pointswin: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    gamemode: {
+        type: DataTypes.STRING,
+        allowNull: false
     }
 }, {
     tableName: 'user_game',
@@ -47,6 +55,7 @@ UserGame.afterCreate(async (userGame, options) => {
             user_id: userGame.user_id,
             game_id: userGame.game_id,
             result: userGame.result,
+            gamemode: userGame.gamemode,
             date: new Date()
         })
 
@@ -58,10 +67,10 @@ UserGame.afterCreate(async (userGame, options) => {
 
 UserGame.afterBulkUpdate(async (userGame, options) => {
     try {
-        console.log('userGame:', userGame.attributes);
+        console.log(userGame.where.user_id, 'à gagné : ', userGame.attributes.pointswin)
         await UserGameMongo.updateOne(
             { user_id: userGame.where.user_id, game_id: userGame.where.game_id },
-            { result: userGame.attributes.result, date: userGame.attributes.date }
+            { result: userGame.attributes.result, date: userGame.attributes.date, pointswin: userGame.attributes.pointswin, gamemode: userGame.attributes.gamemode }
         )
 
         console.log('User update in MongoDB successful');

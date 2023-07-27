@@ -152,6 +152,7 @@ export default {
   },
   beforeRouteLeave() {
     SocketioService.userLeft(() => {
+      console.log('user left')
       this.userLeft = true;
       this.openModal();
     });
@@ -253,6 +254,7 @@ setTimeout(() => {
     });
 
     SocketioService.userLeft(() => {
+      console.log('userrrrrrrrr left')
       this.userLeft = true;
       this.openModal();
     });
@@ -424,18 +426,18 @@ setTimeout(() => {
 
     endGame() {
       if (this.currentPlayer === this.getCurrentUser() && this.countCardJ1 > this.countCardJ2) {
-        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "win", opponentId:this.currentOpponent})
-        this.updateUserGame(this.currentOpponent, this.$route.params.id, {result: "loose", opponentId:this.currentOpponent})
+        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "win", opponentId:this.currentOpponent, game: this.game})
+        this.updateUserGame(this.currentOpponent, this.$route.params.id, {result: "loose", opponentId:this.currentOpponent, game: this.game})
         this.openModalVictory();
       }
       if (this.currentPlayer !== this.getCurrentUser() && this.countCardJ1 < this.countCardJ2) {
-        this.updateUserGame(this.currentPlayer, this.$route.params.id, {result: "win", opponentId: this.getCurrentUser()})
-        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "loose", opponentId: this.getCurrentUser()})
+        this.updateUserGame(this.currentPlayer, this.$route.params.id, {result: "win", opponentId: this.getCurrentUser(), game: this.game})
+        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "loose", opponentId: this.getCurrentUser(), game: this.game})
         this.openModalVictory();
       } 
       if (this.countCardJ1 === this.countCardJ2) {
-        this.updateUserGame(this.currentOpponent, this.$route.params.id, {result: "equality", opponentId: this.getCurrentUser()})
-        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "equality", opponentId: this.currentOpponent})
+        this.updateUserGame(this.currentOpponent, this.$route.params.id, {result: "equality", opponentId: this.getCurrentUser(), game: this.game})
+        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "equality", opponentId: this.currentOpponent, game: this.game})
         this.openModalEquality();
       }
     },

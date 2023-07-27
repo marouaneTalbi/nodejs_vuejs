@@ -1,5 +1,6 @@
 const GameController = require('../controllers/GameController');
 const UserGameController = require('../controllers/UserGame/UserGameController');
+const Game = require('../models/gameModel');
 
 module.exports = function (socket) {
 
@@ -18,12 +19,11 @@ module.exports = function (socket) {
                     return;
                 }
 
-                await UserGameController.createUserGame(game.id, userId);
+                await UserGameController.createUserGame(game.id, userId, gamemode);
 
             } else {
-
                 game = await GameController.createGame(gamemode, userId);
-                
+                console.log("create game", game);
             }
 
             socket.userId = userId;
@@ -80,11 +80,19 @@ module.exports = function (socket) {
         })
     });
 
-
     socket.on('disconnect', async () => {
         try {
-            //await UserGameService.deleteUserGame(socket.gameId, socket.userId);
-            socket.to(socket.gameId).emit('userLeft');
+            const players = await UserGameController.UsersInGame(socket.gameId);
+            console.log('nombre de joueur :', players);
+
+            if (players < 2) {
+                await UserGameController.deleteUserGame(socket.gameId, socket.userId);
+                console.log('lui à déco : ', socket.userId)
+            } else {
+                // S'il reste plus d'un joueur, informer les autres joueurs que le joueur a quitté
+                socket.to(socket.gameId).emit('userLeft', { userId: socket.userId });
+            }
+
         } catch (error) {
             console.error('Erreur lors de la gestion de la déconnexion du joueur :', error);
         }

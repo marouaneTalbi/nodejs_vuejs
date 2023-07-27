@@ -5,7 +5,6 @@ const { v4: uuidv4 } = require("uuid");
 exports.createGame = async(gamemode, userId) => {
     try {
         
-
         if(gamemode === "private") {
 
             code = uuidv4();
@@ -14,10 +13,12 @@ exports.createGame = async(gamemode, userId) => {
                 status: "waiting",
                 code,
             });
-            await UserGame.create({
+            const user_game = await UserGame.create({
                 user_id: userId,
                 game_id: game.id,
+                gamemode: gamemode
             });
+            console.log('create user game : ', user_game)
             return game;
 
         } else {
@@ -31,7 +32,8 @@ exports.createGame = async(gamemode, userId) => {
             });
             await UserGame.create({
                 user_id: userId,
-                game_id: game.id
+                game_id: game.id,
+                gamemode: gamemode
             });
             return game;
 

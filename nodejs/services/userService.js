@@ -8,7 +8,7 @@ async function getUserStats(userId) {
             {
                 $match: {
                     user_id: Number(userId),
-                    result: { $in: ['win', 'loose'] } // Filtrer uniquement les victoires et les défaites
+                    result: { $in: ['win', 'loose', 'equality'] } // Filtrer uniquement les victoires et les défaites
                 }
             },
             {

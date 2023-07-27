@@ -11,6 +11,8 @@ const mailSender = require('../SMTP/mailsender');
 const Skin = require('../models/skin/SkinModel');
 const authMiddleware = require("../middlewares/authMiddleware");
 const UserService = require('../services/userService');
+const Grade = require('../models/grade/GradeModel');
+const { Op } = require('sequelize');
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -158,7 +160,7 @@ exports.register = async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, 10);
       const buffer = crypto.randomBytes(32).toString('hex');
       try {
-      const newUser = await User.create({ mail, password: hashedPassword, pseudo: pseudo, token:buffer, createdat: new Date(),coins:100 });
+      const newUser = await User.create({ mail, password: hashedPassword, pseudo: pseudo, token:buffer, createdat: new Date(),coins:100, points: 1000, grade_id: 1 });
       await mailSender.sendConfirmationEmail(newUser.mail, newUser.token);
       const token = jwt.sign({ id: newUser.id }, 'secretKey');
       res.json({ token });
@@ -357,7 +359,6 @@ exports.initPassword = async (req, res) => {
 exports.getUserStats = async (req, res) => {
   try {
     const userId = req.params.id;
-    console.log('user id controoler : ', userId);
     const stats = await UserService.getUserStats(userId);
 
     res.json({ stats });
@@ -371,13 +372,62 @@ exports.getUserGamesHistory = async (req, res) => {
 
     const userId = req.params.id;
     const userGamesHistory = await UserGameMongo.find({ user_id: userId });
-    console.log('userGamesHistory: ', userGamesHistory);
     res.status(200).json(userGamesHistory);
 
   } catch (error) {
-
-    console.error('Erreur lors de la récupération de l\'historique des parties de l\'utilisateur:', error);
     res.status(500).json({ message: 'Erreur serveur' });
 
   }
 };
+
+exports.getUserGrade = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    console.log(req.params)
+    console.log('dradddedzzeezd', userId)
+    const user = await User.findByPk(userId);
+    if(!user) {
+      res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+    const grade = await Grade.findByPk(user.grade_id);
+    if(!grade) {
+      res.status(404).json({ message: 'Grade non trouvé' });
+    }
+
+    return res.status(200).json({ grade });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+}
+
+exports.updateUserGrade = async (user) => {
+  try {
+    console.log('userrrr : ', user.points)
+    const currentGrade = await Grade.findByPk(user.grade_id);
+    console.log('grade courant : ', currentGrade)
+    const newGrade = await Grade.findOne({
+      where: {
+        required_points: {
+          [Op.lte]: user.points, // Find the grade where requiredPoints is less than or equal to the user's points
+        },
+      },
+      order: [['required_points', 'DESC']], // Order by requiredPoints in descending order to get the highest grade that the user qualifies for
+    });
+    console.log('new grade : ', 'userId : ', user.id,'userPoint : ', user.points,'userNewGrade : ', newGrade)
+
+    if (!newGrade) {
+      // If there's no new grade, set the user's grade to null (unranked)
+      // await user.setGrade(null);
+    } else if (!currentGrade || newGrade.id !== currentGrade.id) {
+      // If the user's grade has changed, update the gradeId of the user
+      await user.setGrade(newGrade);
+    }
+
+    user.save();
+
+  } catch(error) {
+    console.log('error: ', error);
+  }
+}
