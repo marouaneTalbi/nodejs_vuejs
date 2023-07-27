@@ -8,6 +8,7 @@ var base64ToImage = require('base64-to-image');
 require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 
 const serverURI = process.env.SERVER_URI;
+const clientURI = process.env.CLIENT_URI;
 
 exports.getAllSkins = async (req, res) => {
   try {
@@ -172,8 +173,8 @@ exports.purchaseSkin = async (req, res) => {
           },
         ],
         mode: 'payment',
-        success_url: `${serverURI}/skins_to_buy`, // URL de succès du paiement
-        cancel_url: `${serverURI}/skins`, // URL d'annulation du paiement
+        success_url: `${clientURI}/skins`, // URL de succès du paiement
+        cancel_url: `${clientURI}/skins`, // URL d'annulation du paiement
       });
       res.json({ sessionId: session.id });
 
