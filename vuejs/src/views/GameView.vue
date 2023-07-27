@@ -53,6 +53,45 @@
         <p>Votre adversaire a quitté la partie. Vous avez remporté la victoire !</p>
       </div>
     </Modal>
+    <Modal @close="toggleModalVictory" @confirm="handleConfirmVictory" :modalActive="modalActiveVictory">
+      <div class="modal-content">
+        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m3 7 2 13h14l2-13-5 3-4-6-4 6-5-3z"></path>
+          <circle cx="12" cy="14" r="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="2"></circle>
+        </svg>
+        <h2>VICTOIRE !</h2>
+        <span id="counterSpan">+0</span>
+        <p>Bien joué !</p>
+      </div>
+    </Modal>
+    <Modal @close="toggleModalDefeat" @confirm="handleConfirmDefeat" :modalActive="modalActiveDefeat">
+      <div class="modal-content">
+        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m3 7 2 13h14l2-13-5 3-4-6-4 6-5-3z"></path>
+          <circle cx="12" cy="14" r="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="2"></circle>
+        </svg>
+        <h2>DEFAITE !</h2>
+        <span>0 coins</span>
+        <p>Mince !</p>
+      </div>
+    </Modal>
+    <Modal @close="toggleModalEquality" @confirm="handleConfirmEquality" :modalActive="modalActiveEquality">
+      <div class="modal-content">
+        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m3 7 2 13h14l2-13-5 3-4-6-4 6-5-3z"></path>
+          <circle cx="12" cy="14" r="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="2"></circle>
+        </svg>
+        <h2>EGALITE !</h2>
+        <span>0 coins</span>
+        <p>wow !</p>
+      </div>
+    </Modal>
   </section>
   <!-- Cartes gagnées -->
   <div class="winning-cards">
@@ -83,8 +122,6 @@ import Cookies from 'js-cookie';
 import {fetchData, patchData, serverURI} from '../api/api'
 import {toast} from "vue3-toastify";
 import {io} from 'socket.io-client';
-
-let ActualUser = null;
 
 export default {
   components: {
@@ -129,7 +166,35 @@ export default {
       modalActive.value = !modalActive.value;
     }
 
-    return {modalActive, toggleModal}
+    const modalActiveVictory = ref(false);
+
+    const toggleModalVictory = () => {
+      modalActiveVictory.value = !modalActiveVictory.value;
+    }
+
+    const modalActiveDefeat = ref(false);
+
+    const toggleModalDefeat = () => {
+      modalActiveDefeat.value = !modalActiveDefeat.value;
+    }
+
+    const modalActiveEquality = ref(false);
+
+    const toggleModalEquality = () => {
+      modalActiveEquality.value = !modalActiveEquality.value;
+    }
+
+    return {
+      modalActive,
+      toggleModal,
+      modalActiveVictory,
+      toggleModalVictory,
+      modalActiveDefeat,
+      toggleModalDefeat,
+      modalActiveEquality,
+      toggleModalEquality
+    }
+
   },
 
   mounted() {
@@ -360,12 +425,17 @@ setTimeout(() => {
       if (this.currentPlayer === this.getCurrentUser() && this.countCardJ1 > this.countCardJ2) {
         this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "win", opponentId:this.currentOpponent})
         this.updateUserGame(this.currentOpponent, this.$route.params.id, {result: "loose", opponentId:this.currentOpponent})
-      } else if (this.currentPlayer !== this.getCurrentUser() && this.countCardJ1 < this.countCardJ2) {
+        this.openModalVictory();
+      }
+      if (this.currentPlayer !== this.getCurrentUser() && this.countCardJ1 < this.countCardJ2) {
         this.updateUserGame(this.currentPlayer, this.$route.params.id, {result: "win", opponentId: this.getCurrentUser()})
         this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "loose", opponentId: this.getCurrentUser()})
-      } else {
+        this.openModalVictory();
+      } 
+      if (this.countCardJ1 === this.countCardJ2) {
         this.updateUserGame(this.currentOpponent, this.$route.params.id, {result: "equality", opponentId: this.getCurrentUser()})
         this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "equality", opponentId: this.currentOpponent})
+        this.openModalEquality();
       }
     },
 
@@ -456,7 +526,38 @@ setTimeout(() => {
     openModal() {
       this.modalActive = true;
     },
+    handleConfirmVictory() {
+      this.modalActiveVictory = false;
+    },
 
+    openModalVictory() {
+      this.modalActiveVictory = true;
+      setTimeout(() => {
+        this.$router.push('/stats');
+      }, 2500);
+    },
+
+    handleConfirmDefeat() {
+      this.modalActiveDefeat = false;
+    },
+
+    openModalDefeat() {
+      this.modalActiveDefeat = true;
+      setTimeout(() => {
+        this.$router.push('/stats');
+      }, 2500);
+    },
+
+    handleConfirmEquality() {
+      this.modalActiveEquality = false;
+    },
+
+    openModalEquality() {
+      this.modalActiveEquality = true;
+      setTimeout(() => {
+        this.$router.push('/stats');
+      }, 2500);
+    },
     copyToClipboard() {
       const code = this.game.code;
       navigator.clipboard.writeText(code)
