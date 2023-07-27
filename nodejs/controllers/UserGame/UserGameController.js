@@ -74,7 +74,7 @@ exports.updateUserGame = async(req, res) => {
         const { opponentId } = req.body;
         const { date } = req.body;
         let newUserPoints; 
-
+        console.log("id op : ", opponentId)
         const user = await User.findByPk(userId);
         const opponent = await User.findByPk(opponentId);
 

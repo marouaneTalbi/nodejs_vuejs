@@ -33,7 +33,7 @@
                class="memory-card"
                :class="{ flipped: card.flipped }"
                @click="flipCard($event, index)">
-              <div class="card-face front" v-if="skin" :style="{ backgroundImage:`url('${getSkinUrl(skin.picture)}')`}"></div>
+               <div class="card-face front" v-if="skin" :style="{ backgroundImage:`url('${getSkinUrl(skin.picture)}')`}"></div>
               <div class="card-face front-noskin" v-if="!skin"></div>  
             <div class="card-face back" :style="{ backgroundImage:`url('${getPictureUrl(card.image)}')`}"></div>
           </div>
@@ -51,45 +51,6 @@
         </svg>
         <h2>Victoire !</h2>
         <p>Votre adversaire a quitté la partie. Vous avez remporté la victoire !</p>
-      </div>
-    </Modal>
-    <Modal @close="toggleModalVictory" @confirm="handleConfirmVictory" :modalActive="modalActiveVictory">
-      <div class="modal-content">
-        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="m3 7 2 13h14l2-13-5 3-4-6-4 6-5-3z"></path>
-          <circle cx="12" cy="14" r="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                  stroke-width="2"></circle>
-        </svg>
-        <h2>VICTOIRE !</h2>
-        <span id="counterSpan">+0</span>
-        <p>Bien joué !</p>
-      </div>
-    </Modal>
-    <Modal @close="toggleModalDefeat" @confirm="handleConfirmDefeat" :modalActive="modalActiveDefeat">
-      <div class="modal-content">
-        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="m3 7 2 13h14l2-13-5 3-4-6-4 6-5-3z"></path>
-          <circle cx="12" cy="14" r="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                  stroke-width="2"></circle>
-        </svg>
-        <h2>DEFAITE !</h2>
-        <span>0 coins</span>
-        <p>Mince !</p>
-      </div>
-    </Modal>
-    <Modal @close="toggleModalEquality" @confirm="handleConfirmEquality" :modalActive="modalActiveEquality">
-      <div class="modal-content">
-        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="m3 7 2 13h14l2-13-5 3-4-6-4 6-5-3z"></path>
-          <circle cx="12" cy="14" r="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                  stroke-width="2"></circle>
-        </svg>
-        <h2>EGALITE !</h2>
-        <span>0 coins</span>
-        <p>wow !</p>
       </div>
     </Modal>
   </section>
@@ -121,7 +82,6 @@ import {ref} from 'vue';
 import Cookies from 'js-cookie';
 import {fetchData, patchData, serverURI} from '../api/api'
 import {toast} from "vue3-toastify";
-import router from '../router/index.ts';
 import {io} from 'socket.io-client';
 
 let ActualUser = null;
@@ -149,7 +109,6 @@ export default {
       countCardJ2: 0,
       player1: null,
       player2: null,
-      winner: null,
       chatMessages: [],
       messageInput: '',
     };
@@ -170,35 +129,7 @@ export default {
       modalActive.value = !modalActive.value;
     }
 
-    const modalActiveVictory = ref(false);
-
-    const toggleModalVictory = () => {
-      modalActiveVictory.value = !modalActiveVictory.value;
-    }
-
-    const modalActiveDefeat = ref(false);
-
-    const toggleModalDefeat = () => {
-      modalActiveDefeat.value = !modalActiveDefeat.value;
-    }
-
-    const modalActiveEquality = ref(false);
-
-    const toggleModalEquality = () => {
-      modalActiveEquality.value = !modalActiveEquality.value;
-    }
-
-    return {
-      modalActive,
-      toggleModal,
-      modalActiveVictory,
-      toggleModalVictory,
-      modalActiveDefeat,
-      toggleModalDefeat,
-      modalActiveEquality,
-      toggleModalEquality
-    }
-
+    return {modalActive, toggleModal}
   },
 
   mounted() {
@@ -309,13 +240,12 @@ setTimeout(() => {
       }
     },
     flipCard(event, index) {
-      console.log('flip')
       const gameId = this.$route.params.id;
       let totalCardTurn = this.countCardJ1 + this.countCardJ2;
-      /*if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
-        this.endGame();
+      if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
+        // this.endGame();
         //this.endTurn();
-      }*/
+      }
       if (!this.isMyTurn || this.flippedCards.length === 2) return;
       SocketioService.flipedCard(gameId, index)
       if (this.currentPlayer === this.getCurrentUser()) {
@@ -342,12 +272,11 @@ setTimeout(() => {
     },
 
     showCard(index, event) {
-      console.log('show')
       let totalCardTurn = this.countCardJ1 + this.countCardJ2;
-      /*if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
+      if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
         this.endGame();
         //this.endTurn();
-      }*/
+      }
       //this.setUser1AndUser2();
       if (this.currentPlayer !== this.getCurrentUser()) {
         this.isMyTurn = false;
@@ -362,7 +291,6 @@ setTimeout(() => {
         this.isComparing = true;
 
         if (this.cards[this.flippedCards[0]].image !== this.cards[this.flippedCards[1]].image) {
-        
           this.cardsElement = [];
           if (this.currentPlayer === this.getCurrentUser()) {
             this.isMyTurn = false;
@@ -400,31 +328,27 @@ setTimeout(() => {
             this.endGame();
             //this.endTurn();
           }*/
+
           this.flippedCards = [];
           this.isComparing = false;
     
           if (this.currentPlayer === this.getCurrentUser()) {
-            /*this.onWin(this.cardsElement[0].parentElement.cloneNode(true));
-            this.onWin(this.cardsElement[1].parentElement.cloneNode(true), true);*/
+            this.onWin(this.cardsElement[0].parentElement.cloneNode(true));
+            this.onWin(this.cardsElement[1].parentElement.cloneNode(true), true);
             this.countCardJ1++;
           }
 
           if (this.currentPlayer !== this.getCurrentUser()) {
             this.countCardJ2++;
-            /*this.onOppenentWin(this.cardsElement[0].parentElement.cloneNode(true));
-            this.onOppenentWin(this.cardsElement[1].parentElement.cloneNode(true), true);*/
+            this.onOppenentWin(this.cardsElement[0].parentElement.cloneNode(true));
+            this.onOppenentWin(this.cardsElement[1].parentElement.cloneNode(true), true);
           }
           this.cardsElement = [];
           let totalCardTurn = this.countCardJ1 + this.countCardJ2;
-          console.log("senorrr");
-          console.log(this.currentPlayer)
-          console.log(this.currentOpponent)
 
           if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
-            if (this.currentPlayer) {
-              this.endGame();
-              this.endTurn();
-            }
+            this.endGame();
+            this.endTurn();
           }
           return;
           //this.endTurn();
@@ -433,32 +357,15 @@ setTimeout(() => {
     },
 
     endGame() {
-      console.log('end')
       if (this.currentPlayer === this.getCurrentUser() && this.countCardJ1 > this.countCardJ2) {
-        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {
-          result: "win",
-          opponent: this.currentOpponent
-        })
-        this.updateUserGame(this.currentOpponent, this.$route.params.id, {
-          result: "loose",
-          opponent: this.currentOpponent
-        })
-        this.winner = this.currentPlayer;
-        this.openModalVictory();
-      }
-      if (this.currentPlayer !== this.getCurrentUser() && this.countCardJ1 < this.countCardJ2) {
-        this.updateUserGame(this.currentPlayer, this.$route.params.id, {result: "win", opponent: this.getCurrentUser()})
-        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {
-          result: "loose",
-          opponent: this.getCurrentUser()
-        })
-        this.winner = this.currentPlayer;
-        this.openModalVictory();
-      }
-      if (this.countCardJ1 === this.countCardJ2) {
-        this.updateUserGame(this.currentOpponent, this.$route.params.id, {result: "equality"})
-        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "equality"})
-        this.openModalEquality();
+        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "win", opponentId:this.currentOpponent})
+        this.updateUserGame(this.currentOpponent, this.$route.params.id, {result: "loose", opponentId:this.currentOpponent})
+      } else if (this.currentPlayer !== this.getCurrentUser() && this.countCardJ1 < this.countCardJ2) {
+        this.updateUserGame(this.currentPlayer, this.$route.params.id, {result: "win", opponentId: this.getCurrentUser()})
+        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "loose", opponentId: this.getCurrentUser()})
+      } else {
+        this.updateUserGame(this.currentOpponent, this.$route.params.id, {result: "equality", opponentId: this.getCurrentUser()})
+        this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {result: "equality", opponentId: this.currentOpponent})
       }
     },
 
@@ -493,8 +400,6 @@ setTimeout(() => {
       }
     },
 
-
-
     onWin(winningCardElement, secondCard = false) {
       const winningCardsContainer = document.querySelector('.winning-cards');
       // Ajouter la carte gagnée dans le conteneur des cartes gagnées
@@ -523,12 +428,10 @@ setTimeout(() => {
     },
 
     endTurn() {
-      console.log('endTurn')
       let currentUserId = this.getCurrentUser()
       this.isMyTurn = false;
       const gameId = this.$route.params.id;
       SocketioService.endTurn(gameId, this.currentPlayer, this.cards);
-      console.log('end turn fin')
     },
 
     async setColor(color) {
@@ -554,39 +457,6 @@ setTimeout(() => {
       this.modalActive = true;
     },
 
-    handleConfirmVictory() {
-      this.modalActiveVictory = false;
-    },
-
-    openModalVictory() {
-      this.modalActiveVictory = true;
-      setTimeout(() => {
-        this.$router.push('/stats');
-      }, 2500);
-    },
-
-    handleConfirmDefeat() {
-      this.modalActiveDefeat = false;
-    },
-
-    openModalDefeat() {
-      this.modalActiveDefeat = true;
-      setTimeout(() => {
-        this.$router.push('/stats');
-      }, 2500);
-    },
-
-    handleConfirmEquality() {
-      this.modalActiveEquality = false;
-    },
-
-    openModalEquality() {
-      this.modalActiveEquality = true;
-      setTimeout(() => {
-        this.$router.push('/stats');
-      }, 2500);
-    },
-
     copyToClipboard() {
       const code = this.game.code;
       navigator.clipboard.writeText(code)
@@ -596,7 +466,6 @@ setTimeout(() => {
           });
     },
     updateUserGame(userId, gameId, data) {
-      console.log('data : ', data)
       patchData('/user/' + userId + '/game/' + gameId, data)
           .then(response => {
             toast('La game a bien été modifié', {
@@ -611,22 +480,6 @@ setTimeout(() => {
             })
           })
     },
-    updateCounter() {
-      const counterSpan = document.getElementById('counterSpan');
-      let count = 0;
-
-      // Utilisation d'une fonction setInterval pour augmenter le compteur toutes les 100 millisecondes
-      const interval = setInterval(() => {
-        counterSpan.textContent = count;
-        count++;
-
-        // Arrêter le compteur lorsque la valeur atteint 20
-        if (count > 20) {
-          clearInterval(interval);
-        }
-      }, 100);
-    },
-
   },
 }
 </script>
