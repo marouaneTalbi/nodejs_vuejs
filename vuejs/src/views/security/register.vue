@@ -140,4 +140,7 @@
   color: black;
   cursor: pointer;
 }
+input{
+  color: white;
+}
 </style>

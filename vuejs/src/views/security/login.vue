@@ -173,4 +173,7 @@ import {toast} from "vue3-toastify";
   color: black;
   cursor: pointer;
 }
+input{
+  color: white;
+}
 </style>

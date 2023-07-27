@@ -1,6 +1,6 @@
 <template>
+  <section class="auth">
   <div class="login-form" :class="{ 'form-error': errorMessage, 'form-shake': animateForm }">
-    <Header />
     <form @submit.prevent="forgotPassword">
       <h2>Your Email</h2>
       <div class="form-group">
@@ -12,19 +12,15 @@
       <div v-if="resetEmailSent" class="success-message">If you have an Account with this email, you will receive an email to reset your password.</div>
     </form>
   </div>
+  </section>
 </template>
 
 <script>
-import axios from 'axios';
 import { serverURI, postData } from '../../api/api';
 import './../../styles/global.css';
 import './../../styles/login.css';
-import Header from "@/components/Header.vue";
 
 export default {
-  components: {
-    Header,
-  },
   data() {
     return {
       email: '',
