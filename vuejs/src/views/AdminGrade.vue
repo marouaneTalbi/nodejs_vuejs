@@ -154,7 +154,6 @@ export default {
     updateGrade(gradeId, data) {
       patchData('/grade/update/' + gradeId, data)
           .then(response => {
-            console.log(response)
             toast('Le grade a bien été modifié', {
               autoClose: 2000,
               type: 'success'

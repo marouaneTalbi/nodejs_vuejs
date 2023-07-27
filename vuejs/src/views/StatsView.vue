@@ -82,7 +82,6 @@ export default {
             fetchData('/user/' + userId + '/grade')
             .then(response => {
                 this.grade = response.data['grade']
-                console.log(this.grade)
             })
             .catch(error => {
                 toast(error.message, {

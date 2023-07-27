@@ -259,7 +259,6 @@ export default {
             const userId = this.$route.params.id;
 
             if(this.currentModal == 'delete') {
-                // console.log(userId)
                 this.deleteUser(userId);
                 this.$router.push('/admin');
             }

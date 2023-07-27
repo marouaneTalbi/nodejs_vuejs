@@ -150,7 +150,6 @@ export default {
     getUsers() {
       fetchData('/users')
       .then(response => {
-        console.log(response.data)
         this.users = response.data
       })
       .catch(error => {
@@ -176,7 +175,6 @@ export default {
     getSkins() {
       fetchData('/skins')
       .then(response => {
-        console.log(response.data)
         this.skins = response.data
       })
       .catch(error => {

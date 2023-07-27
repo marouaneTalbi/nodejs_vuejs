@@ -117,7 +117,6 @@ User.afterCreate(async (user, options) => {
       ratio: user.ratio,
       password: user.password,
     })
-    console.log('User creation in MongoDB successful');
   } catch (error) {
     console.error('An error occurred after user deletion in MongoDB:', error);
   }
@@ -146,7 +145,6 @@ User.prototype.updateGrade = async function () {
 
     // Get the current user's grade
     const currentGrade = await this.getGrade();
-    console.log('current : ', currentGrade);
     
     // Get the new grade based on points
     const newGrade = await Grade.findOne({
@@ -157,7 +155,6 @@ User.prototype.updateGrade = async function () {
       },
       order: [['required_points', 'DESC']], // Order by pointsRequired in descending order to get the highest grade that the user qualifies for
     });
-    console.log('new : ', newGrade);
 
     if (!newGrade) {
       // If there's no new grade, set the user's grade to null (unranked)

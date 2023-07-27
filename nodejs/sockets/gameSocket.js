@@ -23,7 +23,6 @@ module.exports = function (socket) {
 
             } else {
                 game = await GameController.createGame(gamemode, userId);
-                console.log("create game", game);
             }
 
             socket.userId = userId;
@@ -83,11 +82,10 @@ module.exports = function (socket) {
     socket.on('disconnect', async () => {
         try {
             const players = await UserGameController.UsersInGame(socket.gameId);
-            console.log('nombre de joueur :', players);
 
             if (players < 2) {
                 await UserGameController.deleteUserGame(socket.gameId, socket.userId);
-                console.log('lui à déco : ', socket.userId)
+
             } else {
                 // S'il reste plus d'un joueur, informer les autres joueurs que le joueur a quitté
                 socket.to(socket.gameId).emit('userLeft', { userId: socket.userId });

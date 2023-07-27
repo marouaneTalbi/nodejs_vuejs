@@ -105,7 +105,6 @@ exports.purchaseSkin = async (req, res) => {
   
     const userId = req.body.userId;
     const skinId = req.body.skinId;
-    console.log(userId, skinId)
     try {
       const user = await User.findByPk(userId);
       if (!user) {

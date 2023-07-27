@@ -174,7 +174,6 @@ export default {
       }
     },
     openPopup(skin){
-      console.log('skin')
       this.paymentModalActive = true;
       this.skin = skin
     },

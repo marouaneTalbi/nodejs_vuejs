@@ -18,7 +18,6 @@ exports.createGame = async(gamemode, userId) => {
                 game_id: game.id,
                 gamemode: gamemode
             });
-            console.log('create user game : ', user_game)
             return game;
 
         } else {
