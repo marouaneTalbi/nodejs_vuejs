@@ -32,19 +32,19 @@
       width: 100%;
       padding: 10px;
       ">
-      <div style=" width: 100%;padding: 2%;" v-if="advairsaireInfo && !isMyTurn">
+      <div style=" width: 100%; display: flex;justify-content: center; align-items: center;" v-if="advairsaireInfo && !isMyTurn">
         <h2 style="
-        background-color: rgba(42, 165, 79, 0.419);
-        color:white;
-        padding: 2%;
-        "> Adversaire: {{ advairsaireInfo.pseudo }}</h2>
-      </div>
-      <div style="width: 100%;padding: 2%;" v-if="userInfo && isMyTurn">
-        <h2 style="
-          background-color: rgba(42, 165, 79, 0.419);
+          display: flex;
+          align-items: center;
           color:white;
-          padding: 2%;
-          ">Vous: {{ userInfo.pseudo }}</h2>
+          padding: 2%;">Adversaire: {{ advairsaireInfo.pseudo }}</h2>
+      </div>
+      <div style=" width: 100%; display: flex;justify-content: center; align-items: center;" v-if="userInfo && isMyTurn">
+        <h2 style="
+          display: flex;
+          align-items: center;
+          color:white;
+          padding: 2%;">Vous: {{ userInfo.pseudo }}</h2>
       </div>
     </div>
 
@@ -565,6 +565,7 @@ export default {
     getUserInfo(){
       fetchData('/user/' + this.getCurrentUser())
       .then(response => {
+        console.log(response)
           this.userInfo = response.data
       })
     },
@@ -602,6 +603,7 @@ export default {
   display: grid;
   grid-template-columns: repeat(4, 1fr); /* 4x4 grid, ajustez si nécessaire */
   gap: 1rem;
+  margin-top:120px
 }
 
 .memory-card {
