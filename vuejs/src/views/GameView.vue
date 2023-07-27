@@ -94,33 +94,20 @@
                   stroke-width="2"></circle>
         </svg>
         <h2>VICTOIRE !</h2>
-        <span id="counterSpan">+0</span>
         <p>Bien joué !</p>
       </div>
     </Modal>
     <Modal @close="toggleModalDefeat" @confirm="handleConfirmDefeat" :modalActive="modalActiveDefeat">
       <div class="modal-content">
-        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="m3 7 2 13h14l2-13-5 3-4-6-4 6-5-3z"></path>
-          <circle cx="12" cy="14" r="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                  stroke-width="2"></circle>
-        </svg>
+        <svg style="color: #D35A5A;"  class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 16.657A8.962 8.962 0 0 1 3 11c0-4.97 4.03-8 9-8s9 3.03 9 8c0 2.143-.75 4.112-2 5.657m-14 0V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2.343m-14 0h1.5m12.5 0h-1.5"></path><circle cx="8" cy="12" r="1" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></circle><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m11 16 1-2 1 2h-2zm-2 3v2m3-2v2m3-2v2"></path><circle cx="16" cy="12" r="1" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></circle></svg>
         <h2>DEFAITE !</h2>
-        <span>0 coins</span>
-        <p>Mince !</p>
+        <p>Zut !</p>
       </div>
     </Modal>
     <Modal @close="toggleModalEquality" @confirm="handleConfirmEquality" :modalActive="modalActiveEquality">
       <div class="modal-content">
-        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="m3 7 2 13h14l2-13-5 3-4-6-4 6-5-3z"></path>
-          <circle cx="12" cy="14" r="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                  stroke-width="2"></circle>
-        </svg>
+        <svg style="color: #fcba03;" class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4c-7.2 0-9 6-9 9h9m0-9c7.2 0 9 6 9 9h-9m0-9V3m0 10v5c0 1 .6 3 3 3s3-2 3-3"></path></svg>
         <h2>EGALITE !</h2>
-        <span>0 coins</span>
         <p>wow !</p>
       </div>
     </Modal>
