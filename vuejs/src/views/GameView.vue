@@ -309,6 +309,7 @@ setTimeout(() => {
       }
     },
     flipCard(event, index) {
+      console.log('flip')
       const gameId = this.$route.params.id;
       let totalCardTurn = this.countCardJ1 + this.countCardJ2;
       /*if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
@@ -341,6 +342,7 @@ setTimeout(() => {
     },
 
     showCard(index, event) {
+      console.log('show')
       let totalCardTurn = this.countCardJ1 + this.countCardJ2;
       /*if (totalCardTurn === 8 || this.countCardJ1 >= 5 || this.countCardJ2 >= 5) {
         this.endGame();
@@ -360,6 +362,7 @@ setTimeout(() => {
         this.isComparing = true;
 
         if (this.cards[this.flippedCards[0]].image !== this.cards[this.flippedCards[1]].image) {
+        
           this.cardsElement = [];
           if (this.currentPlayer === this.getCurrentUser()) {
             this.isMyTurn = false;
@@ -399,10 +402,7 @@ setTimeout(() => {
           }*/
           this.flippedCards = [];
           this.isComparing = false;
-          /*setTimeout(() => {
-            this.cardsElement[0].style.display = "none";
-            this.cardsElement[1].style.display = "none";
-          }, 2000);*/
+    
           if (this.currentPlayer === this.getCurrentUser()) {
             /*this.onWin(this.cardsElement[0].parentElement.cloneNode(true));
             this.onWin(this.cardsElement[1].parentElement.cloneNode(true), true);*/
@@ -433,6 +433,7 @@ setTimeout(() => {
     },
 
     endGame() {
+      console.log('end')
       if (this.currentPlayer === this.getCurrentUser() && this.countCardJ1 > this.countCardJ2) {
         this.updateUserGame(this.getCurrentUser(), this.$route.params.id, {
           result: "win",
@@ -522,10 +523,12 @@ setTimeout(() => {
     },
 
     endTurn() {
+      console.log('endTurn')
       let currentUserId = this.getCurrentUser()
       this.isMyTurn = false;
       const gameId = this.$route.params.id;
       SocketioService.endTurn(gameId, this.currentPlayer, this.cards);
+      console.log('end turn fin')
     },
 
     async setColor(color) {
@@ -593,6 +596,7 @@ setTimeout(() => {
           });
     },
     updateUserGame(userId, gameId, data) {
+      console.log('data : ', data)
       patchData('/user/' + userId + '/game/' + gameId, data)
           .then(response => {
             toast('La game a bien été modifié', {
