@@ -41,14 +41,15 @@ mongodb.initClientDbConnection();
 // MONGODB CONNECTION //
 
 // SOCKET.IO //
- const server = require('http').createServer(app);
-/*const options = {
+//  const server = require('http').createServer(app);
+
+const options = {
   key: fs.readFileSync('/etc/letsencrypt/live/challenge.ovh/privkey.pem'),
   cert: fs.readFileSync('/etc/letsencrypt/live/challenge.ovh/fullchain.pem'),
 };
 
 const server = https.createServer(options, app);
-*/
+
 const io = require('socket.io')(server, {
     cors: {
         origins: ['http://localhost:8080']
