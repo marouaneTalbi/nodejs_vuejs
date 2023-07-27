@@ -1,14 +1,7 @@
 import axios from 'axios';    
 import Cookies from 'js-cookie';
 
-// prod
-
-// export const serverURI = 'https://challenge.ovh:3000';
-
 export const serverURI = import.meta.env.VITE_API_URL_SERVER_URL;
-
-console.log(import.meta.env.VITE_API_URL_SERVER_URL)
-
 
 axios.interceptors.request.use((config) => {
     const token = Cookies.get('token');
