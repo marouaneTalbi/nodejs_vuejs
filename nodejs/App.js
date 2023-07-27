@@ -19,6 +19,8 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const fs = require('fs');
 const https = require('https');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
+
 
 app.use(express.urlencoded({ extended: false, limit: "200mb" }));
 app.use(express.json({ limit: '50mb' }));
@@ -49,6 +51,7 @@ const options = {
 };
 
 const server = https.createServer(options, app);
+
 
 const io = require('socket.io')(server, {
     cors: {

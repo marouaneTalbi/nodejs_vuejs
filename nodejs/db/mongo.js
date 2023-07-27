@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 const clientOptions = {
     useNewUrlParser : true,
@@ -8,9 +9,10 @@ const clientOptions = {
 
 exports.initClientDbConnection = async () => {
     try {
-
-        // await mongoose.connect('mongodb://myuser:mypassword@localhost:27017/?authMechanism=DEFAULT', clientOptions)
-        await mongoose.connect('mongodb+srv://myuser:mypassword@clustermongo.xqj9qjx.mongodb.net/?retryWrites=true&w=majority')
+        if(process.env.SERVER_URI === 'http://localhost:3000'){ 
+            await mongoose.connect(process.env.URL_MONGO, clientOptions)
+        }
+        await mongoose.connect(process.env.URL_MONGO)
         console.log('Connected');
     } catch (error) {
         console.log(error);
