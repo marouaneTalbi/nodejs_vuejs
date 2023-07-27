@@ -5,7 +5,7 @@
             <section class="global-stats">
                 <div class="card">
                     <h3>RANK</h3>
-                    <strong>soon..</strong>
+                    <strong>{{ grade.title }}</strong>
                 </div>
                 <div class="card">
                     <h3>NOMBRE DE GAME</h3>
@@ -63,6 +63,7 @@ export default {
         return {
             stats: {},
             gamesHistory: [],
+            grade: {},
         };
     },
 
@@ -73,9 +74,23 @@ export default {
         const userId = decodedPayload.id;
         this.getUserStats(userId);
         this.getUserGamesHistory(userId);
+        this.getUserGrade(userId);
     },
 
     methods: {
+        getUserGrade(userId) {
+            fetchData('/user/' + userId + '/grade')
+            .then(response => {
+                this.grade = response.data['grade']
+                console.log(this.grade)
+            })
+            .catch(error => {
+                toast(error.message, {
+                autoClose: 2000,
+                type: 'error',
+                })
+            });
+        },
         getUserStats(userId) {
             fetchData('/user/' + userId + '/stats')
             .then(response => {
