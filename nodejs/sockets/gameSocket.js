@@ -37,8 +37,8 @@ module.exports = function (socket) {
 
                 players = await  UserGameController.PlayersOfGame(socket.gameId)
                 let cards = await GameController.getCards()
-                console.log(players);
-                socket.emit('yourTurn',{player: players[1], opponent: players[0], cards: cards} );
+
+                socket.emit('yourTurn',{player: players[1], opponent: players[0], cards: cards, players: players} );
             
                 socket.to(game.id).emit('waitingForPlayers',{ playersCount:playersCount, cards:cards});
 
@@ -75,7 +75,7 @@ module.exports = function (socket) {
                 turnId = c[0]
                 opponent = c[1]
             }
-            socket.to(socket.gameId).emit('yourTurn', {player: turnId,opponent: opponent,cards: data.cards });
+            socket.to(socket.gameId).emit('yourTurn', {player: turnId,opponent: opponent,cards: data.cards, players: c });
 
         })
     });
