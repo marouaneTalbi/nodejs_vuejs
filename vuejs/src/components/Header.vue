@@ -36,6 +36,12 @@
             </router-link>
           </li>
         </ul>
+        <div class="bottom">
+          <button class="logout" @click="logout">Logout</button>
+          <router-link class="play" to="/gamemode">
+            <button class="button">Jouer</button>
+          </router-link>
+        </div>
       </nav>
     </transition>
   </header>

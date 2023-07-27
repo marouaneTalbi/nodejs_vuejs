@@ -88,6 +88,35 @@ header {
     }
 }
 
+.logout {
+    background-color: transparent !important;
+}
+
+.play {
+    all: unset;
+    height: max-content;
+    border-radius: 15px;
+    background-color: hsl(160, 100%, 37%);
+    outline: none;
+    font-size: 20;
+    font-weight: 700;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition-duration: 0.3s;
+    width: max-content;
+    
+    & button {
+        margin: 0 !important;
+        background-color: transparent !important;
+    }
+}
+.bottom {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+}
 .icon {
   width: 40px;
   height: 40px;
@@ -95,9 +124,11 @@ header {
   cursor: pointer;
 }
 
+
 .dropdown-nav {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   position: fixed;
   width: 100%;
   max-width: 250px;
