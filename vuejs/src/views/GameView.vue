@@ -509,6 +509,9 @@ export default {
     },
     openModal() {
       this.modalActive = true;
+      setTimeout(() => {
+        this.$router.push('/stats');
+      }, 2500);
     },
     handleConfirmVictory() {
       this.modalActiveVictory = false;
