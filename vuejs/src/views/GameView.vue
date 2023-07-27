@@ -25,7 +25,7 @@
       </div>
     </section>
 
-    <div class="transparent-div" v-if="!isMyTurn"></div>
+    <div class="transparent-div" v-if="!isMyTurn && !waitingForOpponent "></div>
     <section class="waiting-screen" v-if="!waitingForOpponent">
       <div class="memory-game">
         <div class="memory-board">
