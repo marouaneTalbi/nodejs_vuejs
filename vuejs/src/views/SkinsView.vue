@@ -58,6 +58,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import Cookies from 'js-cookie';
 import { getCurrentUser } from '../services/userService.js'
 
+console.log(import.meta.env.VITE_API_URL_STRIPE)
+
 export default {
   components: {
     Header,
@@ -119,7 +121,7 @@ export default {
       const decodedPayload = JSON.parse(atob(payload));
       const userId = decodedPayload.id;
 
-      const stripePromise = loadStripe('pk_test_51IM8ZrEwRtoFpDAHs6Iu7d92N4DPiPWs4MjYP3BhnlNyf0Lz3itqGdpugMYLXIMyHZeQvxNyH4FCEAAtoJv9b7V600AGKAwSrE');
+      const stripePromise = loadStripe(import.meta.env.VITE_API_URL_STRIPE);
       const stripe = await stripePromise;
       const response = await postData('/skin/pay', {skin: this.skin})
       const sessionId = response.data.sessionId;
