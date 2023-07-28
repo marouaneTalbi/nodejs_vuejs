@@ -3,16 +3,8 @@ const UserMongo = require('./userModelMongo');
 const Skin = require('./skin/SkinModel');
 const UserSkin = require('./user_skin/user_skin');
 const Grade = require('./grade/GradeModel');
-
-const sequelize = new Sequelize({
-  dialect: 'postgres',
-  host: 'localhost',            
-  port: 5432,
-  database: 'mydatabase',
-  username: 'myuser',
-  password: 'mypassword',
-  timestamps:false
-});
+const path = require('path');
+const { sequelize } = require('./sequilize');
 
 const User = sequelize.define('_user', {
   id: {

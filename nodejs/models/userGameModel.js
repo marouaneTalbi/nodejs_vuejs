@@ -2,15 +2,8 @@ const { Sequelize, DataTypes } = require('sequelize');
 const Game = require('./gameModel');
 const User = require('./userModel');
 const UserGameMongo = require('./user_game/userGameModelMongo');
+const { sequelize } = require('./sequilize');
 
-const sequelize = new Sequelize({
-    dialect: 'postgres',
-    host: 'localhost',
-    port: 5432,
-    database: 'mydatabase',
-    username: 'myuser',
-    password: 'mypassword'
-});
 
 const UserGame = sequelize.define('user_game', {
     game_id: {

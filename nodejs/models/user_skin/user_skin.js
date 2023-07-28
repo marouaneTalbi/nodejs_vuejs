@@ -1,14 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
+const { sequelize } = require('../sequilize');
 
-const sequelize = new Sequelize({
-  dialect: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  database: 'mydatabase',
-  username: 'myuser',
-  password: 'mypassword',
-  timestamps:false
-});
 const UserSkin = sequelize.define('user_skin', {
 
     user_id: {

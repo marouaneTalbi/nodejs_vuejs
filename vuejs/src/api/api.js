@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 
 export const serverURI = import.meta.env.VITE_API_URL_SERVER_URL;
 
+
 axios.interceptors.request.use((config) => {
     const token = Cookies.get('token');
     if (token) {
