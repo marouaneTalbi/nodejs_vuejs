@@ -43,6 +43,9 @@ exports.updateUser = async (req, res) => {
     try {
         const { id } = req.params;
         const updates = req.body;
+        if (req.body.role) {
+            return res.status(403).json({ message: "La mise à jour du rôle n'est pas autorisée." });
+          }
 
         const user = await User.findByPk(id);
 
@@ -64,7 +67,9 @@ exports.updateUserPicture = async (req, res) => {
     try {
         const { id } = req.params;
         const updates = req.body;
-
+        if (req.body.role) {
+            return res.status(403).json({ message: "La mise à jour du rôle n'est pas autorisée." });
+        }
         const user = await User.findByPk(id);
 
 

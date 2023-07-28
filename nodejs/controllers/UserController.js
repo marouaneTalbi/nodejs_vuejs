@@ -53,9 +53,15 @@ exports.createUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
   const userId = req.params.id;
   const { pseudo, mail } = req.body;
+
+ 
+
   try {
     const user = await User.findByPk(userId);
     if (user) {
+      if (req.body.role === 'admin' && user.role !== 'admin') {
+        return res.status(403).json({ message: "La mise à jour du rôle n'est pas autorisée." });
+      }
       if (mail && mail !== user.mail) {
         const code = Math.floor(1000 + Math.random() * 9000);
         req.session.emailVerificationcode = code;
@@ -103,6 +109,9 @@ exports.deleteUser = async (req, res) => {
 exports.login = async (req, res) => {
     try {
       const { mail, password } = req.body;
+      if (req.body.role) {
+        return res.status(403).json({ message: "La mise à jour du rôle n'est pas autorisée." });
+      }
       const user = await User.findOne({ where: { mail } });
       if (user) {
         if (!user.isconfirmed) {
@@ -126,6 +135,9 @@ exports.login = async (req, res) => {
   }
 
 exports.logout = async (req, res) => {
+  if (req.body.role) {
+    return res.status(403).json({ message: "La mise à jour du rôle n'est pas autorisée." });
+  }
   req.session.destroy((error) => {
     if (error) {
       console.error(error);
@@ -140,7 +152,9 @@ exports.logout = async (req, res) => {
 exports.register = async (req, res) => {
     try {
       const { pseudo, mail, password } = req.body;
-
+      if (req.body.role) {
+        return res.status(403).json({ message: "La mise à jour du rôle n'est pas autorisée." });
+      }
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(mail)) {
         res.status(400).json({ message: 'Adresse e-mail invalide' });
@@ -174,6 +188,9 @@ exports.register = async (req, res) => {
 
 exports.resendMail = async (req,res) => {
   const email = req.body.email
+  if (req.body.role) {
+    return res.status(403).json({ message: "La mise à jour du rôle n'est pas autorisée." });
+  }
   try {
     const existingUser = await User.findOne({ where: { mail : email } });
     if (existingUser) {
@@ -197,6 +214,9 @@ exports.resendMail = async (req,res) => {
 
 exports.confirm = async (req, res) => {
   const token = req.body.token;
+  if (req.body.role) {
+    return res.status(403).json({ message: "La mise à jour du rôle n'est pas autorisée." });
+  }
   try {
     const user = await User.findOne({
       where: {
@@ -246,6 +266,9 @@ exports.getUserSkins = async (req, res) => {
 exports.updateIsConfirmed = async (req,res) => {
   const userId = req.params.id;
   const code = parseInt(req.body.code);
+  if (req.body.role === 'admin' && user.role !== 'admin') {
+    return res.status(403).json({ message: "La mise à jour du rôle n'est pas autorisée." });
+  }
   try {
     const user = await User.findByPk(userId);
     const emailVerificationcode = user.verificationcode;
@@ -271,6 +294,9 @@ exports.updateIsConfirmed = async (req,res) => {
 exports.changePassword = async (req, res) => {
   const userId = req.params.id;
   const { oldPassword, newPassword } = req.body;
+  if (req.body.role === 'admin' && user.role !== 'admin') {
+    return res.status(403).json({ message: "La mise à jour du rôle n'est pas autorisée." });
+  }
   try {
     const user = await User.findByPk(userId);
     if (user) {
@@ -322,6 +348,9 @@ exports.getUserSkin = async (req, res) => {
 
 exports.forgotPassword = async (req, res) => {
   try {
+    if (req.body.role) {
+      return res.status(403).json({ message: "La mise à jour du rôle n'est pas autorisée." });
+    }
     const { mail } = req.body;
     const existUser = await User.findOne({ where: { mail } });
     if (existUser) {
@@ -339,6 +368,9 @@ exports.forgotPassword = async (req, res) => {
 
 exports.initPassword = async (req, res) => {
   try {
+    if (req.body.role) {
+      return res.status(403).json({ message: "La mise à jour du rôle n'est pas autorisée." });
+    }
     const { password, token } = req.body;
     const existUser = await User.findOne({ where: { forgot_pwd:token } });
     if (existUser) {
