@@ -121,10 +121,10 @@
 
   </div>
   <div class="chat-container">
-    <div class="chat-messages">
+    <div id="chatBox">
       <div v-for="(message, index) in chatMessages" :key="index" class="chat-message">
-        <span>{{ message.username }}:</span>
-        <p>{{ message.message }}</p>
+        <!--<span class="chat-message">{{ message.username }}:</span>-->
+        <span v-bind:class="message.classElement">{{ message.message }}</span>
       </div>
     </div>
     <input v-model="messageInput" @keyup.enter="sendMessage" placeholder="Tapez votre message..."/>
@@ -165,7 +165,9 @@ export default {
       countCardJ2: 0,
       player1: null,
       player2: null,
+      winner: null,
       chatMessages: [],
+      ownMessages: [],
       messageInput: '',
       userInfo:null,
       advairsaireInfo:null,
@@ -274,7 +276,7 @@ export default {
       this.openModal();
     });
 
-    this.socket = io('http://localhost:3000'); // Remplacez "http://localhost:3000" par l'URL de votre serveur
+    this.socket = io('https://challenge.ovh/:3000'); // Remplacez "http://localhost:3000" par l'URL de votre serveur
 
     // Gestionnaire d'événement pour recevoir les nouveaux messages du chat
     this.socket.on('chatMessage', (message) => {
@@ -291,6 +293,13 @@ export default {
       if (message !== '') {
         // Émettez l'événement sendMessage au serveur avec le message
         this.socket.emit('sendMessage', message);
+        this.ownMessages.unshift({
+          classElement: 'own-response',
+          username: 'You',
+          message: message,
+        });
+        this.chatMessages = this.chatMessages.concat(this.ownMessages);
+        this.ownMessages = [];
         this.messageInput = '';
       }
     },
@@ -748,20 +757,54 @@ button:hover {
 .chat-container {
   position: fixed;
   bottom: 0;
-  left: 0;
-  width: 100%;
+  right: 20px;
+  width: 300px;
   background-color: #f1f1f1;
   padding: 10px;
+  z-index: 10000;
 }
 
 .chat-messages {
+  display: flex;
   max-height: 150px;
   overflow-y: auto;
 }
 
 .chat-message {
+  display: flex;
+  flex-direction: column;
   margin-bottom: 5px;
 }
 
+/* Style de base pour le message */
+span.chat-response {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 100px;
+  padding: 14px 18px;
+  margin: 6px 8px;
+  background-color: #5b5377;
+  border-radius: 16px 16px 16px 0;
+  border: 1px solid #443f56;
+  height: 35px;
+  align-self: flex-start;
+  width: fit-content;
+}
+
+span.own-response {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 100px;
+  padding: 14px 18px;
+  margin: 6px 8px;
+  background-color: #6C8EA4;
+  border-radius: 16px 16px 0 16px;
+  border: 1px solid #54788e;
+  height: 35px;
+  align-self: flex-end;
+  width: fit-content;
+}
 
 </style>
