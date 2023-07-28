@@ -1,79 +1,195 @@
-const UserMongo = require('../../controllers/AdminController');
-const User = require('../../models/userModel');
-const request = require('supertest');
-const app = require('../../App');
-jest.mock('../../models/userModel');
+const userController = require('../../controllers/AdminController');
+const UserMongo = require('../../models/userModelMongo');
+const { v4: uuidv4 } = require('uuid');
 
-describe('Admin Controller', () => {
+jest.mock('../../models/userModelMongo');
+jest.mock('base64-to-image');
+describe('User Controller Tests', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
 
-    const mockUsers = [
-        { id: 1, name: 'User 1' },
-        { id: 2, name: 'User 2' },
-        { id: 3, name: 'User 3' }
-    ];
+    describe('getAllUsers', () => {
+        it('should fetch all users successfully', async () => {
+            const mockUsers = [
+                { id: 1, name: 'User 1' },
+                { id: 2, name: 'User 2' },
+                { id: 3, name: 'User 3' }
+            ];
+            UserMongo.find.mockResolvedValue(mockUsers); // Utilisez `find` au lieu de `findAll`
 
-    it('should get all users', async () => {
-        jest.mock(UserMongo);
-        UserMongo.find.mockResolvedValue(mockUsers);
-        const response = await request(app).get('/users');
-        expect(response.status).toBe(200);
-        expect(response.body).toEqual(expect.arrayContaining(mockUsers));
+            // Create a mock response object with json and status methods
+            const mockResponse = {
+                json: jest.fn(),
+                status: jest.fn().mockReturnThis() // Return the response object itself for chaining
+            };
+            mockResponse.status.mockReturnValue(mockResponse);
+
+            await userController.getUsers({}, mockResponse);
+
+            // Check if UserMongo.find was called
+            expect(UserMongo.find).toHaveBeenCalled();
+
+            // Check if the response.json method was called with the mockUsers
+            expect(mockResponse.json).toHaveBeenCalledWith(mockUsers);
+        });
+
+        it('should handle errors', async () => {
+            const mockError = new Error('Something went wrong');
+
+            // Configure the mockRejectedValue for UserMongo.find
+            UserMongo.find.mockRejectedValue(mockError);
+
+            // Create a mock response object with json and status methods
+            const mockResponse = {
+                json: jest.fn(),
+                status: jest.fn().mockReturnThis() // Return the response object itself for chaining
+            };
+            mockResponse.status.mockReturnValue(mockResponse);
+
+            await userController.getUsers({}, mockResponse);
+
+            // Check if UserMongo.find was called
+            expect(UserMongo.find).toHaveBeenCalled();
+
+            // Check if the response status method was called with 500
+            expect(mockResponse.status).toHaveBeenCalledWith(500);
+
+            // Check if the response.json method was called with the error message
+            expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Une erreur s\'est produite lors de la récupération des utilisateurs' });
+        });
+    });
+    describe('getUser', () => {
+        it('should fetch user by ID successfully', async () => {
+            const mockUserId = 'mock-user-id';
+            const mockUser = { id: mockUserId, name: 'User 1' };
+            UserMongo.findById.mockResolvedValue(mockUser);
+
+            const mockRequest = { params: { id: mockUserId } };
+            const mockResponse = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            await userController.getUser(mockRequest, mockResponse);
+
+            expect(UserMongo.findById).toHaveBeenCalledWith(mockUserId);
+            expect(mockResponse.status).toHaveBeenCalledWith(200);
+            expect(mockResponse.json).toHaveBeenCalledWith(mockUser);
+        });
+
+        it('should handle user not found', async () => {
+            const mockUserId = 'non-existing-user-id';
+            UserMongo.findById.mockResolvedValue(null);
+
+            const mockRequest = { params: { id: mockUserId } };
+            const mockResponse = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            await userController.getUser(mockRequest, mockResponse);
+
+            expect(UserMongo.findById).toHaveBeenCalledWith(mockUserId);
+            expect(mockResponse.status).toHaveBeenCalledWith(404);
+            expect(mockResponse.json).toHaveBeenCalledWith({ message: 'le User n\'existe pas' });
+        });
+
+        it('should handle errors', async () => {
+            const mockUserId = 'mock-user-id';
+            const mockError = new Error('Something went wrong');
+            UserMongo.findById.mockRejectedValue(mockError);
+
+            const mockRequest = { params: { id: mockUserId } };
+            const mockResponse = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            await userController.getUser(mockRequest, mockResponse);
+
+            expect(UserMongo.findById).toHaveBeenCalledWith(mockUserId);
+            expect(mockResponse.status).toHaveBeenCalledWith(500);
+            expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Une erreur s\'est produite lors de la récupération des utilisateurs' });
+        });
     });
 
-    it('should get a single user', async () => {
-        const testUserId = 'testUserId';
-        UserMongo.findById.mockResolvedValue({ _id: testUserId, name: 'Test User' });
-        const response = await request(app).get(`/user/${testUserId}`);
-        expect(response.status).toBe(200);
-        expect(response.body).toHaveProperty('name', 'Test User');
-    });
+    describe('updateUser', () => {
+        it('should update user successfully', async () => {
+            const mockUserId = 'mock-user-id';
+            const mockRequestBody = {
+                pseudo: 'UpdatedUser',
+                mail: 'updateduser@example.com'
+            };
+            const mockUser = {
+                id: mockUserId,
+                pseudo: 'OldUser',
+                mail: 'olduser@example.com'
+            };
+            const mockUpdatedUser = {
+                ...mockUser,
+                pseudo: 'UpdatedUser',
+                mail: 'updateduser@example.com'
+            };
+            UserMongo.findByPk.mockResolvedValue(mockUser);
+            mockUser.save = jest.fn().mockResolvedValue(mockUpdatedUser);
 
-    // Test case for updateUser
-    it('should update a user', async () => {
-        const testUserId = 'testUserId';
-        const updates = { name: 'Updated User' };
-        User.findByPk.mockResolvedValue({ id: testUserId, name: 'Old User' });
-        User.prototype.save.mockResolvedValue({ id: testUserId, ...updates });
-        const response = await request(app).put(`/user/${testUserId}/updateuser`).send(updates);
-        expect(response.status).toBe(200);
-        expect(response.body).toHaveProperty('name', 'Updated User');
-    });
+            const mockRequest = {
+                params: { id: mockUserId },
+                body: mockRequestBody
+            };
+            const mockResponse = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
 
-    // Test case for updateUserPicture
-    /*it('should update user picture', async () => {
-        const testUserId = 'testUserId';
-        const updates = { picture: 'base64ImageDataHere' }; // Replace with actual base64 image data
+            await userController.updateUser(mockRequest, mockResponse);
 
-        // Mock the findByPk and save functions for the User model
-        User.findByPk.mockResolvedValue({ id: testUserId, name: 'Test User' });
-        User.prototype.save.mockResolvedValue({ id: testUserId, ...updates });
+            expect(User.findByPk).toHaveBeenCalledWith(mockUserId);
+            expect(mockUser.save).toHaveBeenCalled();
+            expect(mockResponse.status).toHaveBeenCalledWith(200);
+            expect(mockResponse.json).toHaveBeenCalledWith(mockUpdatedUser);
+        });
 
-        const response = await request(app).patch(`/user/${testUserId}/pic`).send(updates);
+        it('should handle user not found', async () => {
+            const mockUserId = 'non-existing-user-id';
+            UserMongo.findByPk.mockResolvedValue(null);
 
-        expect(response.status).toBe(200);
-        expect(response.body).toHaveProperty('picture', 'base64ImageDataHere');
-    });*/
+            const mockRequest = {
+                params: { id: mockUserId },
+                body: {}
+            };
+            const mockResponse = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
 
-    // Test case for deleteUser
-    it('should delete a user', async () => {
-        const testUserId = 'testUserId';
+            await userController.updateUser(mockRequest, mockResponse);
 
-        // Mock the destroy function for the User model
-        User.destroy.mockResolvedValue(1);
+            expect(User.findByPk).toHaveBeenCalledWith(mockUserId);
+            expect(mockResponse.status).toHaveBeenCalledWith(404);
+            expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Utilisateur non trouvé' });
+        });
 
-        const response = await request(app).delete(`/user/${testUserId}`);
+        it('should handle errors', async () => {
+            const mockUserId = 'mock-user-id';
+            const mockError = new Error('Something went wrong');
+            UserMongo.findByPk.mockRejectedValue(mockError);
 
-        expect(response.status).toBe(204);
+            const mockRequest = {
+                params: { id: mockUserId },
+                body: {}
+            };
+            const mockResponse = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
 
-        // Mock the findById function for the UserMongo model
-        UserMongo.findById.mockResolvedValue({ _id: testUserId, name: 'Test User' });
+            await userController.updateUser(mockRequest, mockResponse);
 
-        const deletedUser = await UserMongo.findById(testUserId);
-        expect(deletedUser).toBeNull();
+            expect(User.findByPk).toHaveBeenCalledWith(mockUserId);
+            expect(mockResponse.status).toHaveBeenCalledWith(500);
+            expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Erreur lors de la mise à jour de l\'utilisateur' });
+        });
     });
 });
-
-

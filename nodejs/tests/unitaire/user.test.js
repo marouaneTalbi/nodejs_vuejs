@@ -1,7 +1,6 @@
 const userController = require('../../controllers/UserController');
 const User = require('../../models/userModel');
 const mailSender  = require('../../SMTP/mailsender');
-const httpMocks = require('node-mocks-http');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 jest.mock('../../models/userModel');
@@ -151,12 +150,19 @@ describe('User Controller Tests', () => {
             };
             User.findByPk.mockResolvedValue(mockUser);
             User.update.mockResolvedValue([1]);
+            const mockResponse = {
+                json: jest.fn(),
+                status: function (statusCode) {
+                    this.statusCode = statusCode;
+                    return this;
+                }
+            };
+
             const mockRequest = {
                 params: { id: mockUserId },
                 body: mockRequestBody,
                 session: {}
             };
-            const mockResponse = httpMocks.createResponse();
             await userController.updateUser(mockRequest, mockResponse);
             expect(User.findByPk).toHaveBeenCalledWith(mockUserId);
             expect(mockRequest.session.emailVerificationcode).toEqual(expect.any(Number));
