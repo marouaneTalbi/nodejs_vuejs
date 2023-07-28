@@ -58,8 +58,6 @@ import { loadStripe } from '@stripe/stripe-js';
 import Cookies from 'js-cookie';
 import { getCurrentUser } from '../services/userService.js'
 
-console.log(import.meta.env.VITE_API_URL_STRIPE)
-
 export default {
   components: {
     Header,
