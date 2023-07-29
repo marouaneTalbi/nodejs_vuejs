@@ -18,7 +18,6 @@ exports.getAllSkins = async (req, res) => {
     });
     res.json(skins);
   } catch (error) {
-    console.error('Une erreur s\'est produite lors de la récupération des skins:', error);
     res.status(500).json({ message: 'Une erreur s\'est produite lors de la récupération des skins' });
   }
 };
@@ -33,21 +32,23 @@ exports.getSkinById = async (req, res) => {
       res.status(404).json({ message: 'Skin non trouvé' });
     }
   } catch (error) {
-    console.error('Une erreur s\'est produite lors de la récupération du skin:', error);
     res.status(500).json({ message: 'Une erreur s\'est produite lors de la récupération du skin' });
   }
 };
 
-
-function saveSkinImage(imageTitle, imageData) {
-  const fileName = uuidv4()+ '_' +imageTitle
-  const imageType = 'png';
-
-  const imagePath = path.join(__dirname, '../../pictures/skins/');
-  var optionalObj = {fileName: fileName, 'type':imageType};
-  base64ToImage(imageData, imagePath, optionalObj); 
-  return fileName+'.'+imageType;
-}
+function saveSkinImage(imageTitle, imageData)  {
+  try {
+    const fileName = uuidv4() + '_' + imageTitle;
+    const imageType = 'png';
+    const imagePath = path.join(__dirname, '../../pictures/skins/');
+    const optionalObj = { fileName: fileName, 'type': imageType };
+    
+    base64ToImage(imageData, imagePath, optionalObj); 
+    return fileName + '.' + imageType;
+  } catch (error) {
+    throw error; // You can also choose to handle the error differently.
+  }
+};
 
 exports.createSkin = async (req, res) => {
   const { title, price, picture, money_type, coins_price} = req.body;
@@ -58,7 +59,6 @@ exports.createSkin = async (req, res) => {
 
     res.status(201).json(newSkin);
   } catch (error) {
-    console.error('Une erreur s\'est produite lors de la création du skin:', error);
     res.status(500).json({ message: 'Une erreur s\'est produite lors de la création du skin' });
   }
 };
@@ -80,12 +80,10 @@ exports.updateSkin = async (req, res) => {
       res.status(404).json({ message: 'Skin non trouvé' });
     }
   } catch (error) {
-    console.error('Une erreur s\'est produite lors de la mise à jour du skin:', error);
     res.status(500).json({ message: 'Une erreur s\'est produite lors de la mise à jour du skin' });
   }
 };
 
-// Méthode pour supprimer un skin
 exports.deleteSkin = async (req, res) => {
   const skinId = req.params.id;
   try {
@@ -97,7 +95,6 @@ exports.deleteSkin = async (req, res) => {
       res.status(404).json({ message: 'Skin non trouvé' });
     }
   } catch (error) {
-    console.error('Une erreur s\'est produite lors de la suppression du skin:', error);
     res.status(500).json({ message: 'Une erreur s\'est produite lors de la suppression du skin' });
   }
 };
@@ -121,64 +118,61 @@ exports.purchaseSkin = async (req, res) => {
         await user.save();
       res.json({ message: 'Skin acheté avec succès', skin: skin });
     } catch (error) {
-      console.error('Une erreur s\'est produite lors de l\'achat du skin:', error);
       res.status(500).json({ message: 'Une erreur s\'est produite lors de l\'achat du skin' });
     }
   };
   
-  exports.assignSkinToUser = async (req, res) => {
-    const userId = req.body.userId;
-    const skinId = req.body.skinId;
+exports.assignSkinToUser = async (req, res) => {
+  const userId = req.body.userId;
+  const skinId = req.body.skinId;
 
-    try {
-      const user = await User.findByPk(userId);
-      if (!user) {
-        return res.status(404).json({ message: 'Utilisateur non trouvé' });
-      }
-
-      const skin = await Skin.findByPk (skinId);
-
-      if (!skin) {
-        return res.status(404).json({ message: 'Skin non trouvé' });
-      }
-  
-      user.skins_fk_id = skinId;
-
-      await user.save();
-  
-      res.json({ message: 'Skin affecté à l\'utilisateur avec succès', skin: skin });
-    } catch (error) {
-      console.error('Une erreur s\'est produite lors de l\'affectation du skin à l\'utilisateur:', error);
-      res.status(500).json({ message: 'Une erreur s\'est produite lors de l\'affectation du skin à l\'utilisateur' });
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
-  };
 
+    const skin = await Skin.findByPk (skinId);
 
-  exports.paySkin =  async (req, res) => {
-    const  {skin}  = req.body;
-    try {
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        line_items: [
-          {
-            price_data: {
-              currency: 'eur',
-              product_data: {
-                name: skin.title, 
+    if (!skin) {
+      return res.status(404).json({ message: 'Skin non trouvé' });
+    }
 
-              },
-              unit_amount: skin.price * 100,
+    user.skins_fk_id = skinId;
+
+    await user.save();
+
+    res.json({ message: 'Skin affecté à l\'utilisateur avec succès', skin: skin });
+  } catch (error) {
+    res.status(500).json({ message: 'Une erreur s\'est produite lors de l\'affectation du skin à l\'utilisateur' });
+  }
+};
+
+exports.paySkin =  async (req, res) => {
+  const  {skin}  = req.body;
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'eur',
+            product_data: {
+              name: skin.title, 
+
             },
-            quantity: 1, // Quantité de produits
+            unit_amount: skin.price * 100,
           },
-        ],
-        mode: 'payment',
-        success_url: `${clientURI}/skins`, // URL de succès du paiement
-        cancel_url: `${clientURI}/skins`, // URL d'annulation du paiement
-      });
-      res.json({ sessionId: session.id });
+          quantity: 1, // Quantité de produits
+        },
+      ],
+      mode: 'payment',
+      success_url: `${clientURI}/skins`, // URL de succès du paiement
+      cancel_url: `${clientURI}/skins`, // URL d'annulation du paiement
+    });
+    res.json({ sessionId: session.id });
 
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  };
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
