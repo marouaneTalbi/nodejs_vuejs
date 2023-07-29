@@ -45,7 +45,6 @@ exports.createGame = async(gamemode, userId) => {
     }
 }
 
-
 exports.findGameById = async(req, res) => {
     try {
 

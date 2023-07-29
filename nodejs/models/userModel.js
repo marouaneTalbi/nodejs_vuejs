@@ -90,12 +90,13 @@ const User = sequelize.define('_user', {
   subQuery: false
 });
 
-Skin.belongsToMany(User, { through: 'user_skin', foreignKey: 'skin_id', onDelete: 'CASCADE' });
 User.belongsToMany(Skin, { through: 'user_skin', foreignKey: 'user_id', onDelete: 'CASCADE' });
 User.belongsTo(Grade, {
   foreignKey: 'grade_id',
   onDelete: 'CASCADE'
 });
+Skin.belongsToMany(User, { through: 'user_skin', foreignKey: 'skin_id', onDelete: 'CASCADE' });
+
 
 User.afterCreate(async (user, options) => {
   try {
