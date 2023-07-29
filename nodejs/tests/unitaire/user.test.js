@@ -183,7 +183,7 @@ describe('User Controller Tests', () => {
             };
             const mockResponse = {
                 json: jest.fn(),
-                status: jest.fn().mockReturnThis() // Mocking res.status().json()
+                status: jest.fn().mockReturnThis()
             };
             User.findByPk.mockResolvedValue(mockUser);
             mockUser.destroy = jest.fn().mockResolvedValue();
@@ -354,7 +354,7 @@ describe('User Controller Tests', () => {
             const mockRequest = {
                 session: {
                     destroy: jest.fn(callback => {
-                        callback(mockError); // Call the callback with an error to simulate an error during session destruction
+                        callback(mockError);
                     })
                 }
             };
